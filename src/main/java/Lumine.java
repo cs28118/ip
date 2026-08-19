@@ -8,6 +8,13 @@ public class Lumine {
                 + "|   |___ |       ||       ||   | |  _    ||    ___|\n"
                 + "|       ||       || ||_|| ||   | | | |   ||   |___ \n"
                 + "|_______||_______||_|   |_||___| |_|  |__||_______|\n";
-        System.out.println(banner);
+        String horizontalLine = "____________________________________________________________\n";
+        String greeting = horizontalLine + banner
+                + "Hello, I'm Lumine!\n"
+                + "What can I do for you?\n"
+                + horizontalLine;
+        String exitMessage = "Bye, hope to see you again soon!\n" + horizontalLine;
+
+        System.out.println(greeting + exitMessage);
     }
 }
