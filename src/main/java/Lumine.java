@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class Lumine {
     public static void main(String[] args) {
         String banner =
@@ -8,13 +10,29 @@ public class Lumine {
                 + "|   |___ |       ||       ||   | |  _    ||    ___|\n"
                 + "|       ||       || ||_|| ||   | | | |   ||   |___ \n"
                 + "|_______||_______||_|   |_||___| |_|  |__||_______|\n";
-        String horizontalLine = "____________________________________________________________\n";
-        String greeting = horizontalLine + banner
+        String line = "____________________________________________________________";
+        String greeting = line + "\n" + banner
                 + "Hello, I'm Lumine!\n"
-                + "What can I do for you?\n"
-                + horizontalLine;
-        String exitMessage = "Bye, hope to see you again soon!\n" + horizontalLine;
+                + "What can I do for you today?\n"
+                + line;
 
-        System.out.println(greeting + exitMessage);
+        //greeting
+        System.out.println(greeting);
+
+        //getting inputs
+        Scanner scanner = new Scanner(System.in);
+        while (scanner.hasNextLine()) {
+            String command = scanner.nextLine();
+            System.out.println(line);
+
+            if (command.equals("bye")) {
+                System.out.println(" Bye. Hope to see you again soon!");
+                System.out.println(line);
+                break;
+            }
+
+            System.out.println(" " + command);
+            System.out.println(line);
+        }
     }
 }
