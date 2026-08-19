@@ -21,6 +21,7 @@ public class Lumine {
 
         //getting inputs
         Scanner scanner = new Scanner(System.in);
+        TaskList taskList = new TaskList();
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine();
             System.out.println(line);
@@ -29,10 +30,14 @@ public class Lumine {
                 System.out.println(" Bye. Hope to see you again soon!");
                 System.out.println(line);
                 break;
+            } else if (command.equals("list")) {
+                taskList.printTasks();
+            } else {
+                taskList.addTask(command);
             }
 
-            System.out.println(" " + command);
             System.out.println(line);
+
         }
     }
 }
