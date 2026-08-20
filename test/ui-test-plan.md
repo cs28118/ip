@@ -51,6 +51,74 @@ Bye. Hope to see you again soon!
 ____________________________________________________________
 ```
 
+### Test Case: Delete a task and renumber the remaining tasks
+Aim: Verify that `delete <number>` removes the selected task, reports the removed task and new count, and renumbers the remaining tasks when listed.
+
+Command:
+```text
+java -cp out\production\ip Lumine
+```
+
+Input:
+```text
+todo first task
+todo second task
+todo third task
+list
+delete 2
+list
+bye
+```
+
+Expected output:
+```text
+____________________________________________________________
+ ___      __   __  __   __  ___   __    _  _______ 
+|   |    |  | |  ||  |_|  ||   | |  |  | ||       |
+|   |    |  | |  ||       ||   | |   |_| ||    ___|
+|   |    |  |_|  ||       ||   | |       ||   |___ 
+|   |___ |       ||       ||   | |  _    ||    ___|
+|       ||       || ||_|| ||   | | | |   ||   |___ 
+|_______||_______||_|   |_||___| |_|  |__||_______|
+Hello, I'm Lumine!
+What can I do for you today?
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] first task
+Now, you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] second task
+Now, you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] third task
+Now, you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] first task
+2.[T][ ] second task
+3.[T][ ] third task
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+[T][ ] second task
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] first task
+2.[T][ ] third task
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
 ### Test Case: Handle empty todo and unknown command
 Aim: Verify that an empty todo and an unrecognised command produce the required error messages and that the application continues running.
 

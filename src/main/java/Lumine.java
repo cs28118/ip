@@ -63,6 +63,8 @@ public class Lumine {
             markTask(normalizedCommand, taskList);
         } else if (isCommand(normalizedCommand, "unmark")) {
             unmarkTask(normalizedCommand, taskList);
+        } else if (isCommand(normalizedCommand, "delete")) {
+            deleteTask(normalizedCommand, taskList);
         } else {
             throw new LumineException("Hmmmm, I can't understand what that means. ;-;\n"
                     + "Try entering a command instead.");
@@ -89,6 +91,15 @@ public class Lumine {
         Task task = taskList.markAsUndone(taskNumber);
         System.out.println("OK, I've marked this task as not done yet:");
         System.out.println(task);
+    }
+
+    //delete a task and output
+    private static void deleteTask(String command, TaskList taskList) {
+        int taskNumber = parseTaskNumber(command, "delete");
+        Task task = taskList.deleteTask(taskNumber);
+        System.out.println("Noted. I've removed this task:");
+        System.out.println(task);
+        System.out.println("Now you have " + taskList.size() + " tasks in the list.");
     }
 
     //check mark/unmark task number (non-int and not valid task number)
