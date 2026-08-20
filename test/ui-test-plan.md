@@ -120,10 +120,14 @@ Hello, I'm Lumine!
 What can I do for you today?
 ____________________________________________________________
 ____________________________________________________________
-Sorry, deadline task must include a description and a /by time. :C
+Sorry, I can't read your deadline task. :C
+It needs a description and a /by time.
+e.g. deadline test /by Mon 2pm
 ____________________________________________________________
 ____________________________________________________________
-Sorry, event task must include a description, /from time, and /to time. :C
+Sorry, I can't read your event task. :C
+It needs a description, /from time, and /to time.
+e.g. event test /from Mon 2pm /to 4pm
 ____________________________________________________________
 ____________________________________________________________
 Bye. Hope to see you again soon!
