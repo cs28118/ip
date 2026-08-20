@@ -7,7 +7,7 @@ Aim: Verify that all current Java sources compile successfully using the require
 
 Command:
 ```text
-javac -d out\production\ip src\main\java\Deadline.java src\main\java\Event.java src\main\java\Lumine.java src\main\java\LumineException.java src\main\java\Task.java src\main\java\TaskList.java src\main\java\Todo.java && echo BUILD_OK
+javac -d out\production\ip src\main\java\Deadline.java src\main\java\Event.java src\main\java\Lumine.java src\main\java\LumineException.java src\main\java\Task.java src\main\java\TaskList.java src\main\java\TaskType.java src\main\java\Todo.java && echo BUILD_OK
 ```
 
 Input:
@@ -203,7 +203,7 @@ ____________________________________________________________
 ```
 
 ### Test Case: Handle invalid task number
-Aim: Verify that marking a task outside the current list is handled through `LumineException` without crashing the application.
+Aim: Verify that marking a task outside the current list shows a helpful message and the application continues running.
 
 Command:
 ```text
@@ -238,6 +238,155 @@ Bye. Hope to see you again soon!
 ____________________________________________________________
 ```
 
+### Test Case: Empty list, blank command, and invalid task numbers
+Aim: Verify that an empty list can be displayed, a blank command is rejected, and invalid mark, unmark, and delete inputs do not modify existing tasks.
+
+Command:
+```text
+java -cp out\production\ip Lumine
+```
+
+Input:
+```text
+list
+
+todo keep task
+mark
+unmark abc
+delete 0
+delete 2
+list
+bye
+```
+
+Expected output:
+```text
+____________________________________________________________
+ ___      __   __  __   __  ___   __    _  _______ 
+|   |    |  | |  ||  |_|  ||   | |  |  | ||       |
+|   |    |  | |  ||       ||   | |   |_| ||    ___|
+|   |    |  |_|  ||       ||   | |       ||   |___ 
+|   |___ |       ||       ||   | |  _    ||    ___|
+|       ||       || ||_|| ||   | | | |   ||   |___ 
+|_______||_______||_|   |_||___| |_|  |__||_______|
+Hello, I'm Lumine!
+What can I do for you today?
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+____________________________________________________________
+____________________________________________________________
+Hmmmm, I can't understand what that means. ;-;
+Try entering a command instead.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] keep task
+Now, you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Task not found :<.
+Please enter a valid task number.
+____________________________________________________________
+____________________________________________________________
+Task not found :<.
+Please enter a valid task number.
+____________________________________________________________
+____________________________________________________________
+Task not found :<.
+Please enter a valid task number.
+____________________________________________________________
+____________________________________________________________
+Task not found :<.
+Please enter a valid task number.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] keep task
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+### Test Case: Malformed deadline and event commands preserve existing tasks
+Aim: Verify that deadline and event commands with missing descriptions, dates, or times show errors and do not alter tasks that were already added.
+
+Command:
+```text
+java -cp out\production\ip Lumine
+```
+
+Input:
+```text
+todo keep task
+deadline prepare slides
+deadline /by Friday
+deadline prepare slides /by
+event meeting /from 2pm
+event meeting /to 4pm
+event /from 2pm /to 4pm
+list
+bye
+```
+
+Expected output:
+```text
+____________________________________________________________
+ ___      __   __  __   __  ___   __    _  _______ 
+|   |    |  | |  ||  |_|  ||   | |  |  | ||       |
+|   |    |  | |  ||       ||   | |   |_| ||    ___|
+|   |    |  |_|  ||       ||   | |       ||   |___ 
+|   |___ |       ||       ||   | |  _    ||    ___|
+|       ||       || ||_|| ||   | | | |   ||   |___ 
+|_______||_______||_|   |_||___| |_|  |__||_______|
+Hello, I'm Lumine!
+What can I do for you today?
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] keep task
+Now, you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Sorry, I can't read your deadline task. :C
+It needs a description and a /by time.
+e.g. deadline test /by Mon 2pm
+____________________________________________________________
+____________________________________________________________
+Sorry, I can't read your deadline task. :C
+It needs a description and a /by time.
+e.g. deadline test /by Mon 2pm
+____________________________________________________________
+____________________________________________________________
+Sorry, I can't read your deadline task. :C
+It needs a description and a /by time.
+e.g. deadline test /by Mon 2pm
+____________________________________________________________
+____________________________________________________________
+Sorry, I can't read your event task. :C
+It needs a description, /from time, and /to time.
+e.g. event test /from Mon 2pm /to 4pm
+____________________________________________________________
+____________________________________________________________
+Sorry, I can't read your event task. :C
+It needs a description, /from time, and /to time.
+e.g. event test /from Mon 2pm /to 4pm
+____________________________________________________________
+____________________________________________________________
+Sorry, I can't read your event task. :C
+It needs a description, /from time, and /to time.
+e.g. event test /from Mon 2pm /to 4pm
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] keep task
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
 ### Test Case: Create, list, mark, and unmark task types
 Aim: Verify that todo, deadline, and event commands create the correct task subtypes, that listing preserves their order, and that marking and unmarking preserve each task's subtype information.
 
@@ -253,6 +402,7 @@ deadline return book /by Sunday
 event project meeting /from Mon 2pm /to 4pm
 list
 mark 2
+list
 unmark 2
 list
 bye
@@ -295,6 +445,12 @@ ____________________________________________________________
 ____________________________________________________________
 Nice! I've marked this task as done:
 [D][X] return book (by: Sunday)
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] borrow book
+2.[D][X] return book (by: Sunday)
+3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
 ____________________________________________________________
 ____________________________________________________________
 OK, I've marked this task as not done yet:

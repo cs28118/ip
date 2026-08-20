@@ -1,9 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Stores and manages the tasks entered by the user.
- */
 public class TaskList {
     private final List<Task> tasks = new ArrayList<>();
 
