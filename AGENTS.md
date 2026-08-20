@@ -28,6 +28,19 @@ Unless the user says otherwise, assume that you are assisting a student working 
 
 Ensure that Java 25 is used when running the application or build tasks.
 
+## UI regression testing:
+
+After every code update:
+
+1. Review `test/ui-test-plan.md` and update it when the change adds, removes, or changes observable command-line UI behavior. Each affected behavior should have a test case with its aim, inputs, and expected output.
+2. Invoke the project-specific `test-ui` skill to run the plan:
+
+   ```powershell
+   py .codex/skills/test-ui/scripts/run-ui-tests.py test/ui-test-plan.md
+   ```
+
+   Include the resulting console input/output record in the handoff. If a test fails, stop the test session immediately and report the actual and expected outputs; do not continue to later cases.
+
 ## Git
 
 Use lightweight tags unless the user requests an annotated tag.
