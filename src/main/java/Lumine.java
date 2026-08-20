@@ -1,6 +1,7 @@
 import java.util.Scanner;
 
 public class Lumine {
+    // main method
     public static void main(String[] args) {
         String banner =
                 " ___      __   __  __   __  ___   __    _  _______ \n"
@@ -19,94 +20,122 @@ public class Lumine {
         //greeting
         System.out.println(greeting);
 
-        //getting inputs
+        //get inputs
         Scanner scanner = new Scanner(System.in);
         TaskList taskList = new TaskList();
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine();
             System.out.println(line);
 
-            if (command.equals("bye")) {
-                System.out.println("Bye. Hope to see you again soon!");
-                System.out.println(line);
-                break;
-            } else if (command.equals("list")) {
-                taskList.printTasks();
-            } else if (isTodoCommand(command)) {
-                Todo todo = parseTodoCommand(command);
-                taskList.addTask(todo);
-            } else if (isDeadlineCommand(command)) {
-                Deadline deadline = parseDeadlineCommand(command);
-                taskList.addTask(deadline);
-            } else if (isEventCommand(command)) {
-                Event event = parseEventCommand(command);
-                taskList.addTask(event);
-            } else if (isMarkCommand(command)) {
-                String normalizedCommand = command.trim();
-                String taskNumberStr = normalizedCommand.substring("mark".length()).trim();
-                try {
-                    int taskNumber = Integer.parseInt(taskNumberStr);
-                    Task task = taskList.markAsDone(taskNumber);
-                    System.out.println("Nice! I've marked this task as done:");
-                    System.out.println(task);
-                } catch (IllegalArgumentException e) {
-                    System.out.println("Please provide a valid task number.");
-                }
-            } else if (isUnmarkCommand(command)) {
-                String normalizedCommand = command.trim();
-                String taskNumberStr = normalizedCommand.substring("unmark".length()).trim();
-                try {
-                    int taskNumber = Integer.parseInt(taskNumberStr);
-                    Task task = taskList.markAsUndone(taskNumber);
-                    System.out.println("OK, I've marked this task as not done yet:");
-                    System.out.println(task);
-                } catch (IllegalArgumentException e) {
-                    System.out.println("Please provide a valid task number.");
-                }
-            } else {
-                continue;
+            boolean shouldExit = false;
+            try {
+                shouldExit = handleCommand(command, taskList);
+            } catch (LumineException e) {
+                System.out.println(e.getMessage());
             }
 
             System.out.println(line);
+
+            if (shouldExit) {
+                break;
+            }
         }
     }
 
-    private static boolean isMarkCommand(String command) {
-        return command.trim().matches("mark\\s+([1-9]\\d?|100)");
+
+    /** helper methods **/
+
+    // command handle helper method
+    private static boolean handleCommand(String command, TaskList taskList) {
+        String normalizedCommand = command.trim();
+        if (normalizedCommand.equals("bye")) {
+            System.out.println("Bye. Hope to see you again soon!");
+            return true;
+        } else if (normalizedCommand.equals("list")) {
+            taskList.printTasks();
+        } else if (isCommand(normalizedCommand, "todo")) {
+            taskList.addTask(parseTodoCommand(normalizedCommand));
+        } else if (isCommand(normalizedCommand, "deadline")) {
+            taskList.addTask(parseDeadlineCommand(normalizedCommand));
+        } else if (isCommand(normalizedCommand, "event")) {
+            taskList.addTask(parseEventCommand(normalizedCommand));
+        } else if (isCommand(normalizedCommand, "mark")) {
+            markTask(normalizedCommand, taskList);
+        } else if (isCommand(normalizedCommand, "unmark")) {
+            unmarkTask(normalizedCommand, taskList);
+        } else {
+            throw new LumineException("Hmmmm, I can't understand what that means. ;-;\n"
+                    + "Try entering a command instead.");
+        }
+        return false;
     }
 
-    private static boolean isUnmarkCommand(String command) {
-        return command.trim().matches("unmark\\s+([1-9]\\d?|100)");
+    //check if the command is known
+    private static boolean isCommand(String command, String commandName) {
+        return command.equals(commandName) || command.matches(commandName + "\\s+.*");
     }
 
-    private static boolean isTodoCommand(String command) {
-        return command.trim().matches("todo\\s+.+");
+    //mark a task and output
+    private static void markTask(String command, TaskList taskList) {
+        int taskNumber = parseTaskNumber(command, "mark");
+        Task task = taskList.markAsDone(taskNumber);
+        System.out.println("Nice! I've marked this task as done:");
+        System.out.println(task);
     }
 
-    private static boolean isDeadlineCommand(String command) {
-        return command.trim().matches("deadline\\s+.+\\s+/by\\s+.+");
+    //unmark a task and output
+    private static void unmarkTask(String command, TaskList taskList) {
+        int taskNumber = parseTaskNumber(command, "unmark");
+        Task task = taskList.markAsUndone(taskNumber);
+        System.out.println("OK, I've marked this task as not done yet:");
+        System.out.println(task);
     }
 
-    private static boolean isEventCommand(String command) {
-        return command.trim().matches("event\\s+.+\\s+/from\\s+.+\\s+/to\\s+.+");
+    //check mark/unmark task number (non-int and not valid task number)
+    private static int parseTaskNumber(String command, String commandName) {
+        String taskNumber = command.substring(commandName.length()).trim();
+        try {
+            return Integer.parseInt(taskNumber);
+        } catch (NumberFormatException e) {
+            throw new LumineException("Task not found :<.\nPlease enter a valid task number.");
+        }
     }
 
+    //create todo and throw exception if empty
     private static Todo parseTodoCommand(String command) {
         String description = command.trim().substring("todo".length()).trim();
+        if (description.isEmpty()) {
+            throw new LumineException("Sorry, todo task cannot be empty. :C");
+        }
         return new Todo(description);
     }
 
+    //create deadline and throw exception if empty/invalid
     private static Deadline parseDeadlineCommand(String command) {
         String details = command.trim().substring("deadline".length()).trim();
         String[] parts = details.split("\\s+/by\\s+", 2);
+        if (parts.length != 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
+            throw new LumineException(
+                    "Sorry, I can't read your deadline task. :C\n"
+                            + "It needs a description and a /by time.\n"
+                            + "e.g. deadline test /by Mon 2pm");
+        }
         String description = parts[0].trim();
         String by = parts[1].trim();
         return new Deadline(description, by);
     }
 
+    //create event and throw exception if empty/invalid
     private static Event parseEventCommand(String command) {
         String details = command.trim().substring("event".length()).trim();
         String[] parts = details.split("\\s+/from\\s+|\\s+/to\\s+", 3);
+        if (parts.length != 3 || parts[0].trim().isEmpty()
+                || parts[1].trim().isEmpty() || parts[2].trim().isEmpty()) {
+            throw new LumineException(
+                    "Sorry, I can't read your event task. :C\n"
+                            + "It needs a description, /from time, and /to time.\n"
+                            + "e.g. event test /from Mon 2pm /to 4pm");
+        }
         String description = parts[0].trim();
         String from = parts[1].trim();
         String to = parts[2].trim();

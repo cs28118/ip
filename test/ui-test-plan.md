@@ -7,7 +7,7 @@ Aim: Verify that all current Java sources compile successfully using the require
 
 Command:
 ```text
-javac -d out\production\ip src\main\java\Deadline.java src\main\java\Event.java src\main\java\Lumine.java src\main\java\Task.java src\main\java\TaskList.java src\main\java\Todo.java && echo BUILD_OK
+javac -d out\production\ip src\main\java\Deadline.java src\main\java\Event.java src\main\java\Lumine.java src\main\java\LumineException.java src\main\java\Task.java src\main\java\TaskList.java src\main\java\Todo.java && echo BUILD_OK
 ```
 
 Input:
@@ -45,6 +45,121 @@ ____________________________________________________________
 |_______||_______||_|   |_||___| |_|  |__||_______|
 Hello, I'm Lumine!
 What can I do for you today?
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+### Test Case: Handle empty todo and unknown command
+Aim: Verify that an empty todo and an unrecognised command produce the required error messages and that the application continues running.
+
+Command:
+```text
+java -cp out\production\ip Lumine
+```
+
+Input:
+```text
+todo
+blah
+bye
+```
+
+Expected output:
+```text
+____________________________________________________________
+ ___      __   __  __   __  ___   __    _  _______ 
+|   |    |  | |  ||  |_|  ||   | |  |  | ||       |
+|   |    |  | |  ||       ||   | |   |_| ||    ___|
+|   |    |  |_|  ||       ||   | |       ||   |___ 
+|   |___ |       ||       ||   | |  _    ||    ___|
+|       ||       || ||_|| ||   | | | |   ||   |___ 
+|_______||_______||_|   |_||___| |_|  |__||_______|
+Hello, I'm Lumine!
+What can I do for you today?
+____________________________________________________________
+____________________________________________________________
+Sorry, todo task cannot be empty. :C
+____________________________________________________________
+____________________________________________________________
+Hmmmm, I can't understand what that means. ;-;
+Try entering a command instead.
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+### Test Case: Handle empty deadline and event
+Aim: Verify that deadline and event commands without the required details produce helpful error messages and do not terminate the application.
+
+Command:
+```text
+java -cp out\production\ip Lumine
+```
+
+Input:
+```text
+deadline
+event
+bye
+```
+
+Expected output:
+```text
+____________________________________________________________
+ ___      __   __  __   __  ___   __    _  _______ 
+|   |    |  | |  ||  |_|  ||   | |  |  | ||       |
+|   |    |  | |  ||       ||   | |   |_| ||    ___|
+|   |    |  |_|  ||       ||   | |       ||   |___ 
+|   |___ |       ||       ||   | |  _    ||    ___|
+|       ||       || ||_|| ||   | | | |   ||   |___ 
+|_______||_______||_|   |_||___| |_|  |__||_______|
+Hello, I'm Lumine!
+What can I do for you today?
+____________________________________________________________
+____________________________________________________________
+Sorry, deadline task must include a description and a /by time. :C
+____________________________________________________________
+____________________________________________________________
+Sorry, event task must include a description, /from time, and /to time. :C
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+### Test Case: Handle invalid task number
+Aim: Verify that marking a task outside the current list is handled through `LumineException` without crashing the application.
+
+Command:
+```text
+java -cp out\production\ip Lumine
+```
+
+Input:
+```text
+mark 1
+bye
+```
+
+Expected output:
+```text
+____________________________________________________________
+ ___      __   __  __   __  ___   __    _  _______ 
+|   |    |  | |  ||  |_|  ||   | |  |  | ||       |
+|   |    |  | |  ||       ||   | |   |_| ||    ___|
+|   |    |  |_|  ||       ||   | |       ||   |___ 
+|   |___ |       ||       ||   | |  _    ||    ___|
+|       ||       || ||_|| ||   | | | |   ||   |___ 
+|_______||_______||_|   |_||___| |_|  |__||_______|
+Hello, I'm Lumine!
+What can I do for you today?
+____________________________________________________________
+____________________________________________________________
+Task not found :<.
+Please enter a valid task number.
 ____________________________________________________________
 ____________________________________________________________
 Bye. Hope to see you again soon!

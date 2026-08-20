@@ -25,7 +25,8 @@ public class TaskList {
     //throw exception if task number is out of range
     public Task markAsDone(int taskNumber) {
         if (taskNumber < 1 || taskNumber > taskCount) {
-            throw new IllegalArgumentException("Task number is out of range.");
+            throw new LumineException("Task not found :<.\n" +
+                    "Please enter a valid task number.");
         }
 
         Task task = tasks[taskNumber - 1];
@@ -35,7 +36,8 @@ public class TaskList {
 
     public Task markAsUndone(int taskNumber) {
         if (taskNumber < 1 || taskNumber > taskCount) {
-            throw new IllegalArgumentException("Task number is out of range.");
+            throw new LumineException("Task not found :<.\n" +
+                    "Please enter a valid task number.");
         }
 
         Task task = tasks[taskNumber - 1];
