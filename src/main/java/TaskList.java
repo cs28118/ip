@@ -1,11 +1,11 @@
 public class TaskList {
     private static final int MAX_TASKS = 100;
-    private final String[] tasks = new String[MAX_TASKS];
+    private final Task[] tasks = new Task[MAX_TASKS];
     private int taskCount = 0;
 
     public void addTask(String task) {
         if (taskCount < MAX_TASKS) {
-            tasks[taskCount] = task;
+            tasks[taskCount] = new Task(task);
             taskCount++;
             System.out.println(" added: " + task);
         }
