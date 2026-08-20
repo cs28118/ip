@@ -3,11 +3,13 @@ public class TaskList {
     private final Task[] tasks = new Task[MAX_TASKS];
     private int taskCount = 0;
 
-    public void addTask(String task) {
+    public void addTask(Task task) {
         if (taskCount < MAX_TASKS) {
-            tasks[taskCount] = new Task(task);
+            tasks[taskCount] = task;
             taskCount++;
-            System.out.println("added: " + task);
+            String confirm = "Got it. I've added this task:\n  "
+                    + task + "\n" + "Now, you have " + taskCount + " tasks in the list.";
+            System.out.println(confirm);
         }
     }
 

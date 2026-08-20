@@ -32,6 +32,15 @@ public class Lumine {
                 break;
             } else if (command.equals("list")) {
                 taskList.printTasks();
+            } else if (isTodoCommand(command)) {
+                Todo todo = parseTodoCommand(command);
+                taskList.addTask(todo);
+            } else if (isDeadlineCommand(command)) {
+                Deadline deadline = parseDeadlineCommand(command);
+                taskList.addTask(deadline);
+            } else if (isEventCommand(command)) {
+                Event event = parseEventCommand(command);
+                taskList.addTask(event);
             } else if (isMarkCommand(command)) {
                 String normalizedCommand = command.trim();
                 String taskNumberStr = normalizedCommand.substring("mark".length()).trim();
@@ -55,7 +64,7 @@ public class Lumine {
                     System.out.println("Please provide a valid task number.");
                 }
             } else {
-                taskList.addTask(command);
+                continue;
             }
 
             System.out.println(line);
@@ -68,5 +77,39 @@ public class Lumine {
 
     private static boolean isUnmarkCommand(String command) {
         return command.trim().matches("unmark\\s+([1-9]\\d?|100)");
+    }
+
+    private static boolean isTodoCommand(String command) {
+        return command.trim().matches("todo\\s+.+");
+    }
+
+    private static boolean isDeadlineCommand(String command) {
+        return command.trim().matches("deadline\\s+.+\\s+/by\\s+.+");
+    }
+
+    private static boolean isEventCommand(String command) {
+        return command.trim().matches("event\\s+.+\\s+/from\\s+.+\\s+/to\\s+.+");
+    }
+
+    private static Todo parseTodoCommand(String command) {
+        String description = command.trim().substring("todo".length()).trim();
+        return new Todo(description);
+    }
+
+    private static Deadline parseDeadlineCommand(String command) {
+        String details = command.trim().substring("deadline".length()).trim();
+        String[] parts = details.split("\\s+/by\\s+", 2);
+        String description = parts[0].trim();
+        String by = parts[1].trim();
+        return new Deadline(description, by);
+    }
+
+    private static Event parseEventCommand(String command) {
+        String details = command.trim().substring("event".length()).trim();
+        String[] parts = details.split("\\s+/from\\s+|\\s+/to\\s+", 3);
+        String description = parts[0].trim();
+        String from = parts[1].trim();
+        String to = parts[2].trim();
+        return new Event(description, from, to);
     }
 }
