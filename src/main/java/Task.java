@@ -25,6 +25,10 @@ public class Task {
         return isDone ? "X" : " ";
     }
 
+    public String toFileString() {
+        return taskType.getSymbol() + " | " + (isDone ? "1" : "0") + " | " + description;
+    }
+
     @Override
     public String toString() {
         return "[" + taskType.getSymbol() + "][" + this.getStatusIcon() + "] " + description;

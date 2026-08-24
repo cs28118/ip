@@ -7,7 +7,7 @@ Aim: Verify that all current Java sources compile successfully using the require
 
 Command:
 ```text
-javac -d out\production\ip src\main\java\Deadline.java src\main\java\Event.java src\main\java\Lumine.java src\main\java\LumineException.java src\main\java\Task.java src\main\java\TaskList.java src\main\java\TaskType.java src\main\java\Todo.java && echo BUILD_OK
+javac -d out\production\ip src\main\java\Deadline.java src\main\java\Event.java src\main\java\Lumine.java src\main\java\LumineException.java src\main\java\Storage.java src\main\java\Task.java src\main\java\TaskList.java src\main\java\TaskType.java src\main\java\Todo.java && echo BUILD_OK
 ```
 
 Input:
@@ -465,4 +465,29 @@ ____________________________________________________________
 ____________________________________________________________
 Bye. Hope to see you again soon!
 ____________________________________________________________
+```
+
+### Test Case: Save task changes to disk
+Aim: Verify that adding, marking, unmarking, and deleting tasks updates `data\\lumine.txt` with the current task list.
+
+Command:
+```text
+if exist data\lumine.txt del /q data\lumine.txt && java -cp out\production\ip Lumine > NUL && type data\lumine.txt && del /q data\lumine.txt
+```
+
+Input:
+```text
+todo write report
+deadline submit report /by Friday
+event team meeting /from 2pm /to 3pm
+mark 2
+unmark 2
+delete 1
+bye
+```
+
+Expected output:
+```text
+D | 0 | submit report | Friday
+E | 0 | team meeting | 2pm | 3pm
 ```

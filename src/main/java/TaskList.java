@@ -3,9 +3,11 @@ import java.util.List;
 
 public class TaskList {
     private final List<Task> tasks = new ArrayList<>();
+    private final Storage storage = new Storage();
 
     public void addTask(Task task) {
         tasks.add(task);
+        saveTasks();
         String confirm = "Got it. I've added this task:\n  "
                 + task + "\n" + "Now, you have " + tasks.size() + " tasks in the list.";
         System.out.println(confirm);
@@ -29,6 +31,7 @@ public class TaskList {
 
         Task task = tasks.get(taskNumber - 1);
         task.markDone();
+        saveTasks();
         return task;
     }
 
@@ -40,6 +43,7 @@ public class TaskList {
 
         Task task = tasks.get(taskNumber - 1);
         task.markUndone();
+        saveTasks();
         return task;
     }
 
@@ -49,10 +53,16 @@ public class TaskList {
                     "Please enter a valid task number.");
         }
 
-        return tasks.remove(taskNumber - 1);
+        Task removedTask = tasks.remove(taskNumber - 1);
+        saveTasks();
+        return removedTask;
     }
 
     public int size() {
         return tasks.size();
+    }
+
+    private void saveTasks() {
+        storage.save(tasks);
     }
 }
