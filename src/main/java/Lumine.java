@@ -2,51 +2,36 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
-import java.util.Scanner;
 
 public class Lumine {
     // main method
     public static void main(String[] args) {
-        String banner =
-                " ___      __   __  __   __  ___   __    _  _______ \n"
-                + "|   |    |  | |  ||  |_|  ||   | |  |  | ||       |\n"
-                + "|   |    |  | |  ||       ||   | |   |_| ||    ___|\n"
-                + "|   |    |  |_|  ||       ||   | |       ||   |___ \n"
-                + "|   |___ |       ||       ||   | |  _    ||    ___|\n"
-                + "|       ||       || ||_|| ||   | | | |   ||   |___ \n"
-                + "|_______||_______||_|   |_||___| |_|  |__||_______|\n";
-        String line = "____________________________________________________________";
-        String greeting = line + "\n" + banner
-                + "Hello, I'm Lumine!\n"
-                + "What can I do for you today?\n"
-                + line;
+        Ui ui = new Ui();
 
         //greeting
-        System.out.println(greeting);
+        ui.showGreetings();
 
         //get inputs
-        Scanner scanner = new Scanner(System.in);
         TaskList taskList;
         try {
             taskList = new TaskList();
         } catch (LumineException e) {
-            System.out.println(line);
-            System.out.println(e.getMessage());
-            System.out.println(line);
+            ui.showSeparator();
+            ui.showMessage(e.getMessage());
+            ui.showSeparator();
             taskList = new TaskList(false);
         }
-        while (scanner.hasNextLine()) {
-            String command = scanner.nextLine();
-            System.out.println(line);
-
+        while (ui.hasNextCommand()) {
+            String command = ui.readCommand();
+            ui.showSeparator();
             boolean shouldExit = false;
             try {
-                shouldExit = handleCommand(command, taskList);
+                shouldExit = handleCommand(command, taskList, ui);
             } catch (LumineException e) {
-                System.out.println(e.getMessage());
+                ui.showMessage(e.getMessage());
             }
-
-            System.out.println(line);
+            
+            ui.showSeparator();
 
             if (shouldExit) {
                 break;
@@ -56,12 +41,11 @@ public class Lumine {
 
 
     /** helper methods */
-
     // command handle helper method
-    private static boolean handleCommand(String command, TaskList taskList) {
+    private static boolean handleCommand(String command, TaskList taskList, Ui ui) {
         String normalizedCommand = command.trim();
         if (normalizedCommand.equals("bye")) {
-            System.out.println("Bye. Hope to see you again soon!");
+            ui.showExit();
             return true;
         } else if (normalizedCommand.equals("list")) {
             taskList.printTasks();
