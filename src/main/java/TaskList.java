@@ -2,8 +2,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TaskList {
-    private final List<Task> tasks = new ArrayList<>();
     private final Storage storage = new Storage();
+    private final List<Task> tasks = new ArrayList<>();
+
+    public TaskList() {
+        tasks.addAll(storage.load());
+    }
 
     public void addTask(Task task) {
         tasks.add(task);

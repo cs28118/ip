@@ -25,7 +25,7 @@ Aim: Verify that the application prints its greeting and exits with the expected
 
 Command:
 ```text
-java -cp out\production\ip Lumine
+del /q data\lumine.txt 2>NUL & java -cp out\production\ip Lumine
 ```
 
 Input:
@@ -56,7 +56,7 @@ Aim: Verify that `delete <number>` removes the selected task, reports the remove
 
 Command:
 ```text
-java -cp out\production\ip Lumine
+del /q data\lumine.txt 2>NUL & java -cp out\production\ip Lumine
 ```
 
 Input:
@@ -124,7 +124,7 @@ Aim: Verify that an empty todo and an unrecognised command produce the required 
 
 Command:
 ```text
-java -cp out\production\ip Lumine
+del /q data\lumine.txt 2>NUL & java -cp out\production\ip Lumine
 ```
 
 Input:
@@ -164,7 +164,7 @@ Aim: Verify that deadline and event commands without the required details produc
 
 Command:
 ```text
-java -cp out\production\ip Lumine
+del /q data\lumine.txt 2>NUL & java -cp out\production\ip Lumine
 ```
 
 Input:
@@ -207,7 +207,7 @@ Aim: Verify that marking a task outside the current list shows a helpful message
 
 Command:
 ```text
-java -cp out\production\ip Lumine
+del /q data\lumine.txt 2>NUL & java -cp out\production\ip Lumine
 ```
 
 Input:
@@ -243,7 +243,7 @@ Aim: Verify that an empty list can be displayed, a blank command is rejected, an
 
 Command:
 ```text
-java -cp out\production\ip Lumine
+del /q data\lumine.txt 2>NUL & java -cp out\production\ip Lumine
 ```
 
 Input:
@@ -314,7 +314,7 @@ Aim: Verify that deadline and event commands with missing descriptions, dates, o
 
 Command:
 ```text
-java -cp out\production\ip Lumine
+del /q data\lumine.txt 2>NUL & java -cp out\production\ip Lumine
 ```
 
 Input:
@@ -392,7 +392,7 @@ Aim: Verify that todo, deadline, and event commands create the correct task subt
 
 Command:
 ```text
-java -cp out\production\ip Lumine
+del /q data\lumine.txt 2>NUL & java -cp out\production\ip Lumine
 ```
 
 Input:
@@ -472,7 +472,7 @@ Aim: Verify that adding, marking, unmarking, and deleting tasks updates `data\\l
 
 Command:
 ```text
-if exist data\lumine.txt del /q data\lumine.txt && java -cp out\production\ip Lumine > NUL && type data\lumine.txt && del /q data\lumine.txt
+del /q data\lumine.txt 2>NUL & java -cp out\production\ip Lumine > NUL & type data\lumine.txt & del /q data\lumine.txt
 ```
 
 Input:
@@ -490,4 +490,42 @@ Expected output:
 ```text
 D | 0 | submit report | Friday
 E | 0 | team meeting | 2pm | 3pm
+```
+
+### Test Case: Load saved tasks on startup
+Aim: Verify that saved todo, deadline, and event tasks are loaded when the application starts, including their completion state.
+
+Command:
+```text
+powershell -NoProfile -Command "[System.IO.Directory]::CreateDirectory('data') | Out-Null; [System.IO.File]::WriteAllLines('data\lumine.txt', @('T | 1 | recovered todo','D | 0 | recovered deadline | Friday','E | 1 | recovered event | 2pm | 3pm'))" & java -cp out\production\ip Lumine & del /q data\lumine.txt
+```
+
+Input:
+```text
+list
+bye
+```
+
+Expected output:
+```text
+____________________________________________________________
+ ___      __   __  __   __  ___   __    _  _______ 
+|   |    |  | |  ||  |_|  ||   | |  |  | ||       |
+|   |    |  | |  ||       ||   | |   |_| ||    ___|
+|   |    |  |_|  ||       ||   | |       ||   |___ 
+|   |___ |       ||       ||   | |  _    ||    ___|
+|       ||       || ||_|| ||   | | | |   ||   |___ 
+|_______||_______||_|   |_||___| |_|  |__||_______|
+Hello, I'm Lumine!
+What can I do for you today?
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] recovered todo
+2.[D][ ] recovered deadline (by: Friday)
+3.[E][X] recovered event (from: 2pm to: 3pm)
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
 ```
