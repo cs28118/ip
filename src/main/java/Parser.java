@@ -1,0 +1,84 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
+
+/**
+ * Converts raw user commands into validated values and task objects.
+ */
+public class Parser {
+    /** Normalizes a command before it is checked or interpreted. */
+    public String normalize(String command) {
+        return command.trim();
+    }
+
+    /** Checks whether a command is either an exact command or starts with its name. */
+    public boolean isCommand(String command, String commandName) {
+        return command.equals(commandName) || command.matches(commandName + "\\s+.*");
+    }
+
+    /** Parses a date filter command without accepting invalid calendar dates. */
+    public LocalDate parseDateCommand(String command) {
+        String dateText = command.substring("date".length()).trim().replaceAll("\\s+", " ");
+        if (!dateText.matches("\\d{4} \\d{2} \\d{2}")) {
+            throw invalidDateCommand();
+        }
+        try {
+            return LocalDate.parse(dateText, DateTimeFormatter.ofPattern("uuuu MM dd")
+                    .withResolverStyle(ResolverStyle.STRICT));
+        } catch (DateTimeParseException e) {
+            throw invalidDateCommand();
+        }
+    }
+
+    /** Parses a task number used by mark, unmark, and delete commands. */
+    public int parseTaskNumber(String command, String commandName) {
+        String taskNumber = command.substring(commandName.length()).trim();
+        try {
+            return Integer.parseInt(taskNumber);
+        } catch (NumberFormatException e) {
+            throw new LumineException("Task not found :<.\nPlease enter a valid task number.");
+        }
+    }
+
+    /** Creates a todo task, rejecting an empty description. */
+    public Todo parseTodoCommand(String command) {
+        String description = command.substring("todo".length()).trim();
+        if (description.isEmpty()) {
+            throw new LumineException("Sorry, todo task cannot be empty. :C");
+        }
+        return new Todo(description);
+    }
+
+    /** Creates a deadline task after validating its description and /by field. */
+    public Deadline parseDeadlineCommand(String command) {
+        String details = command.substring("deadline".length()).trim();
+        String[] parts = details.split("\\s+/by\\s+", 2);
+        if (parts.length != 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
+            throw new LumineException(
+                    "Sorry, I can't read your deadline task. :C\n"
+                            + "It needs a description and a /by time.\n"
+                            + "e.g. deadline test /by Mon 2pm");
+        }
+        return new Deadline(parts[0].trim(), parts[1].trim());
+    }
+
+    /** Creates an event task after validating its description, /from, and /to fields. */
+    public Event parseEventCommand(String command) {
+        String details = command.substring("event".length()).trim();
+        String[] parts = details.split("\\s+/from\\s+|\\s+/to\\s+", 3);
+        if (parts.length != 3 || parts[0].trim().isEmpty()
+                || parts[1].trim().isEmpty() || parts[2].trim().isEmpty()) {
+            throw new LumineException(
+                    "Sorry, I can't read your event task. :C\n"
+                            + "It needs a description, /from time, and /to time.\n"
+                            + "e.g. event test /from Mon 2pm /to 4pm");
+        }
+        return new Event(parts[0].trim(), parts[1].trim(), parts[2].trim());
+    }
+
+    private LumineException invalidDateCommand() {
+        return new LumineException("Sorry, I can't understand what date is it. :C\n"
+                + "It needs a valid date as the format yyyy mm dd");
+    }
+}
