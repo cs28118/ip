@@ -1,7 +1,11 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class TaskList {
+    private static final DateTimeFormatter DATE_COMMAND_FORMAT =
+            DateTimeFormatter.ofPattern("uuuu MM dd");
     private final Storage storage = new Storage();
     private final List<Task> tasks = new ArrayList<>();
 
@@ -39,6 +43,30 @@ public class TaskList {
             result.append("\n").append(i + 1).append(".").append(tasks.get(i));
         }
         System.out.println(result);
+    }
+
+    /** Prints pending deadlines and events whose relevant date matches the requested date. */
+    public void printTasksDueOn(LocalDate date) {
+        String formattedDate = date.format(DATE_COMMAND_FORMAT);
+        StringBuilder result = new StringBuilder("Here is your list of pending task due on ")
+                .append(formattedDate).append(":");
+        int matchCount = 0;
+        for (Task task : tasks) {
+            boolean matches = false;
+            if (!task.isDone && task instanceof Deadline deadline) {
+                matches = date.equals(deadline.getDueDate());
+            } else if (!task.isDone && task instanceof Event event) {
+                matches = date.equals(event.getToDate());
+            }
+            if (matches) {
+                result.append("\n").append(++matchCount).append(".").append(task);
+            }
+        }
+        if (matchCount == 0) {
+            System.out.println("You have no task due on " + formattedDate + ".");
+        } else {
+            System.out.println(result);
+        }
     }
 
     //throw exception if task number is out of range
