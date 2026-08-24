@@ -388,7 +388,7 @@ ____________________________________________________________
 ```
 
 ### Test Case: Create, list, mark, and unmark task types
-Aim: Verify that todo, deadline, and event commands create the correct task subtypes, that listing preserves their order, and that marking and unmarking preserve each task's subtype information.
+Aim: Verify that todo, deadline, and event commands create the correct task subtypes, that date filtering shows pending deadlines and events on the requested date, and that marking and unmarking preserve each task's subtype information.
 
 Command:
 ```text
@@ -399,8 +399,9 @@ Input:
 ```text
 todo borrow book
 deadline return book /by 2019 10 15
-event project meeting /from Mon 2pm /to 4pm
+event project meeting /from 2019 10 14 /to 2019 10 15
 list
+date 2019 10 15
 mark 2
 list
 unmark 2
@@ -433,14 +434,19 @@ Now, you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
-  [E][ ] project meeting (from: Mon 2pm to: 4pm)
+  [E][ ] project meeting (from: Oct 14 2019 to: Oct 15 2019)
 Now, you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][ ] borrow book
 2.[D][ ] return book (by: Oct 15 2019)
-3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
+3.[E][ ] project meeting (from: Oct 14 2019 to: Oct 15 2019)
+____________________________________________________________
+____________________________________________________________
+Here is your list of pending task due on 2019 10 15:
+1.[D][ ] return book (by: Oct 15 2019)
+2.[E][ ] project meeting (from: Oct 14 2019 to: Oct 15 2019)
 ____________________________________________________________
 ____________________________________________________________
 Nice! I've marked this task as done:
@@ -450,7 +456,7 @@ ____________________________________________________________
 Here are the tasks in your list:
 1.[T][ ] borrow book
 2.[D][X] return book (by: Oct 15 2019)
-3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
+3.[E][ ] project meeting (from: Oct 14 2019 to: Oct 15 2019)
 ____________________________________________________________
 ____________________________________________________________
 OK, I've marked this task as not done yet:
@@ -460,7 +466,7 @@ ____________________________________________________________
 Here are the tasks in your list:
 1.[T][ ] borrow book
 2.[D][ ] return book (by: Oct 15 2019)
-3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
+3.[E][ ] project meeting (from: Oct 14 2019 to: Oct 15 2019)
 ____________________________________________________________
 ____________________________________________________________
 Bye. Hope to see you again soon!

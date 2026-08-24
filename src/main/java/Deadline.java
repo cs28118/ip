@@ -70,4 +70,12 @@ public class Deadline extends Task {
         }
         return by;
     }
+
+    /** Returns the calendar date of this deadline, or null when it is plain text. */
+    public LocalDate getDueDate() {
+        if (dueDateTime != null) {
+            return dueDateTime.toLocalDate();
+        }
+        return dueDate;
+    }
 }

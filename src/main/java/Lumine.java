@@ -1,3 +1,7 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.Scanner;
 
 public class Lumine {
@@ -61,6 +65,8 @@ public class Lumine {
             return true;
         } else if (normalizedCommand.equals("list")) {
             taskList.printTasks();
+        } else if (isCommand(normalizedCommand, "date")) {
+            taskList.printTasksDueOn(parseDateCommand(normalizedCommand));
         } else if (isCommand(normalizedCommand, "todo")) {
             taskList.addTask(parseTodoCommand(normalizedCommand));
         } else if (isCommand(normalizedCommand, "deadline")) {
@@ -83,6 +89,25 @@ public class Lumine {
     //check if the command is known
     private static boolean isCommand(String command, String commandName) {
         return command.equals(commandName) || command.matches(commandName + "\\s+.*");
+    }
+
+    // Parse the date filter command without accepting invalid calendar dates.
+    private static LocalDate parseDateCommand(String command) {
+        String dateText = command.substring("date".length()).trim().replaceAll("\\s+", " ");
+        if (!dateText.matches("\\d{4} \\d{2} \\d{2}")) {
+            throw invalidDateCommand();
+        }
+        try {
+            return LocalDate.parse(dateText, DateTimeFormatter.ofPattern("uuuu MM dd")
+                    .withResolverStyle(ResolverStyle.STRICT));
+        } catch (DateTimeParseException e) {
+            throw invalidDateCommand();
+        }
+    }
+
+    private static LumineException invalidDateCommand() {
+        return new LumineException("Sorry, I can't understand what date is it. :C\n"
+                + "It needs a valid date as the format yyyy mm dd");
     }
 
     //mark a task and output
