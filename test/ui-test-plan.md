@@ -398,7 +398,7 @@ del /q data\lumine.txt 2>NUL & java -cp out\production\ip Lumine
 Input:
 ```text
 todo borrow book
-deadline return book /by Sunday
+deadline return book /by 2019 10 15
 event project meeting /from Mon 2pm /to 4pm
 list
 mark 2
@@ -428,7 +428,7 @@ Now, you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
-  [D][ ] return book (by: Sunday)
+  [D][ ] return book (by: Oct 15 2019)
 Now, you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -439,27 +439,27 @@ ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][ ] borrow book
-2.[D][ ] return book (by: Sunday)
+2.[D][ ] return book (by: Oct 15 2019)
 3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
 ____________________________________________________________
 ____________________________________________________________
 Nice! I've marked this task as done:
-[D][X] return book (by: Sunday)
+[D][X] return book (by: Oct 15 2019)
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][ ] borrow book
-2.[D][X] return book (by: Sunday)
+2.[D][X] return book (by: Oct 15 2019)
 3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
 ____________________________________________________________
 ____________________________________________________________
 OK, I've marked this task as not done yet:
-[D][ ] return book (by: Sunday)
+[D][ ] return book (by: Oct 15 2019)
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][ ] borrow book
-2.[D][ ] return book (by: Sunday)
+2.[D][ ] return book (by: Oct 15 2019)
 3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
 ____________________________________________________________
 ____________________________________________________________
@@ -478,7 +478,7 @@ del /q data\lumine.txt 2>NUL & java -cp out\production\ip Lumine > NUL & type da
 Input:
 ```text
 todo write report
-deadline submit report /by Friday
+deadline submit report /by 2019 10 15 2359
 event team meeting /from 2pm /to 3pm
 mark 2
 unmark 2
@@ -488,7 +488,7 @@ bye
 
 Expected output:
 ```text
-D | 0 | submit report | Friday
+D | 0 | submit report | 2019 10 15 2359
 E | 0 | team meeting | 2pm | 3pm
 ```
 
