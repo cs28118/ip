@@ -4,13 +4,14 @@ public class Event extends Task {
 
     public Event(String description, String from, String to) {
         super(description, TaskType.EVENT);
-        this.from = from;
-        this.to = to;
+        this.from = requireText(from, "event start time");
+        this.to = requireText(to, "event end time");
     }
 
     @Override
     public String toFileString() {
-        return super.toFileString() + " | " + from + " | " + to;
+        return super.toFileString() + " | " + escapeStorageField(from)
+                + " | " + escapeStorageField(to);
     }
 
     @Override

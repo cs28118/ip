@@ -1,89 +1,145 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-/** Saves and loads the task list from its fixed on-disk data file. */
 public class Storage {
-    /** Location of the save file relative to the project root. */
+    //Error: not loaded
+    private static final String LOAD_ERROR = "Sorry, I couldn't load your tasks. :C";
+    //Error: not saved
+    private static final String SAVE_ERROR = "Sorry, I couldn't save your tasks. :C";
+
     private static final Path SAVE_FILE = Path.of("data", "lumine.txt");
 
-    /**
-     * Replaces the save file with the supplied current task list.
-     *
-     * @param tasks tasks to write to disk
-     */
     public void save(List<Task> tasks) {
+        if (tasks == null || tasks.stream().anyMatch(task -> task == null)) {
+            throw new LumineException(SAVE_ERROR);
+        }
+
+        Path temporaryFile = null;
         try {
-            Files.createDirectories(SAVE_FILE.getParent());
+            Path parent = SAVE_FILE.getParent();
+            Files.createDirectories(parent);
+            if (Files.exists(SAVE_FILE) && !Files.isRegularFile(SAVE_FILE)) {
+                throw new IOException("Save path is not a regular file");
+            }
             String savedTasks = tasks.stream()
                     .map(Task::toFileString)
-                    .reduce((first, second) -> first + System.lineSeparator() + second)
-                    .orElse("");
-            Files.writeString(SAVE_FILE, savedTasks);
-        } catch (IOException e) {
-            throw new LumineException("Sorry, I couldn't save your tasks. :C");
+                    .collect(Collectors.joining(System.lineSeparator()));
+            temporaryFile = Files.createTempFile(parent, "lumine-", ".tmp");
+            Files.writeString(temporaryFile, savedTasks);
+            Files.move(temporaryFile, SAVE_FILE, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException | SecurityException e) {
+            throw new LumineException(SAVE_ERROR);
+        } finally {
+            if (temporaryFile != null) {
+                try {
+                    Files.deleteIfExists(temporaryFile);
+                } catch (IOException | SecurityException ignored) {
+                }
+            }
         }
     }
 
-    /**
-     * Loads all saved tasks, returning an empty list when no save file exists.
-     *
-     * @return tasks reconstructed from the save file
-     */
     public List<Task> load() {
-        if (!Files.exists(SAVE_FILE)) {
-            return new ArrayList<>();
-        }
-
         try {
+            if (!Files.exists(SAVE_FILE)) {
+                return new ArrayList<>();
+            }
+            if (!Files.isRegularFile(SAVE_FILE)) {
+                throw new LumineException(LOAD_ERROR);
+            }
+
             List<Task> tasks = new ArrayList<>();
-            for (String line : Files.readAllLines(SAVE_FILE)) {
+            List<String> lines = Files.readAllLines(SAVE_FILE);
+            for (int i = 0; i < lines.size(); i++) {
+                String line = lines.get(i);
                 if (!line.isBlank()) {
-                    tasks.add(parseTask(line));
+                    tasks.add(parseTask(line, i + 1));
                 }
             }
             return tasks;
-        } catch (IOException e) {
-            throw new LumineException("Sorry, I couldn't load your tasks. :C");
+        } catch (IOException | SecurityException e) {
+            throw new LumineException(LOAD_ERROR);
         }
     }
 
-    /** Reconstructs one task from a line of the save format. */
-    private Task parseTask(String line) {
-        String[] parts = line.split("\\s*\\|\\s*", -1);
-        if (parts.length < 3 || (!parts[1].equals("0") && !parts[1].equals("1"))) {
-            throw new LumineException("Sorry, I couldn't load your tasks. :C");
+    /** Helper functions */
+
+    private Task parseTask(String line, int lineNumber) {
+        List<String> parts = splitFields(line, lineNumber);
+        if (parts.size() < 3 || (!parts.get(1).equals("0") && !parts.get(1).equals("1"))) {
+            throw invalidLine(lineNumber);
         }
 
-        Task task;
-        switch (parts[0]) {
-        case "T":
-            if (parts.length != 3) {
-                throw new LumineException("Sorry, I couldn't load your tasks. :C");
+        Task task = switch (parts.get(0)) {
+            case "T" -> {
+                if (parts.size() != 3 || parts.get(2).isBlank()) {
+                    throw invalidLine(lineNumber);
+                }
+                yield new Todo(parts.get(2));
             }
-            task = new Todo(parts[2]);
-            break;
-        case "D":
-            if (parts.length != 4) {
-                throw new LumineException("Sorry, I couldn't load your tasks. :C");
+            case "D" -> {
+                if (parts.size() != 4 || parts.get(2).isBlank() || parts.get(3).isBlank()) {
+                    throw invalidLine(lineNumber);
+                }
+                yield new Deadline(parts.get(2), parts.get(3));
             }
-            task = new Deadline(parts[2], parts[3]);
-            break;
-        case "E":
-            if (parts.length != 5) {
-                throw new LumineException("Sorry, I couldn't load your tasks. :C");
+            case "E" -> {
+                if (parts.size() != 5 || parts.get(2).isBlank()
+                        || parts.get(3).isBlank() || parts.get(4).isBlank()) {
+                    throw invalidLine(lineNumber);
+                }
+                yield new Event(parts.get(2), parts.get(3), parts.get(4));
             }
-            task = new Event(parts[2], parts[3], parts[4]);
-            break;
-        default:
-            throw new LumineException("Sorry, I couldn't load your tasks. :C");
-        }
+            default -> throw invalidLine(lineNumber);
+        };
 
-        if (parts[1].equals("1")) {
+        if (parts.get(1).equals("1")) {
             task.markDone();
         }
         return task;
+    }
+
+    private List<String> splitFields(String line, int lineNumber) {
+        List<String> fields = new ArrayList<>();
+        StringBuilder field = new StringBuilder();
+        boolean escaped = false;
+        for (int i = 0; i < line.length(); i++) {
+            char character = line.charAt(i);
+            if (escaped) {
+                switch (character) {
+                case 'n':
+                    field.append('\n');
+                    break;
+                case 'r':
+                    field.append('\r');
+                    break;
+                default:
+                    field.append(character);
+                    break;
+                }
+                escaped = false;
+            } else if (character == '\\') {
+                escaped = true;
+            } else if (character == '|') {
+                fields.add(field.toString().trim());
+                field.setLength(0);
+            } else {
+                field.append(character);
+            }
+        }
+        if (escaped) {
+            throw invalidLine(lineNumber);
+        }
+        fields.add(field.toString().trim());
+        return fields;
+    }
+
+    private LumineException invalidLine(int lineNumber) {
+        return new LumineException(LOAD_ERROR + "\nInvalid saved task on line " + lineNumber + ".");
     }
 }

@@ -529,3 +529,103 @@ ____________________________________________________________
 Bye. Hope to see you again soon!
 ____________________________________________________________
 ```
+
+### Test Case: Recover from a malformed save file
+Aim: Verify that an invalid saved record reports its line number, starts with an empty list, and keeps the chatbot running.
+
+Command:
+```text
+powershell -NoProfile -Command "[System.IO.Directory]::CreateDirectory('data') | Out-Null; [System.IO.File]::WriteAllText('data\lumine.txt', 'X | 0 | invalid task')" & java -cp out\production\ip Lumine & del /q data\lumine.txt
+```
+
+Input:
+```text
+list
+bye
+```
+
+Expected output:
+```text
+____________________________________________________________
+ ___      __   __  __   __  ___   __    _  _______ 
+|   |    |  | |  ||  |_|  ||   | |  |  | ||       |
+|   |    |  | |  ||       ||   | |   |_| ||    ___|
+|   |    |  |_|  ||       ||   | |       ||   |___ 
+|   |___ |       ||       ||   | |  _    ||    ___|
+|       ||       || ||_|| ||   | | | |   ||   |___ 
+|_______||_______||_|   |_||___| |_|  |__||_______|
+Hello, I'm Lumine!
+What can I do for you today?
+____________________________________________________________
+____________________________________________________________
+Sorry, I couldn't load your tasks. :C
+Invalid saved task on line 1.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+### Test Case: Preserve special characters in saved tasks
+Aim: Verify that pipes and backslashes in task descriptions are escaped when saved instead of corrupting the task format.
+
+Command:
+```text
+del /q data\lumine.txt 2>NUL & java -cp out\production\ip Lumine > NUL & type data\lumine.txt & del /q data\lumine.txt
+```
+
+Input:
+```text
+todo pipe | slash \
+bye
+```
+
+Expected output:
+```text
+T | 0 | pipe \| slash \\
+```
+
+### Test Case: Handle save destination errors
+Aim: Verify that an unwritable save destination reports an error, rolls back the attempted addition, and keeps the chatbot running.
+
+Command:
+```text
+powershell -NoProfile -Command "[System.IO.Directory]::CreateDirectory('data\\lumine.txt') | Out-Null" & java -cp out\production\ip Lumine & powershell -NoProfile -Command "[System.IO.Directory]::Delete('data\\lumine.txt')"
+```
+
+Input:
+```text
+todo cannot save
+list
+bye
+```
+
+Expected output:
+```text
+____________________________________________________________
+ ___      __   __  __   __  ___   __    _  _______ 
+|   |    |  | |  ||  |_|  ||   | |  |  | ||       |
+|   |    |  | |  ||       ||   | |   |_| ||    ___|
+|   |    |  |_|  ||       ||   | |       ||   |___ 
+|   |___ |       ||       ||   | |  _    ||    ___|
+|       ||       || ||_|| ||   | | | |   ||   |___ 
+|_______||_______||_|   |_||___| |_|  |__||_______|
+Hello, I'm Lumine!
+What can I do for you today?
+____________________________________________________________
+____________________________________________________________
+Sorry, I couldn't load your tasks. :C
+____________________________________________________________
+____________________________________________________________
+Sorry, I couldn't save your tasks. :C
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```

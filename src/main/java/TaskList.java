@@ -6,12 +6,27 @@ public class TaskList {
     private final List<Task> tasks = new ArrayList<>();
 
     public TaskList() {
-        tasks.addAll(storage.load());
+        this(true);
+    }
+
+
+    TaskList(boolean loadSavedTasks) {
+        if (loadSavedTasks) {
+            tasks.addAll(storage.load());
+        }
     }
 
     public void addTask(Task task) {
+        if (task == null) {
+            throw new LumineException("Sorry, task cannot be empty. :C");
+        }
         tasks.add(task);
-        saveTasks();
+        try {
+            saveTasks();
+        } catch (LumineException e) {
+            tasks.removeLast();
+            throw e;
+        }
         String confirm = "Got it. I've added this task:\n  "
                 + task + "\n" + "Now, you have " + tasks.size() + " tasks in the list.";
         System.out.println(confirm);
@@ -34,8 +49,14 @@ public class TaskList {
         }
 
         Task task = tasks.get(taskNumber - 1);
+        boolean wasDone = task.isDone;
         task.markDone();
-        saveTasks();
+        try {
+            saveTasks();
+        } catch (LumineException e) {
+            task.isDone = wasDone;
+            throw e;
+        }
         return task;
     }
 
@@ -46,8 +67,14 @@ public class TaskList {
         }
 
         Task task = tasks.get(taskNumber - 1);
+        boolean wasDone = task.isDone;
         task.markUndone();
-        saveTasks();
+        try {
+            saveTasks();
+        } catch (LumineException e) {
+            task.isDone = wasDone;
+            throw e;
+        }
         return task;
     }
 
@@ -57,8 +84,14 @@ public class TaskList {
                     "Please enter a valid task number.");
         }
 
-        Task removedTask = tasks.remove(taskNumber - 1);
-        saveTasks();
+        int taskIndex = taskNumber - 1;
+        Task removedTask = tasks.remove(taskIndex);
+        try {
+            saveTasks();
+        } catch (LumineException e) {
+            tasks.add(taskIndex, removedTask);
+            throw e;
+        }
         return removedTask;
     }
 
