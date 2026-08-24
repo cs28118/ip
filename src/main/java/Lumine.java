@@ -22,7 +22,15 @@ public class Lumine {
 
         //get inputs
         Scanner scanner = new Scanner(System.in);
-        TaskList taskList = new TaskList();
+        TaskList taskList;
+        try {
+            taskList = new TaskList();
+        } catch (LumineException e) {
+            System.out.println(line);
+            System.out.println(e.getMessage());
+            System.out.println(line);
+            taskList = new TaskList(false);
+        }
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine();
             System.out.println(line);
@@ -43,7 +51,7 @@ public class Lumine {
     }
 
 
-    /** helper methods **/
+    /** helper methods */
 
     // command handle helper method
     private static boolean handleCommand(String command, TaskList taskList) {

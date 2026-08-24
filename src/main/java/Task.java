@@ -8,8 +8,11 @@ public class Task {
     }
 
     public Task(String description, TaskType taskType) {
-        this.description = description;
+        this.description = requireText(description, "description");
         this.isDone = false;
+        if (taskType == null) {
+            throw new LumineException("Sorry, task type cannot be empty. :C");
+        }
         this.taskType = taskType;
     }
 
@@ -23,6 +26,27 @@ public class Task {
 
     public String getStatusIcon() {
         return isDone ? "X" : " ";
+    }
+
+    public String toFileString() {
+        return taskType.getSymbol() + " | " + (isDone ? "1" : "0") + " | "
+                + escapeStorageField(description);
+    }
+
+    //error handling: special symbol
+    protected static String escapeStorageField(String value) {
+        return value.replace("\\", "\\\\")
+                .replace("|", "\\|")
+                .replace("\r", "\\r")
+                .replace("\n", "\\n");
+    }
+
+    //error handling: validate empty input
+    protected static String requireText(String value, String fieldName) {
+        if (value == null || value.isBlank()) {
+            throw new LumineException("Sorry, task " + fieldName + " cannot be empty. :C");
+        }
+        return value;
     }
 
     @Override

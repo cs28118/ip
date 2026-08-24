@@ -3,7 +3,12 @@ public class Deadline extends Task {
 
     public Deadline(String description, String by) {
         super(description, TaskType.DEADLINE);
-        this.by = by;
+        this.by = requireText(by, "deadline time");
+    }
+
+    @Override
+    public String toFileString() {
+        return super.toFileString() + " | " + escapeStorageField(by);
     }
 
     @Override

@@ -7,7 +7,7 @@ Aim: Verify that all current Java sources compile successfully using the require
 
 Command:
 ```text
-javac -d out\production\ip src\main\java\Deadline.java src\main\java\Event.java src\main\java\Lumine.java src\main\java\LumineException.java src\main\java\Task.java src\main\java\TaskList.java src\main\java\TaskType.java src\main\java\Todo.java && echo BUILD_OK
+javac -d out\production\ip src\main\java\Deadline.java src\main\java\Event.java src\main\java\Lumine.java src\main\java\LumineException.java src\main\java\Storage.java src\main\java\Task.java src\main\java\TaskList.java src\main\java\TaskType.java src\main\java\Todo.java && echo BUILD_OK
 ```
 
 Input:
@@ -25,7 +25,7 @@ Aim: Verify that the application prints its greeting and exits with the expected
 
 Command:
 ```text
-java -cp out\production\ip Lumine
+del /q data\lumine.txt 2>NUL & java -cp out\production\ip Lumine
 ```
 
 Input:
@@ -56,7 +56,7 @@ Aim: Verify that `delete <number>` removes the selected task, reports the remove
 
 Command:
 ```text
-java -cp out\production\ip Lumine
+del /q data\lumine.txt 2>NUL & java -cp out\production\ip Lumine
 ```
 
 Input:
@@ -124,7 +124,7 @@ Aim: Verify that an empty todo and an unrecognised command produce the required 
 
 Command:
 ```text
-java -cp out\production\ip Lumine
+del /q data\lumine.txt 2>NUL & java -cp out\production\ip Lumine
 ```
 
 Input:
@@ -164,7 +164,7 @@ Aim: Verify that deadline and event commands without the required details produc
 
 Command:
 ```text
-java -cp out\production\ip Lumine
+del /q data\lumine.txt 2>NUL & java -cp out\production\ip Lumine
 ```
 
 Input:
@@ -207,7 +207,7 @@ Aim: Verify that marking a task outside the current list shows a helpful message
 
 Command:
 ```text
-java -cp out\production\ip Lumine
+del /q data\lumine.txt 2>NUL & java -cp out\production\ip Lumine
 ```
 
 Input:
@@ -243,7 +243,7 @@ Aim: Verify that an empty list can be displayed, a blank command is rejected, an
 
 Command:
 ```text
-java -cp out\production\ip Lumine
+del /q data\lumine.txt 2>NUL & java -cp out\production\ip Lumine
 ```
 
 Input:
@@ -314,7 +314,7 @@ Aim: Verify that deadline and event commands with missing descriptions, dates, o
 
 Command:
 ```text
-java -cp out\production\ip Lumine
+del /q data\lumine.txt 2>NUL & java -cp out\production\ip Lumine
 ```
 
 Input:
@@ -392,7 +392,7 @@ Aim: Verify that todo, deadline, and event commands create the correct task subt
 
 Command:
 ```text
-java -cp out\production\ip Lumine
+del /q data\lumine.txt 2>NUL & java -cp out\production\ip Lumine
 ```
 
 Input:
@@ -461,6 +461,169 @@ Here are the tasks in your list:
 1.[T][ ] borrow book
 2.[D][ ] return book (by: Sunday)
 3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+### Test Case: Save task changes to disk
+Aim: Verify that adding, marking, unmarking, and deleting tasks updates `data\\lumine.txt` with the current task list.
+
+Command:
+```text
+del /q data\lumine.txt 2>NUL & java -cp out\production\ip Lumine > NUL & type data\lumine.txt & del /q data\lumine.txt
+```
+
+Input:
+```text
+todo write report
+deadline submit report /by Friday
+event team meeting /from 2pm /to 3pm
+mark 2
+unmark 2
+delete 1
+bye
+```
+
+Expected output:
+```text
+D | 0 | submit report | Friday
+E | 0 | team meeting | 2pm | 3pm
+```
+
+### Test Case: Load saved tasks on startup
+Aim: Verify that saved todo, deadline, and event tasks are loaded when the application starts, including their completion state.
+
+Command:
+```text
+powershell -NoProfile -Command "[System.IO.Directory]::CreateDirectory('data') | Out-Null; [System.IO.File]::WriteAllLines('data\lumine.txt', @('T | 1 | recovered todo','D | 0 | recovered deadline | Friday','E | 1 | recovered event | 2pm | 3pm'))" & java -cp out\production\ip Lumine & del /q data\lumine.txt
+```
+
+Input:
+```text
+list
+bye
+```
+
+Expected output:
+```text
+____________________________________________________________
+ ___      __   __  __   __  ___   __    _  _______ 
+|   |    |  | |  ||  |_|  ||   | |  |  | ||       |
+|   |    |  | |  ||       ||   | |   |_| ||    ___|
+|   |    |  |_|  ||       ||   | |       ||   |___ 
+|   |___ |       ||       ||   | |  _    ||    ___|
+|       ||       || ||_|| ||   | | | |   ||   |___ 
+|_______||_______||_|   |_||___| |_|  |__||_______|
+Hello, I'm Lumine!
+What can I do for you today?
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] recovered todo
+2.[D][ ] recovered deadline (by: Friday)
+3.[E][X] recovered event (from: 2pm to: 3pm)
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+### Test Case: Recover from a malformed save file
+Aim: Verify that an invalid saved record reports its line number, starts with an empty list, and keeps the chatbot running.
+
+Command:
+```text
+powershell -NoProfile -Command "[System.IO.Directory]::CreateDirectory('data') | Out-Null; [System.IO.File]::WriteAllText('data\lumine.txt', 'X | 0 | invalid task')" & java -cp out\production\ip Lumine & del /q data\lumine.txt
+```
+
+Input:
+```text
+list
+bye
+```
+
+Expected output:
+```text
+____________________________________________________________
+ ___      __   __  __   __  ___   __    _  _______ 
+|   |    |  | |  ||  |_|  ||   | |  |  | ||       |
+|   |    |  | |  ||       ||   | |   |_| ||    ___|
+|   |    |  |_|  ||       ||   | |       ||   |___ 
+|   |___ |       ||       ||   | |  _    ||    ___|
+|       ||       || ||_|| ||   | | | |   ||   |___ 
+|_______||_______||_|   |_||___| |_|  |__||_______|
+Hello, I'm Lumine!
+What can I do for you today?
+____________________________________________________________
+____________________________________________________________
+Sorry, I couldn't load your tasks. :C
+Invalid saved task on line 1.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+### Test Case: Preserve special characters in saved tasks
+Aim: Verify that pipes and backslashes in task descriptions are escaped when saved instead of corrupting the task format.
+
+Command:
+```text
+del /q data\lumine.txt 2>NUL & java -cp out\production\ip Lumine > NUL & type data\lumine.txt & del /q data\lumine.txt
+```
+
+Input:
+```text
+todo pipe | slash \
+bye
+```
+
+Expected output:
+```text
+T | 0 | pipe \| slash \\
+```
+
+### Test Case: Handle save destination errors
+Aim: Verify that an unwritable save destination reports an error, rolls back the attempted addition, and keeps the chatbot running.
+
+Command:
+```text
+powershell -NoProfile -Command "[System.IO.Directory]::CreateDirectory('data\\lumine.txt') | Out-Null" & java -cp out\production\ip Lumine & powershell -NoProfile -Command "[System.IO.Directory]::Delete('data\\lumine.txt')"
+```
+
+Input:
+```text
+todo cannot save
+list
+bye
+```
+
+Expected output:
+```text
+____________________________________________________________
+ ___      __   __  __   __  ___   __    _  _______ 
+|   |    |  | |  ||  |_|  ||   | |  |  | ||       |
+|   |    |  | |  ||       ||   | |   |_| ||    ___|
+|   |    |  |_|  ||       ||   | |       ||   |___ 
+|   |___ |       ||       ||   | |  _    ||    ___|
+|       ||       || ||_|| ||   | | | |   ||   |___ 
+|_______||_______||_|   |_||___| |_|  |__||_______|
+Hello, I'm Lumine!
+What can I do for you today?
+____________________________________________________________
+____________________________________________________________
+Sorry, I couldn't load your tasks. :C
+____________________________________________________________
+____________________________________________________________
+Sorry, I couldn't save your tasks. :C
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
 ____________________________________________________________
 ____________________________________________________________
 Bye. Hope to see you again soon!
