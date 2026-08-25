@@ -3,25 +3,29 @@ public class Lumine {
     private TaskList taskList;
     private Ui ui;
     private Parser parser;
+    private String loadError;
 
     public Lumine(String filePath) {
         ui = new Ui();
         parser = new Parser();
         storage = new Storage(filePath);
-        
-        ui.showGreetings();
-
         try {
             taskList = new TaskList(storage);
         } catch (LumineException e) {
-            ui.showSeparator();
-            ui.showMessage(e.getMessage());
-            ui.showSeparator();
+            loadError = e.getMessage();
             taskList = new TaskList(storage, false);
         }
     }
 
     public void run() {
+        ui.showGreetings();
+
+        if (loadError != null) {
+            ui.showSeparator();
+            ui.showMessage(loadError);
+            ui.showSeparator();
+        }
+
         while (ui.hasNextCommand()) {
             String command = ui.readCommand();
             ui.showSeparator();
@@ -53,15 +57,15 @@ public class Lumine {
             ui.showExit();
             return true;
         } else if (normalizedCommand.equals("list")) {
-            taskList.printTasks();
+            ui.showMessage(taskList.formatTasks());
         } else if (parser.isCommand(normalizedCommand, "date")) {
-            taskList.printTasksDueOn(parser.parseDateCommand(normalizedCommand));
+            ui.showMessage(taskList.formatTasksDueOn(parser.parseDateCommand(normalizedCommand)));
         } else if (parser.isCommand(normalizedCommand, "todo")) {
-            taskList.addTask(parser.parseTodoCommand(normalizedCommand));
+            addTask(parser.parseTodoCommand(normalizedCommand));
         } else if (parser.isCommand(normalizedCommand, "deadline")) {
-            taskList.addTask(parser.parseDeadlineCommand(normalizedCommand));
+            addTask(parser.parseDeadlineCommand(normalizedCommand));
         } else if (parser.isCommand(normalizedCommand, "event")) {
-            taskList.addTask(parser.parseEventCommand(normalizedCommand));
+            addTask(parser.parseEventCommand(normalizedCommand));
         } else if (parser.isCommand(normalizedCommand, "mark")) {
             markTask(normalizedCommand);
         } else if (parser.isCommand(normalizedCommand, "unmark")) {
@@ -73,6 +77,13 @@ public class Lumine {
                     + "Try entering a command instead.");
         }
         return false;
+    }
+
+    //add a task and output confirmation
+    private void addTask(Task task) {
+        taskList.addTask(task);
+        ui.showMessage("Got it. I've added this task:\n  "
+                + task + "\nNow, you have " + taskList.size() + " tasks in the list.");
     }
 
     //mark a task and output

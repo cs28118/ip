@@ -32,22 +32,20 @@ public class TaskList {
             tasks.removeLast();
             throw e;
         }
-        String confirm = "Got it. I've added this task:\n  "
-                + task + "\n" + "Now, you have " + tasks.size() + " tasks in the list.";
-        System.out.println(confirm);
     }
 
-    public void printTasks() {
+    /** Returns a formatted listing of all tasks. */
+    public String formatTasks() {
         StringBuilder result = new StringBuilder();
         result.append("Here are the tasks in your list:");
         for (int i = 0; i < tasks.size(); i++) {
             result.append("\n").append(i + 1).append(".").append(tasks.get(i));
         }
-        System.out.println(result);
+        return result.toString();
     }
 
-    /** Prints pending deadlines and events whose relevant date matches the requested date. */
-    public void printTasksDueOn(LocalDate date) {
+    /** Returns a formatted listing of pending deadlines and events due on the given date. */
+    public String formatTasksDueOn(LocalDate date) {
         String formattedDate = date.format(DATE_COMMAND_FORMAT);
         StringBuilder result = new StringBuilder("Here is your list of pending task due on ")
                 .append(formattedDate).append(":");
@@ -64,9 +62,9 @@ public class TaskList {
             }
         }
         if (matchCount == 0) {
-            System.out.println("You have no task due on " + formattedDate + ".");
+            return "You have no task due on " + formattedDate + ".";
         } else {
-            System.out.println(result);
+            return result.toString();
         }
     }
 
