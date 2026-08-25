@@ -1,30 +1,33 @@
-import java.time.LocalDate;
-
 public class Lumine {
-    // main method
-    public static void main(String[] args) {
-        Ui ui = new Ui();
-        Parser parser = new Parser();
+    private Storage storage;
+    private TaskList taskList;
+    private Ui ui;
+    private Parser parser;
 
-        //greeting
+    public Lumine(String filePath) {
+        ui = new Ui();
+        parser = new Parser();
+        storage = new Storage(filePath);
+        
         ui.showGreetings();
 
-        //get inputs
-        TaskList taskList;
         try {
-            taskList = new TaskList();
+            taskList = new TaskList(storage);
         } catch (LumineException e) {
             ui.showSeparator();
             ui.showMessage(e.getMessage());
             ui.showSeparator();
-            taskList = new TaskList(false);
+            taskList = new TaskList(storage, false);
         }
+    }
+
+    public void run() {
         while (ui.hasNextCommand()) {
             String command = ui.readCommand();
             ui.showSeparator();
             boolean shouldExit = false;
             try {
-                shouldExit = handleCommand(command, taskList, ui, parser);
+                shouldExit = handleCommand(command);
             } catch (LumineException e) {
                 ui.showMessage(e.getMessage());
             }
@@ -37,10 +40,14 @@ public class Lumine {
         }
     }
 
+    public static void main(String[] args) {
+        new Lumine("data/lumine.txt").run();
+    }
+
 
     /** helper methods */
     // command handle helper method
-    private static boolean handleCommand(String command, TaskList taskList, Ui ui, Parser parser) {
+    private boolean handleCommand(String command) {
         String normalizedCommand = parser.normalize(command);
         if (normalizedCommand.equals("bye")) {
             ui.showExit();
@@ -56,11 +63,11 @@ public class Lumine {
         } else if (parser.isCommand(normalizedCommand, "event")) {
             taskList.addTask(parser.parseEventCommand(normalizedCommand));
         } else if (parser.isCommand(normalizedCommand, "mark")) {
-            markTask(normalizedCommand, taskList, parser);
+            markTask(normalizedCommand);
         } else if (parser.isCommand(normalizedCommand, "unmark")) {
-            unmarkTask(normalizedCommand, taskList, parser);
+            unmarkTask(normalizedCommand);
         } else if (parser.isCommand(normalizedCommand, "delete")) {
-            deleteTask(normalizedCommand, taskList, parser);
+            deleteTask(normalizedCommand);
         } else {
             throw new LumineException("Hmmmm, I can't understand what that means. ;-;\n"
                     + "Try entering a command instead.");
@@ -69,28 +76,28 @@ public class Lumine {
     }
 
     //mark a task and output
-    private static void markTask(String command, TaskList taskList, Parser parser) {
+    private void markTask(String command) {
         int taskNumber = parser.parseTaskNumber(command, "mark");
         Task task = taskList.markAsDone(taskNumber);
-        System.out.println("Nice! I've marked this task as done:");
-        System.out.println(task);
+        ui.showMessage("Nice! I've marked this task as done:");
+        ui.showMessage(task.toString());
     }
 
     //unmark a task and output
-    private static void unmarkTask(String command, TaskList taskList, Parser parser) {
+    private void unmarkTask(String command) {
         int taskNumber = parser.parseTaskNumber(command, "unmark");
         Task task = taskList.markAsUndone(taskNumber);
-        System.out.println("OK, I've marked this task as not done yet:");
-        System.out.println(task);
+        ui.showMessage("OK, I've marked this task as not done yet:");
+        ui.showMessage(task.toString());
     }
 
     //delete a task and output
-    private static void deleteTask(String command, TaskList taskList, Parser parser) {
+    private void deleteTask(String command) {
         int taskNumber = parser.parseTaskNumber(command, "delete");
         Task task = taskList.deleteTask(taskNumber);
-        System.out.println("Noted. I've removed this task:");
-        System.out.println(task);
-        System.out.println("Now you have " + taskList.size() + " tasks in the list.");
+        ui.showMessage("Noted. I've removed this task:");
+        ui.showMessage(task.toString());
+        ui.showMessage("Now you have " + taskList.size() + " tasks in the list.");
     }
 
 }

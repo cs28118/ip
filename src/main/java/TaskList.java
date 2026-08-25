@@ -6,15 +6,16 @@ import java.time.format.DateTimeFormatter;
 public class TaskList {
     private static final DateTimeFormatter DATE_COMMAND_FORMAT =
             DateTimeFormatter.ofPattern("uuuu MM dd");
-    private final Storage storage = new Storage();
+    private final Storage storage;
     private final List<Task> tasks = new ArrayList<>();
 
-    public TaskList() {
-        this(true);
+    public TaskList(Storage storage) {
+        this(storage, true);
     }
 
 
-    TaskList(boolean loadSavedTasks) {
+    TaskList(Storage storage, boolean loadSavedTasks) {
+        this.storage = storage;
         if (loadSavedTasks) {
             tasks.addAll(storage.load());
         }

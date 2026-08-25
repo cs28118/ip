@@ -9,10 +9,13 @@ import java.util.stream.Collectors;
 public class Storage {
     //Error: not loaded
     private static final String LOAD_ERROR = "Sorry, I couldn't load your tasks. :C";
-    //Error: not saved
     private static final String SAVE_ERROR = "Sorry, I couldn't save your tasks. :C";
 
-    private static final Path SAVE_FILE = Path.of("data", "lumine.txt");
+    private final Path saveFile;
+
+    public Storage(String filePath) {
+        this.saveFile = Path.of(filePath);
+    }
 
     public void save(List<Task> tasks) {
         if (tasks == null || tasks.stream().anyMatch(task -> task == null)) {
@@ -21,9 +24,9 @@ public class Storage {
 
         Path temporaryFile = null;
         try {
-            Path parent = SAVE_FILE.getParent();
+            Path parent = saveFile.getParent();
             Files.createDirectories(parent);
-            if (Files.exists(SAVE_FILE) && !Files.isRegularFile(SAVE_FILE)) {
+            if (Files.exists(saveFile) && !Files.isRegularFile(saveFile)) {
                 throw new IOException("Save path is not a regular file");
             }
             String savedTasks = tasks.stream()
@@ -31,7 +34,7 @@ public class Storage {
                     .collect(Collectors.joining(System.lineSeparator()));
             temporaryFile = Files.createTempFile(parent, "lumine-", ".tmp");
             Files.writeString(temporaryFile, savedTasks);
-            Files.move(temporaryFile, SAVE_FILE, StandardCopyOption.REPLACE_EXISTING);
+            Files.move(temporaryFile, saveFile, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException | SecurityException e) {
             throw new LumineException(SAVE_ERROR);
         } finally {
@@ -46,15 +49,15 @@ public class Storage {
 
     public List<Task> load() {
         try {
-            if (!Files.exists(SAVE_FILE)) {
+            if (!Files.exists(saveFile)) {
                 return new ArrayList<>();
             }
-            if (!Files.isRegularFile(SAVE_FILE)) {
+            if (!Files.isRegularFile(saveFile)) {
                 throw new LumineException(LOAD_ERROR);
             }
 
             List<Task> tasks = new ArrayList<>();
-            List<String> lines = Files.readAllLines(SAVE_FILE);
+            List<String> lines = Files.readAllLines(saveFile);
             for (int i = 0; i < lines.size(); i++) {
                 String line = lines.get(i);
                 if (!line.isBlank()) {
