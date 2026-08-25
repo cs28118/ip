@@ -1,3 +1,9 @@
+package lumine.command;
+
+import lumine.storage.Storage;
+import lumine.task.TaskList;
+import lumine.ui.Ui;
+
 /**
  * Represents a user command that can be executed against the application's
  * task list, UI, and storage components.

@@ -1,3 +1,11 @@
+package lumine;
+
+import lumine.command.Command;
+import lumine.parser.Parser;
+import lumine.storage.Storage;
+import lumine.task.TaskList;
+import lumine.ui.Ui;
+
 public class Lumine {
     private Storage storage;
     private TaskList taskList;

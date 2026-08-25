@@ -1,3 +1,5 @@
+package lumine.ui;
+
 import java.util.Scanner;
 
 /**

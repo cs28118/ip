@@ -1,3 +1,10 @@
+package lumine.command;
+
+import lumine.storage.Storage;
+import lumine.task.Task;
+import lumine.task.TaskList;
+import lumine.ui.Ui;
+
 /** Command that deletes a task by its displayed number. */
 public class DeleteCommand extends Command {
     private final int taskNumber;

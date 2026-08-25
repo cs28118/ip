@@ -1,3 +1,5 @@
+package lumine.storage;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -5,6 +7,12 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import lumine.LumineException;
+import lumine.task.Deadline;
+import lumine.task.Event;
+import lumine.task.Task;
+import lumine.task.Todo;
 
 public class Storage {
     //Error: not loaded

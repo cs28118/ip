@@ -1,7 +1,12 @@
-import java.util.ArrayList;
-import java.util.List;
+package lumine.task;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+import lumine.LumineException;
+import lumine.storage.Storage;
 
 public class TaskList {
     private static final DateTimeFormatter DATE_COMMAND_FORMAT =
@@ -9,12 +14,22 @@ public class TaskList {
     private final Storage storage;
     private final List<Task> tasks = new ArrayList<>();
 
+    /**
+     * Constructs a task list containing the tasks saved in the given storage.
+     * 
+     * @param storage the storage to load from and save to
+     */
     public TaskList(Storage storage) {
         this(storage, true);
     }
 
-
-    TaskList(Storage storage, boolean loadSavedTasks) {
+    /**
+     * Constructs a task list, optionally attempting to load saved tasks.
+     *
+     * @param storage the storage to load from and save to
+     * @param loadSavedTasks whether to load tasks from storage
+     */
+    public TaskList(Storage storage, boolean loadSavedTasks) {
         this.storage = storage;
         if (loadSavedTasks) {
             tasks.addAll(storage.load());

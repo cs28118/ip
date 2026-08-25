@@ -1,3 +1,7 @@
+package lumine.task;
+
+import lumine.LumineException;
+
 public class Task {
     protected String description;
     protected boolean isDone;

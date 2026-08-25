@@ -1,3 +1,4 @@
+package lumine;
 /**
  * Represents an input error that can be explained to the user.
  */

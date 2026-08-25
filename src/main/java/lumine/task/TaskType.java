@@ -1,3 +1,4 @@
+package lumine.task;
 /**
  * Enums of tasks
  */
