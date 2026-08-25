@@ -7,7 +7,7 @@ Aim: Verify that all current Java sources compile successfully using the require
 
 Command:
 ```text
-javac -d out\production\ip src\main\java\Deadline.java src\main\java\Event.java src\main\java\Lumine.java src\main\java\LumineException.java src\main\java\Parser.java src\main\java\Storage.java src\main\java\Task.java src\main\java\TaskList.java src\main\java\TaskType.java src\main\java\Todo.java src\main\java\Ui.java && echo BUILD_OK
+javac -d out\production\ip src\main\java\AddCommand.java src\main\java\Command.java src\main\java\DateCommand.java src\main\java\Deadline.java src\main\java\DeleteCommand.java src\main\java\Event.java src\main\java\ExitCommand.java src\main\java\ListCommand.java src\main\java\Lumine.java src\main\java\LumineException.java src\main\java\MarkCommand.java src\main\java\Parser.java src\main\java\Storage.java src\main\java\Task.java src\main\java\TaskList.java src\main\java\TaskType.java src\main\java\Todo.java src\main\java\Ui.java src\main\java\UnmarkCommand.java && echo BUILD_OK
 ```
 
 Input:

@@ -12,6 +12,39 @@ public class Parser {
         return command.trim();
     }
 
+    /**
+     * Parses a raw user command string and returns the corresponding Command object.
+     *
+     * @param command the raw input from the user
+     * @return a Command ready to be executed
+     * @throws LumineException if the command is not recognised
+     */
+    public Command parse(String command) {
+        String normalizedCommand = normalize(command);
+        if (normalizedCommand.equals("bye")) {
+            return new ExitCommand();
+        } else if (normalizedCommand.equals("list")) {
+            return new ListCommand();
+        } else if (isCommand(normalizedCommand, "date")) {
+            return new DateCommand(parseDateCommand(normalizedCommand));
+        } else if (isCommand(normalizedCommand, "todo")) {
+            return new AddCommand(parseTodoCommand(normalizedCommand));
+        } else if (isCommand(normalizedCommand, "deadline")) {
+            return new AddCommand(parseDeadlineCommand(normalizedCommand));
+        } else if (isCommand(normalizedCommand, "event")) {
+            return new AddCommand(parseEventCommand(normalizedCommand));
+        } else if (isCommand(normalizedCommand, "mark")) {
+            return new MarkCommand(parseTaskNumber(normalizedCommand, "mark"));
+        } else if (isCommand(normalizedCommand, "unmark")) {
+            return new UnmarkCommand(parseTaskNumber(normalizedCommand, "unmark"));
+        } else if (isCommand(normalizedCommand, "delete")) {
+            return new DeleteCommand(parseTaskNumber(normalizedCommand, "delete"));
+        } else {
+            throw new LumineException("Hmmmm, I can't understand what that means. ;-;\n"
+                    + "Try entering a command instead.");
+        }
+    }
+
     /** Checks whether a command is either an exact command or starts with its name. */
     public boolean isCommand(String command, String commandName) {
         return command.equals(commandName) || command.matches(commandName + "\\s+.*");
