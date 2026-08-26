@@ -84,6 +84,9 @@ When deciding what to test, rank candidate methods by:
 
 ## Git
 
+All Git commits and branch names **must** follow the SE-EDU Git conventions.
+Before making any commits, read and apply the project-specific `seedu-git-standard` skill.
+
 Use lightweight tags unless the user requests an annotated tag.
-When proposing or creating a commit message, include enough detail to explain the rationale for the change.
+When proposing or creating a commit message, include enough detail to explain the rationale for the change and follow the structure detailed in the `seedu-git-standard` skill.
 Do not commit or push unless explicitly asked.
