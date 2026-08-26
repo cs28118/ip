@@ -215,6 +215,23 @@ class ParserTest {
         assertThrows(LumineException.class, () -> parser.parseDateCommand("date"));
     }
 
+    // -------------------------------------------------------------------------
+    // parseFindCommand parser
+    // -------------------------------------------------------------------------
+
+    @Test
+    void parseFindCommand_validKeyword_returnsKeyword() {
+        assertEquals("book", parser.parseFindCommand("find book"));
+    }
+
+    @Test
+    void parseFindCommand_emptyKeyword_throwsLumineException() {
+        assertThrows(LumineException.class,
+                () -> parser.parseFindCommand("find"));
+        assertThrows(LumineException.class,
+                () -> parser.parseFindCommand("find   "));
+    }
+
     /* --------------------------------Commands-------------------------------- */
 
     // -------------------------------------------------------------------------
@@ -298,6 +315,15 @@ class ParserTest {
     @Test
     void parse_dateCommand_returnsDateCommand() {
         assertInstanceOf(DateCommand.class, parser.parse("date 2026 01 01"));
+    }
+
+    // -------------------------------------------------------------------------
+    // findCommand parser
+    // -------------------------------------------------------------------------
+
+    @Test
+    void parse_findCommand_returnsFindCommand() {
+        assertInstanceOf(FindCommand.class, parser.parse("find book"));
     }
 
     // -------------------------------------------------------------------------

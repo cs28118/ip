@@ -635,3 +635,71 @@ ____________________________________________________________
 Bye. Hope to see you again soon!
 ____________________________________________________________
 ```
+
+### Test Case: Find matching tasks
+Aim: Verify that the find command returns tasks containing the given keyword and reports an error on empty keywords.
+
+Command:
+```text
+del /q data\lumine.txt 2>NUL & java -cp out\production\ip lumine.Lumine
+```
+
+Input:
+```text
+todo return book
+todo read book
+todo borrow notes
+find book
+find notes
+find magazine
+find
+bye
+```
+
+Expected output:
+```text
+____________________________________________________________
+ ___      __   __  __   __  ___   __    _  _______ 
+|   |    |  | |  ||  |_|  ||   | |  |  | ||       |
+|   |    |  | |  ||       ||   | |   |_| ||    ___|
+|   |    |  |_|  ||       ||   | |       ||   |___ 
+|   |___ |       ||       ||   | |  _    ||    ___|
+|       ||       || ||_|| ||   | | | |   ||   |___ 
+|_______||_______||_|   |_||___| |_|  |__||_______|
+Hello, I'm Lumine!
+What can I do for you today?
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] return book
+Now, you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] read book
+Now, you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] borrow notes
+Now, you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here is the list of matching tasks:
+1.[T][ ] return book
+2.[T][ ] read book
+____________________________________________________________
+____________________________________________________________
+Here is the list of matching tasks:
+3.[T][ ] borrow notes
+____________________________________________________________
+____________________________________________________________
+No tasks match the keyword 'magazine'.
+____________________________________________________________
+____________________________________________________________
+Sorry, the search keyword cannot be empty. :C
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```

@@ -54,6 +54,8 @@ public class Parser {
             return new UnmarkCommand(parseTaskNumber(normalizedCommand, "unmark"));
         } else if (isCommand(normalizedCommand, "delete")) {
             return new DeleteCommand(parseTaskNumber(normalizedCommand, "delete"));
+        } else if (isCommand(normalizedCommand, "find")) {
+            return new FindCommand(parseFindCommand(normalizedCommand));
         } else {
             throw new LumineException("Hmmmm, I can't understand what that means. ;-;\n"
                     + "Try entering a command instead.");
@@ -77,6 +79,15 @@ public class Parser {
         } catch (DateTimeParseException e) {
             throw invalidDateCommand();
         }
+    }
+
+    /** Parses a find command to extract the search keyword. */
+    public String parseFindCommand(String command) {
+        String keyword = command.substring("find".length()).trim();
+        if (keyword.isEmpty()) {
+            throw new LumineException("Sorry, the search keyword cannot be empty. :C");
+        }
+        return keyword;
     }
 
     /** Parses a task number used by mark, unmark, and delete commands. */

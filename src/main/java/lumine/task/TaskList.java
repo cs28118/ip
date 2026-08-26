@@ -97,6 +97,24 @@ public class TaskList {
         }
     }
 
+    /** Returns a formatted listing of tasks that contain the given keyword in their description. */
+    public String formatMatchingTasks(String keyword) {
+        StringBuilder result = new StringBuilder("Here is the list of matching tasks:");
+        int matchCount = 0;
+        for (int i = 0; i < tasks.size(); i++) {
+            Task task = tasks.get(i);
+            if (task.description.contains(keyword)) {
+                result.append("\n").append(i + 1).append(".").append(task);
+                matchCount++;
+            }
+        }
+        if (matchCount == 0) {
+            return "No tasks match the keyword '" + keyword + "'.";
+        } else {
+            return result.toString();
+        }
+    }
+
     /**
      * Marks the task at the given 1-based position as done and saves the list.
      *
@@ -104,7 +122,6 @@ public class TaskList {
      * @return the task that was marked
      * @throws LumineException if the task number is out of range or saving fails
      */
-    //throw exception if task number is out of range
     public Task markAsDone(int taskNumber) {
         if (taskNumber < 1 || taskNumber > tasks.size()) {
             throw new LumineException("Task not found :<.\n"
