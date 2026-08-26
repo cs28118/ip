@@ -9,10 +9,16 @@ import lumine.ui.Ui;
 public class MarkCommand extends Command {
     private final int taskNumber;
 
+    /**
+     * Creates a command that will mark the task at the given 1-based position as done.
+     *
+     * @param taskNumber 1-based index of the task to mark
+     */
     public MarkCommand(int taskNumber) {
         this.taskNumber = taskNumber;
     }
 
+    /** Marks the task done and prints a confirmation message. */
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) {
         Task task = taskList.markAsDone(taskNumber);

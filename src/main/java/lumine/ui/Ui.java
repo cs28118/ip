@@ -18,6 +18,7 @@ public class Ui {
 
     private final Scanner scanner = new Scanner(System.in);
 
+    /** Prints the ASCII-art banner and welcome message at application start. */
     public void showGreetings() {
         System.out.println(LINE + "\n" + BANNER
                 + "Hello, I'm Lumine!\n"

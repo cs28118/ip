@@ -6,6 +6,13 @@ import lumine.storage.Storage;
 import lumine.task.TaskList;
 import lumine.ui.Ui;
 
+/**
+ * Main application class for Lumine, a personal task-management chatbot.
+ *
+ * <p>Wires together the {@link Ui}, {@link Parser}, {@link Storage}, and
+ * {@link TaskList} components, then drives the read-parse-execute loop
+ * until the user exits.</p>
+ */
 public class Lumine {
     private Storage storage;
     private TaskList taskList;
@@ -13,6 +20,13 @@ public class Lumine {
     private Parser parser;
     private String loadError;
 
+    /**
+     * Creates a new Lumine instance backed by the given save file.
+     * If the file cannot be loaded, the error message is stored and
+     * shown to the user when the main loop starts.
+     *
+     * @param filePath path to the task save file (created if absent)
+     */
     public Lumine(String filePath) {
         ui = new Ui();
         parser = new Parser();
@@ -25,6 +39,11 @@ public class Lumine {
         }
     }
 
+    /**
+     * Starts the main input loop: reads commands from the user,
+     * parses and executes each one, and repeats until an
+     * {@link lumine.command.ExitCommand} is encountered or input ends.
+     */
     public void run() {
         ui.showGreetings();
 
@@ -49,6 +68,7 @@ public class Lumine {
         }
     }
 
+    /** Application entry point; starts a new Lumine session with the default save file. */
     public static void main(String[] args) {
         new Lumine("data/lumine.txt").run();
     }

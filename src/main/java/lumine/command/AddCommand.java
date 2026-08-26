@@ -9,10 +9,16 @@ import lumine.ui.Ui;
 public class AddCommand extends Command {
     private final Task task;
 
+    /**
+     * Creates a command that will add the given task to the task list.
+     *
+     * @param task the pre-built task to add
+     */
     public AddCommand(Task task) {
         this.task = task;
     }
 
+    /** Adds the task, then prints a confirmation message with the updated list size. */
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) {
         taskList.addTask(task);

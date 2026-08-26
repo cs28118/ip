@@ -14,6 +14,13 @@ import lumine.task.Event;
 import lumine.task.Task;
 import lumine.task.Todo;
 
+/**
+ * Handles reading and writing the task list to a plain-text file on disk.
+ *
+ * <p>Each task is stored as a single pipe-delimited line.  Saves are crash-safe:
+ * a temporary file is written first and then renamed into place, so a failure
+ * mid-write leaves the original file intact rather than corrupting it.</p>
+ */
 public class Storage {
     //Error: not loaded
     private static final String LOAD_ERROR = "Sorry, I couldn't load your tasks. :C";
@@ -21,10 +28,23 @@ public class Storage {
 
     private final Path saveFile;
 
+    /**
+     * Creates a new Storage that reads from and writes to the given file path.
+     *
+     * @param filePath path to the save file (parent directories are created on first save)
+     */
     public Storage(String filePath) {
         this.saveFile = Path.of(filePath);
     }
 
+    /**
+     * Persists the given task list to disk, replacing any previous save file.
+     * The save is crash-safe: a temporary file is written first and then renamed
+     * into place, so a failure mid-write leaves the original file intact.
+     *
+     * @param tasks the list of tasks to save (must not be {@code null} or contain {@code null})
+     * @throws LumineException if the list is invalid or an I/O error occurs
+     */
     public void save(List<Task> tasks) {
         if (tasks == null || tasks.stream().anyMatch(task -> task == null)) {
             throw new LumineException(SAVE_ERROR);
@@ -55,6 +75,13 @@ public class Storage {
         }
     }
 
+    /**
+     * Reads and parses all tasks from the save file.
+     * Returns an empty list when the file does not yet exist.
+     *
+     * @return list of tasks loaded from storage
+     * @throws LumineException if the file is malformed or an I/O error occurs
+     */
     public List<Task> load() {
         try {
             if (!Files.exists(saveFile)) {
@@ -78,8 +105,17 @@ public class Storage {
         }
     }
 
-    /** Helper functions */
-
+    /**
+     * Parses a single pipe-delimited line from the save file into a {@link Task}.
+     * The first field is the type symbol ({@code T}, {@code D}, or {@code E}),
+     * the second is the done flag ({@code 0} or {@code 1}), and the remaining
+     * fields are task-type-specific.
+     *
+     * @param line       the raw line text (already unescaped by {@link #splitFields})
+     * @param lineNumber 1-based line number, used in error messages
+     * @return the reconstructed {@link Task}
+     * @throws LumineException if the line is malformed or the type symbol is unknown
+     */
     private Task parseTask(String line, int lineNumber) {
         List<String> parts = splitFields(line, lineNumber);
         if (parts.size() < 3 || (!parts.get(1).equals("0") && !parts.get(1).equals("1"))) {
@@ -115,6 +151,19 @@ public class Storage {
         return task;
     }
 
+    /**
+     * Splits a storage line into its unescaped field values, using {@code |} as the
+     * delimiter and {@code \} as the escape character.
+     *
+     * <p>Recognised escape sequences: {@code \|} → {@code |}, {@code \\} → {@code \},
+     * {@code \n} → newline, {@code \r} → carriage return.  A trailing backslash
+     * (dangling escape) is treated as a malformed line.</p>
+     *
+     * @param line       the raw line text to split
+     * @param lineNumber 1-based line number, used in error messages
+     * @return a list of unescaped field strings (trimmed of surrounding whitespace)
+     * @throws LumineException if the line ends with an unmatched backslash
+     */
     private List<String> splitFields(String line, int lineNumber) {
         List<String> fields = new ArrayList<>();
         StringBuilder field = new StringBuilder();
@@ -150,6 +199,12 @@ public class Storage {
         return fields;
     }
 
+    /**
+     * Creates a {@link LumineException} describing a malformed line in the save file.
+     *
+     * @param lineNumber 1-based number of the offending line
+     * @return the exception, ready to be thrown
+     */
     private LumineException invalidLine(int lineNumber) {
         return new LumineException(LOAD_ERROR + "\nInvalid saved task on line " + lineNumber + ".");
     }

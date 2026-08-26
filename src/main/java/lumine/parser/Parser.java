@@ -118,6 +118,11 @@ public class Parser {
         return new Event(parts[0].trim(), parts[1].trim(), parts[2].trim());
     }
 
+    /**
+     * Creates a {@link LumineException} describing a bad {@code date} command argument.
+     *
+     * @return the exception, ready to be thrown
+     */
     private LumineException invalidDateCommand() {
         return new LumineException("Sorry, I can't understand what date is it. :C\n"
                 + "It needs a valid date as the format yyyy mm dd");

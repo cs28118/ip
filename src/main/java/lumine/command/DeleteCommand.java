@@ -9,10 +9,16 @@ import lumine.ui.Ui;
 public class DeleteCommand extends Command {
     private final int taskNumber;
 
+    /**
+     * Creates a command that will delete the task at the given 1-based position.
+     *
+     * @param taskNumber 1-based index of the task to delete
+     */
     public DeleteCommand(int taskNumber) {
         this.taskNumber = taskNumber;
     }
 
+    /** Removes the task and prints a confirmation with the updated list size. */
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) {
         Task task = taskList.deleteTask(taskNumber);
