@@ -16,6 +16,7 @@ import lumine.command.AddCommand;
 import lumine.command.DateCommand;
 import lumine.command.DeleteCommand;
 import lumine.command.ExitCommand;
+import lumine.command.FindCommand;
 import lumine.command.ListCommand;
 import lumine.command.MarkCommand;
 import lumine.command.UnmarkCommand;
