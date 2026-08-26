@@ -1,21 +1,27 @@
 package lumine.parser;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import lumine.LumineException;
-import lumine.command.*;
+import lumine.command.AddCommand;
+import lumine.command.DateCommand;
+import lumine.command.DeleteCommand;
+import lumine.command.ExitCommand;
+import lumine.command.ListCommand;
+import lumine.command.MarkCommand;
+import lumine.command.UnmarkCommand;
 import lumine.task.Deadline;
 import lumine.task.Event;
 import lumine.task.Todo;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests for {@link Parser}. Each test targets one behaviour of one method so that
@@ -69,7 +75,7 @@ class ParserTest {
     }
 
     @Test
-    void isCommand_commandNameAsPrefix_withoutSpace_returnsFalse() {
+    void isCommand_prefixWithoutSpace_returnsFalse() {
         assertFalse(parser.isCommand("todoX test", "todo"));
     }
 
@@ -84,14 +90,12 @@ class ParserTest {
 
     @Test
     void parseTaskNumber_nonNumericArgument_throwsLumineException() {
-        assertThrows(LumineException.class,
-                () -> parser.parseTaskNumber("mark test", "mark"));
+        assertThrows(LumineException.class, () -> parser.parseTaskNumber("mark test", "mark"));
     }
 
     @Test
     void parseTaskNumber_emptyArgument_throwsLumineException() {
-        assertThrows(LumineException.class,
-                () -> parser.parseTaskNumber("mark", "mark"));
+        assertThrows(LumineException.class, () -> parser.parseTaskNumber("mark", "mark"));
     }
 
     // -------------------------------------------------------------------------
@@ -112,14 +116,12 @@ class ParserTest {
 
     @Test
     void parseTodoCommand_emptyDescription_throwsLumineException() {
-        assertThrows(LumineException.class,
-                () -> parser.parseTodoCommand("todo"));
+        assertThrows(LumineException.class, () -> parser.parseTodoCommand("todo"));
     }
 
     @Test
     void parseTodoCommand_whitespaceOnlyDescription_throwsLumineException() {
-        assertThrows(LumineException.class,
-                () -> parser.parseTodoCommand("todo   "));
+        assertThrows(LumineException.class, () -> parser.parseTodoCommand("todo   "));
     }
 
     // -------------------------------------------------------------------------
@@ -140,20 +142,17 @@ class ParserTest {
 
     @Test
     void parseDeadlineCommand_missingByClause_throwsLumineException() {
-        assertThrows(LumineException.class,
-                () -> parser.parseDeadlineCommand("deadline test"));
+        assertThrows(LumineException.class, () -> parser.parseDeadlineCommand("deadline test"));
     }
 
     @Test
     void parseDeadlineCommand_emptyDescription_throwsLumineException() {
-        assertThrows(LumineException.class,
-                () -> parser.parseDeadlineCommand("deadline /by Monday"));
+        assertThrows(LumineException.class, () -> parser.parseDeadlineCommand("deadline /by Monday"));
     }
 
     @Test
     void parseDeadlineCommand_emptyByValue_throwsLumineException() {
-        assertThrows(LumineException.class,
-                () -> parser.parseDeadlineCommand("deadline test /by"));
+        assertThrows(LumineException.class, () -> parser.parseDeadlineCommand("deadline test /by"));
     }
 
     // -------------------------------------------------------------------------
@@ -168,32 +167,27 @@ class ParserTest {
 
     @Test
     void parseEventCommand_missingFromClause_throwsLumineException() {
-        assertThrows(LumineException.class,
-                () -> parser.parseEventCommand("event test /to 4pm"));
+        assertThrows(LumineException.class, () -> parser.parseEventCommand("event test /to 4pm"));
     }
 
     @Test
     void parseEventCommand_missingToClause_throwsLumineException() {
-        assertThrows(LumineException.class,
-                () -> parser.parseEventCommand("event test /from Mon 2pm"));
+        assertThrows(LumineException.class, () -> parser.parseEventCommand("event test /from Mon 2pm"));
     }
 
     @Test
     void parseEventCommand_emptyDescription_throwsLumineException() {
-        assertThrows(LumineException.class,
-                () -> parser.parseEventCommand("event /from Mon 2pm /to 4pm"));
+        assertThrows(LumineException.class, () -> parser.parseEventCommand("event /from Mon 2pm /to 4pm"));
     }
 
     @Test
     void parseEventCommand_emptyFromValue_throwsLumineException() {
-        assertThrows(LumineException.class,
-                () -> parser.parseEventCommand("event test /from /to 4pm"));
+        assertThrows(LumineException.class, () -> parser.parseEventCommand("event test /from /to 4pm"));
     }
 
     @Test
     void parseEventCommand_emptyToValue_throwsLumineException() {
-        assertThrows(LumineException.class,
-                () -> parser.parseEventCommand("event test /from Mon 2pm /to"));
+        assertThrows(LumineException.class, () -> parser.parseEventCommand("event test /from Mon 2pm /to"));
     }
 
     // -------------------------------------------------------------------------
@@ -208,20 +202,17 @@ class ParserTest {
 
     @Test
     void parseDateCommand_wrongFormat_throwsLumineException() {
-        assertThrows(LumineException.class,
-                () -> parser.parseDateCommand("date 01/01/2026"));
+        assertThrows(LumineException.class, () -> parser.parseDateCommand("date 01/01/2026"));
     }
 
     @Test
     void parseDateCommand_nonExistentDate_throwsLumineException() {
-        assertThrows(LumineException.class,
-                () -> parser.parseDateCommand("date 2026 13 32"));
+        assertThrows(LumineException.class, () -> parser.parseDateCommand("date 2026 13 32"));
     }
 
     @Test
     void parseDateCommand_missingArgument_throwsLumineException() {
-        assertThrows(LumineException.class,
-                () -> parser.parseDateCommand("date"));
+        assertThrows(LumineException.class, () -> parser.parseDateCommand("date"));
     }
 
     /* --------------------------------Commands-------------------------------- */

@@ -7,7 +7,6 @@ import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 import java.util.Locale;
 
-import lumine.LumineException;
 
 /**
  * A task that must be completed by a specific deadline.
@@ -76,6 +75,7 @@ public class Deadline extends Task {
                 dueDateTime = LocalDateTime.parse(normalizedBy, INPUT_DATE_TIME_FORMAT);
             }
         } catch (DateTimeParseException ignored) {
+            // Ignored
         }
     }
 

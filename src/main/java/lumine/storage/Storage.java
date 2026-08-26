@@ -70,6 +70,7 @@ public class Storage {
                 try {
                     Files.deleteIfExists(temporaryFile);
                 } catch (IOException | SecurityException ignored) {
+                    // Ignored
                 }
             }
         }
@@ -172,15 +173,15 @@ public class Storage {
             char character = line.charAt(i);
             if (escaped) {
                 switch (character) {
-                case 'n':
-                    field.append('\n');
-                    break;
-                case 'r':
-                    field.append('\r');
-                    break;
-                default:
-                    field.append(character);
-                    break;
+                    case 'n':
+                        field.append('\n');
+                        break;
+                    case 'r':
+                        field.append('\r');
+                        break;
+                    default:
+                        field.append(character);
+                        break;
                 }
                 escaped = false;
             } else if (character == '\\') {
