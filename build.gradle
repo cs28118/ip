@@ -38,7 +38,7 @@ test {
 }
 
 application {
-    mainClass = './src/main/java/lumine/lumine.java'
+    mainClass = 'lumine.Lumine'
 }
 
 jar {
@@ -49,7 +49,7 @@ jar {
 }
 
 shadowJar {
-    archiveFileName = 'duke.jar'
+    archiveFileName = 'lumine.jar'
 }
 
 run {

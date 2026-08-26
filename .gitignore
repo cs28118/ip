@@ -22,3 +22,6 @@ text-ui-test/EXPECTED-UNIX.TXT
 
 # Saved files
 data/
+
+#JAR files
+build/libs/lumine.jar
