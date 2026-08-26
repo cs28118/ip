@@ -7,7 +7,6 @@ import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 import java.util.Locale;
 
-import lumine.LumineException;
 
 public class Deadline extends Task {
     private static final DateTimeFormatter INPUT_DATE_FORMAT = DateTimeFormatter
@@ -52,6 +51,7 @@ public class Deadline extends Task {
                 dueDateTime = LocalDateTime.parse(normalizedBy, INPUT_DATE_TIME_FORMAT);
             }
         } catch (DateTimeParseException ignored) {
+            // Ignored
         }
     }
 

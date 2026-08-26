@@ -16,7 +16,7 @@ public class TaskList {
 
     /**
      * Constructs a task list containing the tasks saved in the given storage.
-     * 
+     *
      * @param storage the storage to load from and save to
      */
     public TaskList(Storage storage) {
@@ -86,8 +86,8 @@ public class TaskList {
     //throw exception if task number is out of range
     public Task markAsDone(int taskNumber) {
         if (taskNumber < 1 || taskNumber > tasks.size()) {
-            throw new LumineException("Task not found :<.\n" +
-                    "Please enter a valid task number.");
+            throw new LumineException("Task not found :<.\n"
+                    + "Please enter a valid task number.");
         }
 
         Task task = tasks.get(taskNumber - 1);
@@ -104,8 +104,8 @@ public class TaskList {
 
     public Task markAsUndone(int taskNumber) {
         if (taskNumber < 1 || taskNumber > tasks.size()) {
-            throw new LumineException("Task not found :<.\n" +
-                    "Please enter a valid task number.");
+            throw new LumineException("Task not found :<.\n"
+                    + "Please enter a valid task number.");
         }
 
         Task task = tasks.get(taskNumber - 1);
@@ -122,8 +122,8 @@ public class TaskList {
 
     public Task deleteTask(int taskNumber) {
         if (taskNumber < 1 || taskNumber > tasks.size()) {
-            throw new LumineException("Task not found :<.\n" +
-                    "Please enter a valid task number.");
+            throw new LumineException("Task not found :<.\n"
+                    + "Please enter a valid task number.");
         }
 
         int taskIndex = taskNumber - 1;

@@ -54,6 +54,7 @@ public class Event extends Task {
                 fromDateTime = LocalDateTime.parse(normalizedFrom, INPUT_DATE_TIME_FORMAT);
             }
         } catch (DateTimeParseException ignored) {
+            // Ignored
         }
 
         try {
@@ -63,6 +64,7 @@ public class Event extends Task {
                 toDateTime = LocalDateTime.parse(normalizedTo, INPUT_DATE_TIME_FORMAT);
             }
         } catch (DateTimeParseException ignored) {
+            // Ignored
         }
     }
 

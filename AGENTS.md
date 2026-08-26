@@ -24,6 +24,18 @@ Unless the user says otherwise, assume that you are assisting a student working 
 
 # Project-specific requirements
 
+## Coding standard
+
+All Java code in this project **must** follow the SE-EDU Java coding standard (Basic + Intermediate rules).
+Before writing, reviewing, or refactoring any Java code, read and apply the project-specific `seedu-java-coding-standard` skill.
+Key points (full rules are in the skill):
+- No wildcard (`.*`) imports — always import classes explicitly.
+- No `public` non-constant instance fields — use accessors.
+- Every loop and conditional body must be wrapped in `{ }`, even single-liners.
+- Javadoc on every public class and non-trivial public method (except getters/setters, overrides with identical semantics, and test methods).
+- K&R (Egyptian) brace style; 4-space indentation; line limit 120 chars (soft 110).
+- Test method names follow `featureUnderTest_testScenario_expectedBehavior()`.
+
 ## Java version:
 
 Ensure that Java 25 is used when running the application or build tasks.
