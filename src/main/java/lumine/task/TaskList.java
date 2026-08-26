@@ -83,6 +83,24 @@ public class TaskList {
         }
     }
 
+    /** Returns a formatted listing of tasks that contain the given keyword in their description. */
+    public String formatMatchingTasks(String keyword) {
+        StringBuilder result = new StringBuilder("Here is the list of matching tasks:");
+        int matchCount = 0;
+        for (int i = 0; i < tasks.size(); i++) {
+            Task task = tasks.get(i);
+            if (task.description.contains(keyword)) {
+                result.append("\n").append(i + 1).append(".").append(task);
+                matchCount++;
+            }
+        }
+        if (matchCount == 0) {
+            return "No tasks match the keyword '" + keyword + "'.";
+        } else {
+            return result.toString();
+        }
+    }
+
     //throw exception if task number is out of range
     public Task markAsDone(int taskNumber) {
         if (taskNumber < 1 || taskNumber > tasks.size()) {
