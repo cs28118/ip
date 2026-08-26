@@ -41,6 +41,35 @@ After every code update:
 
    Include the resulting console input/output record in the handoff. If a test fails, stop the test session immediately and report the actual and expected outputs; do not continue to later cases.
 
+## JUnit testing
+
+**Coverage target:** the top ~50% of methods by value — prioritising complex, core, or critical business logic (e.g. parsing, date handling, storage serialisation) over trivial getters and one-liners.
+
+When deciding what to test, rank candidate methods by:
+1. Complexity — does the method have multiple branches or edge cases?
+2. Criticality — would a bug here break core behaviour or corrupt saved data?
+3. Purity — methods with no I/O or UI side-effects are the easiest and most reliable to unit-test; prefer them.
+
+**After every code change** that adds, removes, or modifies a method covered by the target:
+
+1. Update the relevant `*Test.java` file(s) under `src/test/java/` to reflect the change (add, remove, or adjust test cases as needed).
+2. Ensure every test file is saved **without a BOM** (use `System.Text.UTF8Encoding($false)` in PowerShell, not `Set-Content -Encoding UTF8`).
+3. Follow the naming convention `featureUnderTest_testScenario_expectedBehavior()` for test method names, e.g. `parseTodoCommand_emptyDescription_throwsLumineException()`.
+
+**What is currently tested (as of initial coverage pass):**
+
+| Test class | Class under test | Key methods covered |
+|---|---|---|
+| `lumine.parser.ParserTest` | `Parser` | `parse`, `normalize`, `isCommand`, `parseTaskNumber`, `parseTodoCommand`, `parseDeadlineCommand`, `parseEventCommand`, `parseDateCommand` |
+| `lumine.task.TaskTest` | `Task` | `escapeStorageField`, `toFileString`, `toString`, `markDone`, `markUndone`, constructor validation |
+| `lumine.task.DeadlineTest` | `Deadline` | `toString`, `toFileString`, `getDueDate`, constructor validation |
+| `lumine.task.EventTest` | `Event` | `toString`, `toFileString`, `getToDate`, constructor validation |
+
+**What is intentionally excluded** (below the 50% threshold):
+* `Storage` — file I/O makes tests fragile and slow.
+* `TaskList` — depends directly on `Storage`; test indirectly via integration/UI tests.
+* `TaskType.getSymbol` — trivial enum getter with no logic.
+
 ## Git
 
 Use lightweight tags unless the user requests an annotated tag.
