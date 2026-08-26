@@ -227,10 +227,8 @@ class ParserTest {
 
     @Test
     void parseFindCommand_emptyKeyword_throwsLumineException() {
-        assertThrows(LumineException.class,
-                () -> parser.parseFindCommand("find"));
-        assertThrows(LumineException.class,
-                () -> parser.parseFindCommand("find   "));
+        assertThrows(LumineException.class, () -> parser.parseFindCommand("find"));
+        assertThrows(LumineException.class, () -> parser.parseFindCommand("find   "));
     }
 
     /* --------------------------------Commands-------------------------------- */
