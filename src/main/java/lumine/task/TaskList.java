@@ -8,6 +8,13 @@ import java.util.List;
 import lumine.LumineException;
 import lumine.storage.Storage;
 
+/**
+ * Manages the in-memory list of tasks and keeps storage in sync after every change.
+ *
+ * <p>All mutating operations ({@link #addTask}, {@link #markAsDone}, {@link #markAsUndone},
+ * {@link #deleteTask}) save the list to disk atomically and roll back the in-memory
+ * state if saving fails, so the two sources of truth never diverge.</p>
+ */
 public class TaskList {
     private static final DateTimeFormatter DATE_COMMAND_FORMAT =
             DateTimeFormatter.ofPattern("uuuu MM dd");
@@ -36,6 +43,13 @@ public class TaskList {
         }
     }
 
+    /**
+     * Adds the given task to the list and persists the change to storage.
+     * If saving fails the task is removed from the list and the exception is re-thrown.
+     *
+     * @param task the task to add (must not be {@code null})
+     * @throws LumineException if {@code task} is null or storage cannot be written
+     */
     public void addTask(Task task) {
         if (task == null) {
             throw new LumineException("Sorry, task cannot be empty. :C");
@@ -83,6 +97,13 @@ public class TaskList {
         }
     }
 
+    /**
+     * Marks the task at the given 1-based position as done and saves the list.
+     *
+     * @param taskNumber 1-based index of the task to mark
+     * @return the task that was marked
+     * @throws LumineException if the task number is out of range or saving fails
+     */
     //throw exception if task number is out of range
     public Task markAsDone(int taskNumber) {
         if (taskNumber < 1 || taskNumber > tasks.size()) {
@@ -102,6 +123,13 @@ public class TaskList {
         return task;
     }
 
+    /**
+     * Marks the task at the given 1-based position as not done and saves the list.
+     *
+     * @param taskNumber 1-based index of the task to unmark
+     * @return the task that was unmarked
+     * @throws LumineException if the task number is out of range or saving fails
+     */
     public Task markAsUndone(int taskNumber) {
         if (taskNumber < 1 || taskNumber > tasks.size()) {
             throw new LumineException("Task not found :<.\n" +
@@ -120,6 +148,13 @@ public class TaskList {
         return task;
     }
 
+    /**
+     * Removes the task at the given 1-based position and saves the list.
+     *
+     * @param taskNumber 1-based index of the task to delete
+     * @return the task that was removed
+     * @throws LumineException if the task number is out of range or saving fails
+     */
     public Task deleteTask(int taskNumber) {
         if (taskNumber < 1 || taskNumber > tasks.size()) {
             throw new LumineException("Task not found :<.\n" +
@@ -137,10 +172,12 @@ public class TaskList {
         return removedTask;
     }
 
+    /** Returns the number of tasks currently in the list. */
     public int size() {
         return tasks.size();
     }
 
+    /** Persists the current task list to storage; called after every mutating operation. */
     private void saveTasks() {
         storage.save(tasks);
     }
