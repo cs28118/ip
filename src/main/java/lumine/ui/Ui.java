@@ -52,6 +52,17 @@ public class Ui {
         System.out.println(message);
     }
 
+    /**
+     * Shows each supplied message to the user in order.
+     *
+     * @param messages messages to show.
+     */
+    public void showMessages(String... messages) {
+        for (String message : messages) {
+            showMessage(message);
+        }
+    }
+
     /** Returns whether another command is available on standard input. */
     public boolean hasNextCommand() {
         return scanner.hasNextLine();

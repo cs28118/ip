@@ -22,7 +22,6 @@ public class UnmarkCommand extends Command {
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) {
         Task task = taskList.markAsUndone(taskNumber);
-        ui.showMessage("OK, I've marked this task as not done yet:");
-        ui.showMessage(task.toString());
+        ui.showMessages("OK, I've marked this task as not done yet:", task.toString());
     }
 }
