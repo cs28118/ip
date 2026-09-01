@@ -5,6 +5,7 @@ import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import lumine.ui.MainWindow;
@@ -22,6 +23,7 @@ public class Main extends Application {
         Scene scene = new Scene(mainWindow);
 
         stage.setTitle("Lumine");
+        stage.getIcons().add(new Image(Main.class.getResource("/images/lumine_icon.jpg").toExternalForm()));
         stage.setMinHeight(300);
         stage.setMinWidth(400);
         stage.setScene(scene);

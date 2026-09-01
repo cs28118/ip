@@ -30,7 +30,7 @@ public class MainWindow extends AnchorPane {
     private final Image userImage = new Image(Objects.requireNonNull(
             MainWindow.class.getResource("/images/user.gif")).toExternalForm());
     private final Image lumineImage = new Image(Objects.requireNonNull(
-            MainWindow.class.getResource("/images/lumine.png")).toExternalForm());
+            MainWindow.class.getResource("/images/lumine.jpg")).toExternalForm());
 
     @FXML
     private void initialize() {
