@@ -1,0 +1,14 @@
+.label {
+    -fx-background-color: #e4e0ec;
+    -fx-background-radius: 12px 12px 0 12px;
+    -fx-padding: 8px;
+}
+
+.reply-label {
+    -fx-background-color: #d7e8ff;
+    -fx-background-radius: 12px 12px 12px 0;
+}
+
+#displayPicture {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.18), 4, 0.2, 1, 1);
+}

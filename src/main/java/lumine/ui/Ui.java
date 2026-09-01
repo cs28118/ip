@@ -16,7 +16,23 @@ public class Ui {
                     + "|       ||       || ||_|| ||   | | | |   ||   |___ \n"
                     + "|_______||_______||_|   |_||___| |_|  |__||_______|\n";
 
-    private final Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner;
+
+    /**
+     * Creates a UI that reads commands from standard input.
+     */
+    public Ui() {
+        this(true);
+    }
+
+    /**
+     * Creates a UI with optional standard-input support.
+     *
+     * @param isConsoleInputEnabled whether this UI reads commands from standard input.
+     */
+    protected Ui(boolean isConsoleInputEnabled) {
+        scanner = isConsoleInputEnabled ? new Scanner(System.in) : null;
+    }
 
     /** Prints the ASCII-art banner and welcome message at application start. */
     public void showGreetings() {
