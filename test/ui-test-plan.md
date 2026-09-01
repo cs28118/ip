@@ -7,7 +7,7 @@ Aim: Verify that all current Java sources compile successfully using the require
 
 Command:
 ```text
-javac -d out\production\ip src\main\java\lumine\*.java src\main\java\lumine\command\*.java src\main\java\lumine\parser\*.java src\main\java\lumine\storage\*.java src\main\java\lumine\task\*.java src\main\java\lumine\ui\*.java && echo BUILD_OK
+gradlew.bat --console plain classes > NUL && echo BUILD_OK
 ```
 
 Input:
@@ -25,7 +25,7 @@ Aim: Verify that the application prints its greeting and exits with the expected
 
 Command:
 ```text
-del /q data\lumine.txt 2>NUL & java -cp out\production\ip lumine.Lumine
+del /q data\lumine.txt 2>NUL & java -cp build\classes\java\main lumine.Lumine
 ```
 
 Input:
@@ -56,7 +56,7 @@ Aim: Verify that `delete <number>` removes the selected task, reports the remove
 
 Command:
 ```text
-del /q data\lumine.txt 2>NUL & java -cp out\production\ip lumine.Lumine
+del /q data\lumine.txt 2>NUL & java -cp build\classes\java\main lumine.Lumine
 ```
 
 Input:
@@ -124,7 +124,7 @@ Aim: Verify that an empty todo and an unrecognised command produce the required 
 
 Command:
 ```text
-del /q data\lumine.txt 2>NUL & java -cp out\production\ip lumine.Lumine
+del /q data\lumine.txt 2>NUL & java -cp build\classes\java\main lumine.Lumine
 ```
 
 Input:
@@ -164,7 +164,7 @@ Aim: Verify that deadline and event commands without the required details produc
 
 Command:
 ```text
-del /q data\lumine.txt 2>NUL & java -cp out\production\ip lumine.Lumine
+del /q data\lumine.txt 2>NUL & java -cp build\classes\java\main lumine.Lumine
 ```
 
 Input:
@@ -207,7 +207,7 @@ Aim: Verify that marking a task outside the current list shows a helpful message
 
 Command:
 ```text
-del /q data\lumine.txt 2>NUL & java -cp out\production\ip lumine.Lumine
+del /q data\lumine.txt 2>NUL & java -cp build\classes\java\main lumine.Lumine
 ```
 
 Input:
@@ -243,7 +243,7 @@ Aim: Verify that an empty list can be displayed, a blank command is rejected, an
 
 Command:
 ```text
-del /q data\lumine.txt 2>NUL & java -cp out\production\ip lumine.Lumine
+del /q data\lumine.txt 2>NUL & java -cp build\classes\java\main lumine.Lumine
 ```
 
 Input:
@@ -314,7 +314,7 @@ Aim: Verify that deadline and event commands with missing descriptions, dates, o
 
 Command:
 ```text
-del /q data\lumine.txt 2>NUL & java -cp out\production\ip lumine.Lumine
+del /q data\lumine.txt 2>NUL & java -cp build\classes\java\main lumine.Lumine
 ```
 
 Input:
@@ -478,7 +478,7 @@ Aim: Verify that adding, marking, unmarking, and deleting tasks updates `data\\l
 
 Command:
 ```text
-del /q data\lumine.txt 2>NUL & java -cp out\production\ip lumine.Lumine > NUL & type data\lumine.txt & del /q data\lumine.txt
+del /q data\lumine.txt 2>NUL & java -cp build\classes\java\main lumine.Lumine > NUL & type data\lumine.txt & del /q data\lumine.txt
 ```
 
 Input:
@@ -503,7 +503,7 @@ Aim: Verify that saved todo, deadline, and event tasks are loaded when the appli
 
 Command:
 ```text
-powershell -NoProfile -Command "[System.IO.Directory]::CreateDirectory('data') | Out-Null; [System.IO.File]::WriteAllLines('data\lumine.txt', @('T | 1 | recovered todo','D | 0 | recovered deadline | Friday','E | 1 | recovered event | 2pm | 3pm'))" & java -cp out\production\ip lumine.Lumine & del /q data\lumine.txt
+powershell -NoProfile -Command "[System.IO.Directory]::CreateDirectory('data') | Out-Null; [System.IO.File]::WriteAllLines('data\lumine.txt', @('T | 1 | recovered todo','D | 0 | recovered deadline | Friday','E | 1 | recovered event | 2pm | 3pm'))" & java -cp build\classes\java\main lumine.Lumine & del /q data\lumine.txt
 ```
 
 Input:
@@ -541,7 +541,7 @@ Aim: Verify that an invalid saved record reports its line number, starts with an
 
 Command:
 ```text
-powershell -NoProfile -Command "[System.IO.Directory]::CreateDirectory('data') | Out-Null; [System.IO.File]::WriteAllText('data\lumine.txt', 'X | 0 | invalid task')" & java -cp out\production\ip lumine.Lumine & del /q data\lumine.txt
+powershell -NoProfile -Command "[System.IO.Directory]::CreateDirectory('data') | Out-Null; [System.IO.File]::WriteAllText('data\lumine.txt', 'X | 0 | invalid task')" & java -cp build\classes\java\main lumine.Lumine & del /q data\lumine.txt
 ```
 
 Input:
@@ -580,7 +580,7 @@ Aim: Verify that pipes and backslashes in task descriptions are escaped when sav
 
 Command:
 ```text
-del /q data\lumine.txt 2>NUL & java -cp out\production\ip lumine.Lumine > NUL & type data\lumine.txt & del /q data\lumine.txt
+del /q data\lumine.txt 2>NUL & java -cp build\classes\java\main lumine.Lumine > NUL & type data\lumine.txt & del /q data\lumine.txt
 ```
 
 Input:
@@ -599,7 +599,7 @@ Aim: Verify that an unwritable save destination reports an error, rolls back the
 
 Command:
 ```text
-powershell -NoProfile -Command "[System.IO.Directory]::CreateDirectory('data\\lumine.txt') | Out-Null" & java -cp out\production\ip lumine.Lumine & powershell -NoProfile -Command "[System.IO.Directory]::Delete('data\\lumine.txt')"
+powershell -NoProfile -Command "[System.IO.Directory]::CreateDirectory('data\\lumine.txt') | Out-Null" & java -cp build\classes\java\main lumine.Lumine & powershell -NoProfile -Command "[System.IO.Directory]::Delete('data\\lumine.txt')"
 ```
 
 Input:
@@ -641,7 +641,7 @@ Aim: Verify that the find command returns tasks containing the given keyword and
 
 Command:
 ```text
-del /q data\lumine.txt 2>NUL & java -cp out\production\ip lumine.Lumine
+del /q data\lumine.txt 2>NUL & java -cp build\classes\java\main lumine.Lumine
 ```
 
 Input:

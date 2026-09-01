@@ -4,6 +4,7 @@ import lumine.command.Command;
 import lumine.parser.Parser;
 import lumine.storage.Storage;
 import lumine.task.TaskList;
+import lumine.ui.GuiUi;
 import lumine.ui.Ui;
 
 /**
@@ -19,6 +20,7 @@ public class Lumine {
     private Ui ui;
     private Parser parser;
     private String loadError;
+    private boolean isExitRequested;
 
     /**
      * Creates a new Lumine instance backed by the given save file.
@@ -66,6 +68,50 @@ public class Lumine {
             }
             ui.showSeparator();
         }
+    }
+
+    /**
+     * Returns Lumine's greeting and any task-load error for the GUI.
+     * The load error is shown only once because it applies to application startup.
+     *
+     * @return the greeting text for the conversation window.
+     */
+    public String getGreeting() {
+        GuiUi guiUi = new GuiUi();
+        guiUi.showGreetings();
+
+        if (loadError != null) {
+            guiUi.showMessage(loadError);
+            loadError = null;
+        }
+        return guiUi.getOutput();
+    }
+
+    /**
+     * Executes one user command and returns Lumine's response for the GUI.
+     *
+     * @param input the command entered in the conversation window.
+     * @return the response produced by the command or parser.
+     */
+    public String getResponse(String input) {
+        GuiUi guiUi = new GuiUi();
+        try {
+            Command command = parser.parse(input);
+            command.execute(taskList, guiUi, storage);
+            isExitRequested = command.isExit();
+        } catch (LumineException exception) {
+            guiUi.showMessage(exception.getMessage());
+        }
+        return guiUi.getOutput();
+    }
+
+    /**
+     * Returns whether the most recently processed command ended the session.
+     *
+     * @return whether Lumine has received an exit command.
+     */
+    public boolean isExitRequested() {
+        return isExitRequested;
     }
 
     /** Application entry point; starts a new Lumine session with the default save file. */
