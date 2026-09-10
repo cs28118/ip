@@ -1,8 +1,10 @@
 package lumine.task;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 
@@ -20,7 +22,7 @@ import lumine.LumineException;
  *   <li>Date + time "yyyy MM dd HHmm" (displayed as "MMM dd yyyy HH:mm")</li>
  * </ol>
  * The integration between {@link Event} and {@link TaskDateTime} is verified
- * through {@code toString}, {@code toFileString}, and {@code getToDate}.
+ * through {@code toString}, {@code toFileString}, {@code getToDate}, and {@code isDueOn}.
  */
 class EventTest {
 
@@ -127,6 +129,22 @@ class EventTest {
     void getToDate_dateTimeTo_returnsDatePortionOnly() {
         Event e = new Event("test", "2025 12 31 1400", "2025 12 31 1600");
         assertEquals(LocalDate.of(2025, 12, 31), e.getToDate());
+    }
+
+    @Test
+    void isDueOn_matchingEndDate_returnsTrue() {
+        Event event = new Event("test", "2026 01 01", "2026 01 02 1600");
+
+        assertTrue(event.isDueOn(LocalDate.of(2026, 1, 2)));
+    }
+
+    @Test
+    void isDueOn_startDateOrUnstructuredEndDate_returnsFalse() {
+        Event datedEvent = new Event("dated", "2026 01 01", "2026 01 02");
+        Event freeTextEvent = new Event("free text", "2026 01 01", "Friday");
+
+        assertFalse(datedEvent.isDueOn(LocalDate.of(2026, 1, 1)));
+        assertFalse(freeTextEvent.isDueOn(LocalDate.of(2026, 1, 1)));
     }
 
     // -------------------------------------------------------------------------

@@ -43,4 +43,9 @@ public class Deadline extends Task {
     public LocalDate getDueDate() {
         return deadline.toLocalDate();
     }
+
+    @Override
+    public boolean isDueOn(LocalDate date) {
+        return date != null && date.equals(deadline.toLocalDate());
+    }
 }

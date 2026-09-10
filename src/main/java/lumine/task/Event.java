@@ -48,4 +48,9 @@ public class Event extends Task {
     public LocalDate getToDate() {
         return endTime.toLocalDate();
     }
+
+    @Override
+    public boolean isDueOn(LocalDate date) {
+        return date != null && date.equals(endTime.toLocalDate());
+    }
 }
