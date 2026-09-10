@@ -1,6 +1,5 @@
 package lumine.command;
 
-import lumine.storage.Storage;
 import lumine.task.Task;
 import lumine.task.TaskList;
 import lumine.ui.Ui;
@@ -20,7 +19,7 @@ public class UnmarkCommand extends Command {
 
     /** Marks the task as incomplete and prints a confirmation message. */
     @Override
-    public void execute(TaskList taskList, Ui ui, Storage storage) {
+    public void execute(TaskList taskList, Ui ui) {
         Task task = taskList.markAsUndone(taskNumber);
         ui.showMessages("OK, I've marked this task as not done yet:", task.toString());
     }

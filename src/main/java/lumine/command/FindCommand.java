@@ -1,6 +1,5 @@
 package lumine.command;
 
-import lumine.storage.Storage;
 import lumine.task.TaskList;
 import lumine.ui.Ui;
 
@@ -21,7 +20,7 @@ public class FindCommand extends Command {
 
     /** Finds and displays all tasks that contain the search keyword. */
     @Override
-    public void execute(TaskList taskList, Ui ui, Storage storage) {
+    public void execute(TaskList taskList, Ui ui) {
         ui.showMessage(taskList.formatMatchingTasks(keyword));
     }
 }

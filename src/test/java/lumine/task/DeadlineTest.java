@@ -1,8 +1,10 @@
 package lumine.task;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 
@@ -13,14 +15,14 @@ import lumine.LumineException;
 /**
  * Tests for {@link Deadline}.
  *
- * <p>The key complexity in Deadline is its three-branch /by parsing:
+ * <p>The deadline value supports three representations:
  * <ol>
  *   <li>Plain text  (stored and displayed as-is)</li>
  *   <li>Date only   "yyyy MM dd" (displayed as "MMM dd yyyy")</li>
  *   <li>Date + time "yyyy MM dd HHmm" (displayed as "MMM dd yyyy HH:mm")</li>
  * </ol>
- * Each branch affects {@code toString}, {@code toFileString}, and
- * {@code getDueDate}, so all three outcomes are verified for each method.
+ * The integration between {@link Deadline} and {@link TaskDateTime} is verified
+ * through {@code toString}, {@code toFileString}, {@code getDueDate}, and {@code isDueOn}.
  */
 class DeadlineTest {
 
@@ -120,6 +122,22 @@ class DeadlineTest {
     void getDueDate_dateTimeBy_returnsDatePortionOnly() {
         Deadline d = new Deadline("test", "2026 01 01 1200");
         assertEquals(LocalDate.of(2026, 1, 1), d.getDueDate());
+    }
+
+    @Test
+    void isDueOn_matchingDate_returnsTrue() {
+        Deadline deadline = new Deadline("test", "2026 01 01 1200");
+
+        assertTrue(deadline.isDueOn(LocalDate.of(2026, 1, 1)));
+    }
+
+    @Test
+    void isDueOn_differentOrUnstructuredDate_returnsFalse() {
+        Deadline datedDeadline = new Deadline("dated", "2026 01 01");
+        Deadline freeTextDeadline = new Deadline("free text", "Monday");
+
+        assertFalse(datedDeadline.isDueOn(LocalDate.of(2026, 1, 2)));
+        assertFalse(freeTextDeadline.isDueOn(LocalDate.of(2026, 1, 1)));
     }
 
     // -------------------------------------------------------------------------
