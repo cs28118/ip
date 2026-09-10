@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import lumine.LumineException;
 import lumine.storage.Storage;
@@ -99,19 +101,15 @@ public class TaskList {
 
     /** Returns a formatted listing of tasks that contain the given keyword in their description. */
     public String formatMatchingTasks(String keyword) {
-        StringBuilder result = new StringBuilder("Here is the list of matching tasks:");
-        int matchCount = 0;
-        for (int i = 0; i < tasks.size(); i++) {
-            Task task = tasks.get(i);
-            if (task.description.contains(keyword)) {
-                result.append("\n").append(i + 1).append(".").append(task);
-                matchCount++;
-            }
-        }
-        if (matchCount == 0) {
+        String matchingTasks = IntStream.range(0, tasks.size())
+                .filter(i -> tasks.get(i).description.contains(keyword))
+                .mapToObj(i -> (i + 1) + "." + tasks.get(i))
+                .collect(Collectors.joining("\n"));
+
+        if (matchingTasks.isEmpty()) {
             return "No tasks match the keyword '" + keyword + "'.";
         } else {
-            return result.toString();
+            return "Here is the list of matching tasks:\n" + matchingTasks;
         }
     }
 

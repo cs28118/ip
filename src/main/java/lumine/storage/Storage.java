@@ -7,6 +7,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import lumine.LumineException;
 import lumine.task.Deadline;
@@ -92,15 +93,11 @@ public class Storage {
                 throw new LumineException(LOAD_ERROR);
             }
 
-            List<Task> tasks = new ArrayList<>();
             List<String> lines = Files.readAllLines(saveFile);
-            for (int i = 0; i < lines.size(); i++) {
-                String line = lines.get(i);
-                if (!line.isBlank()) {
-                    tasks.add(parseTask(line, i + 1));
-                }
-            }
-            return tasks;
+            return IntStream.range(0, lines.size())
+                    .filter(i -> !lines.get(i).isBlank())
+                    .mapToObj(i -> parseTask(lines.get(i), i + 1))
+                    .collect(Collectors.toCollection(ArrayList::new));
         } catch (IOException | SecurityException e) {
             throw new LumineException(LOAD_ERROR);
         }
