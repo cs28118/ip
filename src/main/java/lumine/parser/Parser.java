@@ -14,6 +14,7 @@ import lumine.command.ExitCommand;
 import lumine.command.FindCommand;
 import lumine.command.ListCommand;
 import lumine.command.MarkCommand;
+import lumine.command.UndoCommand;
 import lumine.command.UnmarkCommand;
 import lumine.task.Deadline;
 import lumine.task.Event;
@@ -42,6 +43,8 @@ public class Parser {
             return new ExitCommand();
         } else if (normalizedCommand.equals("list")) {
             return new ListCommand();
+        } else if (normalizedCommand.equals("undo")) {
+            return new UndoCommand();
         } else if (isCommand(normalizedCommand, "date")) {
             return new DateCommand(parseDateCommand(normalizedCommand));
         } else if (isCommand(normalizedCommand, "todo")) {

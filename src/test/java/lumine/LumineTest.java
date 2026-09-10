@@ -29,6 +29,63 @@ class LumineTest {
     }
 
     @Test
+    void getResponse_undoAddCommand_removesAddedTask() {
+        Lumine lumine = createLumine();
+        lumine.getResponse("todo read textbook");
+        lumine.getResponse("list");
+        lumine.getResponse("delete 99");
+
+        assertEquals("Done! I had undo the latest command. :D", lumine.getResponse("undo"));
+        assertEquals("Here are the tasks in your list:", lumine.getResponse("list"));
+
+        Lumine reloadedLumine = createLumine();
+        assertEquals("Here are the tasks in your list:", reloadedLumine.getResponse("list"));
+    }
+
+    @Test
+    void getResponse_undoDeleteCommand_restoresTaskAtOriginalPosition() {
+        Lumine lumine = createLumine();
+        lumine.getResponse("todo first task");
+        lumine.getResponse("todo second task");
+        lumine.getResponse("delete 1");
+
+        lumine.getResponse("undo");
+
+        assertEquals("Here are the tasks in your list:\n"
+                        + "1.[T][ ] first task\n"
+                        + "2.[T][ ] second task",
+                lumine.getResponse("list"));
+    }
+
+    @Test
+    void getResponse_undoMarkAndUnmarkCommands_restoresPreviousStatuses() {
+        Lumine lumine = createLumine();
+        lumine.getResponse("todo test task");
+        lumine.getResponse("mark 1");
+
+        lumine.getResponse("undo");
+        assertEquals("Here are the tasks in your list:\n1.[T][ ] test task",
+                lumine.getResponse("list"));
+
+        lumine.getResponse("mark 1");
+        lumine.getResponse("unmark 1");
+        lumine.getResponse("undo");
+        assertEquals("Here are the tasks in your list:\n1.[T][X] test task",
+                lumine.getResponse("list"));
+    }
+
+    @Test
+    void getResponse_undoWithoutPreviousChange_returnsError() {
+        Lumine lumine = createLumine();
+
+        assertEquals("Sorry, there is no command to undo. :C", lumine.getResponse("undo"));
+
+        lumine.getResponse("todo test task");
+        lumine.getResponse("undo");
+        assertEquals("Sorry, there is no command to undo. :C", lumine.getResponse("undo"));
+    }
+
+    @Test
     void getResponse_exitCommand_returnsFarewellAndRequestsExit() {
         Lumine lumine = createLumine();
 

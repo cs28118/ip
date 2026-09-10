@@ -13,15 +13,21 @@ import lumine.storage.Storage;
 /**
  * Manages the in-memory list of tasks and keeps storage in sync after every change.
  *
- * <p>All mutating operations ({@link #addTask}, {@link #markAsDone}, {@link #markAsUndone},
- * {@link #deleteTask}) save the list to disk atomically and roll back the in-memory
- * state if saving fails, so the two sources of truth never diverge.</p>
+ * <p>All mutating operations ({@link #addTask}, {@link #markAsDone},
+ * {@link #markAsUndone}, {@link #deleteTask}, {@link #undoLastChange}) save
+ * the list to disk atomically and roll back the in-memory state if saving fails,
+ * so the two sources of truth never diverge.</p>
  */
 public class TaskList {
     private static final DateTimeFormatter DATE_COMMAND_FORMAT =
             DateTimeFormatter.ofPattern("uuuu MM dd");
     private final Storage storage;
     private final List<Task> tasks = new ArrayList<>();
+    private UndoAction lastUndoAction;
+
+    /** Stores how to reverse and restore the most recent successful change. */
+    private record UndoAction(Runnable undoChange, Runnable redoChange) {
+    }
 
     /**
      * Constructs a task list containing the tasks saved in the given storage.
@@ -58,6 +64,7 @@ public class TaskList {
         if (task == null) {
             throw new LumineException("Sorry, task cannot be empty. :C");
         }
+        int taskIndex = tasks.size();
         tasks.add(task);
         assert tasks.getLast() == task : "New task must be appended to the task list";
         try {
@@ -67,6 +74,9 @@ public class TaskList {
             assert rolledBackTask == task : "Add rollback must remove the task that was just appended";
             throw e;
         }
+        Runnable undoChange = () -> tasks.remove(taskIndex);
+        Runnable redoChange = () -> tasks.add(taskIndex, task);
+        lastUndoAction = new UndoAction(undoChange, redoChange);
     }
 
     /** Returns a formatted listing of all tasks. */
@@ -136,6 +146,14 @@ public class TaskList {
             assert task.isDone == wasDone : "Failed mark must restore the previous task state";
             throw e;
         }
+        Runnable undoChange = () -> {
+            if (wasDone) {
+                task.markDone();
+            } else {
+                task.markUndone();
+            }
+        };
+        lastUndoAction = new UndoAction(undoChange, task::markDone);
         return task;
     }
 
@@ -163,6 +181,14 @@ public class TaskList {
             assert task.isDone == wasDone : "Failed unmark must restore the previous task state";
             throw e;
         }
+        Runnable undoChange = () -> {
+            if (wasDone) {
+                task.markDone();
+            } else {
+                task.markUndone();
+            }
+        };
+        lastUndoAction = new UndoAction(undoChange, task::markUndone);
         return task;
     }
 
@@ -189,7 +215,32 @@ public class TaskList {
             assert tasks.get(taskIndex) == removedTask : "Failed delete must restore the removed task";
             throw e;
         }
+        Runnable undoChange = () -> tasks.add(taskIndex, removedTask);
+        Runnable redoChange = () -> tasks.remove(taskIndex);
+        lastUndoAction = new UndoAction(undoChange, redoChange);
         return removedTask;
+    }
+
+    /**
+     * Reverses and saves the most recent successful task-list change.
+     * If saving fails, the undo is rolled back so memory and disk remain consistent.
+     *
+     * @throws LumineException if there is no change to undo or storage cannot be written
+     */
+    public void undoLastChange() {
+        if (lastUndoAction == null) {
+            throw new LumineException("Sorry, there is no command to undo. :C");
+        }
+
+        UndoAction undoAction = lastUndoAction;
+        undoAction.undoChange().run();
+        try {
+            saveTasks();
+        } catch (LumineException e) {
+            undoAction.redoChange().run();
+            throw e;
+        }
+        lastUndoAction = null;
     }
 
     /** Returns the number of tasks currently in the list. */
