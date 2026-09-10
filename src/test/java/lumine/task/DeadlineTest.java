@@ -13,14 +13,14 @@ import lumine.LumineException;
 /**
  * Tests for {@link Deadline}.
  *
- * <p>The key complexity in Deadline is its three-branch /by parsing:
+ * <p>The deadline value supports three representations:
  * <ol>
  *   <li>Plain text  (stored and displayed as-is)</li>
  *   <li>Date only   "yyyy MM dd" (displayed as "MMM dd yyyy")</li>
  *   <li>Date + time "yyyy MM dd HHmm" (displayed as "MMM dd yyyy HH:mm")</li>
  * </ol>
- * Each branch affects {@code toString}, {@code toFileString}, and
- * {@code getDueDate}, so all three outcomes are verified for each method.
+ * The integration between {@link Deadline} and {@link TaskDateTime} is verified
+ * through {@code toString}, {@code toFileString}, and {@code getDueDate}.
  */
 class DeadlineTest {
 

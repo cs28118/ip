@@ -13,15 +13,14 @@ import lumine.LumineException;
 /**
  * Tests for {@link Event}.
  *
- * <p>Like Deadline, Event has a three-branch datetime parser applied
- * independently to both the /from and /to fields:
+ * <p>Each event time supports three representations:
  * <ol>
  *   <li>Plain text  (stored and displayed as-is)</li>
  *   <li>Date only   "yyyy MM dd" (displayed as "MMM dd yyyy")</li>
  *   <li>Date + time "yyyy MM dd HHmm" (displayed as "MMM dd yyyy HH:mm")</li>
  * </ol>
- * Each branch affects {@code toString}, {@code toFileString}, and
- * {@code getToDate}.
+ * The integration between {@link Event} and {@link TaskDateTime} is verified
+ * through {@code toString}, {@code toFileString}, and {@code getToDate}.
  */
 class EventTest {
 
