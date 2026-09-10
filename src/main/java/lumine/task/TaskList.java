@@ -39,9 +39,11 @@ public class TaskList {
      * @param loadSavedTasks whether to load tasks from storage
      */
     public TaskList(Storage storage, boolean loadSavedTasks) {
+        assert storage != null : "Task list storage must not be null";
         this.storage = storage;
         if (loadSavedTasks) {
             tasks.addAll(storage.load());
+            assert tasks.stream().noneMatch(task -> task == null) : "Loaded task list must not contain null";
         }
     }
 
@@ -57,10 +59,12 @@ public class TaskList {
             throw new LumineException("Sorry, task cannot be empty. :C");
         }
         tasks.add(task);
+        assert tasks.getLast() == task : "New task must be appended to the task list";
         try {
             saveTasks();
         } catch (LumineException e) {
-            tasks.removeLast();
+            Task rolledBackTask = tasks.removeLast();
+            assert rolledBackTask == task : "Add rollback must remove the task that was just appended";
             throw e;
         }
     }
@@ -77,6 +81,7 @@ public class TaskList {
 
     /** Returns a formatted listing of pending deadlines and events due on the given date. */
     public String formatTasksDueOn(LocalDate date) {
+        assert date != null : "Date filter must not be null";
         String formattedDate = date.format(DATE_COMMAND_FORMAT);
         StringBuilder result = new StringBuilder("Here is your list of pending task due on ")
                 .append(formattedDate).append(":");
@@ -123,10 +128,12 @@ public class TaskList {
         Task task = tasks.get(taskNumber - 1);
         boolean wasDone = task.isDone;
         task.markDone();
+        assert task.isDone : "Task must be done after it is marked";
         try {
             saveTasks();
         } catch (LumineException e) {
             task.isDone = wasDone;
+            assert task.isDone == wasDone : "Failed mark must restore the previous task state";
             throw e;
         }
         return task;
@@ -148,10 +155,12 @@ public class TaskList {
         Task task = tasks.get(taskNumber - 1);
         boolean wasDone = task.isDone;
         task.markUndone();
+        assert !task.isDone : "Task must be undone after it is unmarked";
         try {
             saveTasks();
         } catch (LumineException e) {
             task.isDone = wasDone;
+            assert task.isDone == wasDone : "Failed unmark must restore the previous task state";
             throw e;
         }
         return task;
@@ -172,10 +181,12 @@ public class TaskList {
 
         int taskIndex = taskNumber - 1;
         Task removedTask = tasks.remove(taskIndex);
+        assert removedTask != null : "Deleted task must not be null";
         try {
             saveTasks();
         } catch (LumineException e) {
             tasks.add(taskIndex, removedTask);
+            assert tasks.get(taskIndex) == removedTask : "Failed delete must restore the removed task";
             throw e;
         }
         return removedTask;
@@ -188,6 +199,7 @@ public class TaskList {
 
     /** Persists the current task list to storage; called after every mutating operation. */
     private void saveTasks() {
+        assert tasks.stream().noneMatch(task -> task == null) : "Task list must not contain null before saving";
         storage.save(tasks);
     }
 }
