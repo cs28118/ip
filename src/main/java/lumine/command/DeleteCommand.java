@@ -1,6 +1,5 @@
 package lumine.command;
 
-import lumine.storage.Storage;
 import lumine.task.Task;
 import lumine.task.TaskList;
 import lumine.ui.Ui;
@@ -20,7 +19,7 @@ public class DeleteCommand extends Command {
 
     /** Removes the task and prints a confirmation with the updated list size. */
     @Override
-    public void execute(TaskList taskList, Ui ui, Storage storage) {
+    public void execute(TaskList taskList, Ui ui) {
         Task task = taskList.deleteTask(taskNumber);
         ui.showMessages(
                 "Noted. I've removed this task:",
