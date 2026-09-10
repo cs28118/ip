@@ -1,5 +1,7 @@
 package lumine.task;
 
+import java.time.LocalDate;
+
 import lumine.LumineException;
 
 /**
@@ -55,6 +57,17 @@ public class Task {
      */
     public String getStatusIcon() {
         return isDone ? "X" : " ";
+    }
+
+    /**
+     * Returns whether this task is due on the given date.
+     * Tasks without a due date return {@code false}.
+     *
+     * @param date Date to compare against.
+     * @return {@code true} if this task is due on the given date.
+     */
+    public boolean isDueOn(LocalDate date) {
+        return false;
     }
 
     /**

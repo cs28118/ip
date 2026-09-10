@@ -1,6 +1,5 @@
 package lumine.command;
 
-import lumine.storage.Storage;
 import lumine.task.Task;
 import lumine.task.TaskList;
 import lumine.ui.Ui;
@@ -20,7 +19,7 @@ public class MarkCommand extends Command {
 
     /** Marks the task done and prints a confirmation message. */
     @Override
-    public void execute(TaskList taskList, Ui ui, Storage storage) {
+    public void execute(TaskList taskList, Ui ui) {
         Task task = taskList.markAsDone(taskNumber);
         ui.showMessages("Nice! I've marked this task as done:", task.toString());
     }

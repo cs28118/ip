@@ -1,6 +1,5 @@
 package lumine.command;
 
-import lumine.storage.Storage;
 import lumine.task.TaskList;
 import lumine.ui.Ui;
 
@@ -9,7 +8,7 @@ public class ExitCommand extends Command {
 
     /** Displays the farewell message before the application shuts down. */
     @Override
-    public void execute(TaskList taskList, Ui ui, Storage storage) {
+    public void execute(TaskList taskList, Ui ui) {
         ui.showExit();
     }
 

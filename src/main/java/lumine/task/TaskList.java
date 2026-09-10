@@ -82,13 +82,7 @@ public class TaskList {
                 .append(formattedDate).append(":");
         int matchCount = 0;
         for (Task task : tasks) {
-            boolean matches = false;
-            if (!task.isDone && task instanceof Deadline deadline) {
-                matches = date.equals(deadline.getDueDate());
-            } else if (!task.isDone && task instanceof Event event) {
-                matches = date.equals(event.getToDate());
-            }
-            if (matches) {
+            if (!task.isDone && task.isDueOn(date)) {
                 result.append("\n").append(++matchCount).append(".").append(task);
             }
         }

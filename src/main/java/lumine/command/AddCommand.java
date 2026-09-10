@@ -1,6 +1,5 @@
 package lumine.command;
 
-import lumine.storage.Storage;
 import lumine.task.Task;
 import lumine.task.TaskList;
 import lumine.ui.Ui;
@@ -20,7 +19,7 @@ public class AddCommand extends Command {
 
     /** Adds the task, then prints a confirmation message with the updated list size. */
     @Override
-    public void execute(TaskList taskList, Ui ui, Storage storage) {
+    public void execute(TaskList taskList, Ui ui) {
         taskList.addTask(task);
         ui.showMessage("Got it. I've added this task:\n  "
                 + task + "\nNow, you have " + taskList.size() + " tasks in the list.");

@@ -1,0 +1,86 @@
+package lumine.task;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
+import java.util.Locale;
+
+/**
+ * Represents a task date or time that may remain as free-form text.
+ * Structured date values are formatted consistently for storage and display.
+ */
+final class TaskDateTime {
+    private static final String DATE_REGEX = "\\d{4} \\d{2} \\d{2}";
+    private static final String DATE_TIME_REGEX = "\\d{4} \\d{2} \\d{2} \\d{4}";
+    private static final DateTimeFormatter INPUT_DATE_FORMAT = DateTimeFormatter
+            .ofPattern("uuuu MM dd")
+            .withResolverStyle(ResolverStyle.STRICT);
+    private static final DateTimeFormatter INPUT_DATE_TIME_FORMAT = DateTimeFormatter
+            .ofPattern("uuuu MM dd HHmm")
+            .withResolverStyle(ResolverStyle.STRICT);
+    private static final DateTimeFormatter DISPLAY_DATE_FORMAT = DateTimeFormatter
+            .ofPattern("MMM dd uuuu", Locale.ENGLISH);
+    private static final DateTimeFormatter DISPLAY_DATE_TIME_FORMAT = DateTimeFormatter
+            .ofPattern("MMM dd uuuu HH:mm", Locale.ENGLISH);
+
+    private final String rawText;
+    private final LocalDate date;
+    private final LocalDateTime dateTime;
+
+    /**
+     * Creates a task date-time value, parsing recognized structured formats.
+     * Invalid or unrecognized values are retained as free-form text.
+     *
+     * @param rawText Validated non-blank task date-time text.
+     */
+    TaskDateTime(String rawText) {
+        this.rawText = rawText;
+
+        LocalDate parsedDate = null;
+        LocalDateTime parsedDateTime = null;
+        String normalizedText = rawText.replaceAll("\\s+", " ");
+        try {
+            if (normalizedText.matches(DATE_REGEX)) {
+                parsedDate = LocalDate.parse(normalizedText, INPUT_DATE_FORMAT);
+            } else if (normalizedText.matches(DATE_TIME_REGEX)) {
+                parsedDateTime = LocalDateTime.parse(normalizedText, INPUT_DATE_TIME_FORMAT);
+            }
+        } catch (DateTimeParseException ignored) {
+            // Invalid calendar values are valid free-form text, so preserve the original value.
+        }
+        this.date = parsedDate;
+        this.dateTime = parsedDateTime;
+    }
+
+    /** Returns the canonical structured value or the original free-form text for storage. */
+    String formatForStorage() {
+        if (dateTime != null) {
+            return dateTime.format(INPUT_DATE_TIME_FORMAT);
+        }
+        if (date != null) {
+            return date.format(INPUT_DATE_FORMAT);
+        }
+        return rawText;
+    }
+
+    /** Returns a human-readable structured value or the original free-form text. */
+    String formatForDisplay() {
+        if (dateTime != null) {
+            return dateTime.format(DISPLAY_DATE_TIME_FORMAT);
+        }
+        if (date != null) {
+            return date.format(DISPLAY_DATE_FORMAT);
+        }
+        return rawText;
+    }
+
+    /** Returns the represented calendar date, or null when the value is free-form text. */
+    LocalDate toLocalDate() {
+        if (dateTime != null) {
+            return dateTime.toLocalDate();
+        }
+        return date;
+    }
+}

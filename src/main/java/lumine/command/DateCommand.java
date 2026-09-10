@@ -2,7 +2,6 @@ package lumine.command;
 
 import java.time.LocalDate;
 
-import lumine.storage.Storage;
 import lumine.task.TaskList;
 import lumine.ui.Ui;
 
@@ -21,7 +20,7 @@ public class DateCommand extends Command {
 
     /** Displays pending deadlines and events whose end date matches the stored date. */
     @Override
-    public void execute(TaskList taskList, Ui ui, Storage storage) {
+    public void execute(TaskList taskList, Ui ui) {
         ui.showMessage(taskList.formatTasksDueOn(date));
     }
 }

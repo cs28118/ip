@@ -1,12 +1,6 @@
 package lumine.task;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.time.format.ResolverStyle;
-import java.util.Locale;
-
 
 /**
  * A task that must be completed by a specific deadline.
@@ -16,32 +10,18 @@ import java.util.Locale;
  * construction and formatted nicely for display (e.g. {@code Nov 09 2019 18:00}).</p>
  */
 public class Deadline extends Task {
-    private static final DateTimeFormatter INPUT_DATE_FORMAT = DateTimeFormatter
-            .ofPattern("uuuu MM dd")
-            .withResolverStyle(ResolverStyle.STRICT);
-    private static final DateTimeFormatter INPUT_DATE_TIME_FORMAT = DateTimeFormatter
-            .ofPattern("uuuu MM dd HHmm")
-            .withResolverStyle(ResolverStyle.STRICT);
-    private static final DateTimeFormatter DISPLAY_DATE_FORMAT = DateTimeFormatter
-            .ofPattern("MMM dd uuuu", Locale.ENGLISH);
-    private static final DateTimeFormatter DISPLAY_DATE_TIME_FORMAT = DateTimeFormatter
-            .ofPattern("MMM dd uuuu HH:mm", Locale.ENGLISH);
-
-    protected String by;
-    private LocalDate dueDate;
-    private LocalDateTime dueDateTime;
+    private final TaskDateTime deadline;
 
     /**
      * Creates a new deadline task.
      *
-     * @param description the task description (must not be blank)
+     * @param description The task description (must not be blank).
      * @param by          the deadline string; may be free text, {@code yyyy MM dd},
-     *                    or {@code yyyy MM dd HHmm}
+     *                    or {@code yyyy MM dd HHmm}.
      */
     public Deadline(String description, String by) {
         super(description, TaskType.DEADLINE);
-        this.by = requireText(by, "deadline time");
-        parseDateTime();
+        this.deadline = new TaskDateTime(requireText(by, "deadline time"));
     }
 
     /**
@@ -50,70 +30,22 @@ public class Deadline extends Task {
      */
     @Override
     public String toFileString() {
-        return super.toFileString() + " | " + escapeStorageField(getStorageDeadline());
+        return super.toFileString() + " | " + escapeStorageField(deadline.formatForStorage());
     }
 
     /** Returns the human-readable representation, appending {@code (by: <deadline>)}. */
     @Override
     public String toString() {
-        return super.toString() + " (by: " + getDisplayDeadline() + ")";
-    }
-
-
-    /**
-     * Attempts to parse {@link #by} as a structured date ({@code yyyy MM dd})
-     * or date-time ({@code yyyy MM dd HHmm}).  If parsing fails or the format
-     * is unrecognised, {@code dueDate} and {@code dueDateTime} remain {@code null}
-     * and the raw text is kept as-is for display.
-     */
-    private void parseDateTime() {
-        String normalizedBy = by.replaceAll("\\s+", " ");
-        try {
-            if (normalizedBy.matches("\\d{4} \\d{2} \\d{2}")) {
-                dueDate = LocalDate.parse(normalizedBy, INPUT_DATE_FORMAT);
-            } else if (normalizedBy.matches("\\d{4} \\d{2} \\d{2} \\d{4}")) {
-                dueDateTime = LocalDateTime.parse(normalizedBy, INPUT_DATE_TIME_FORMAT);
-            }
-        } catch (DateTimeParseException ignored) {
-            // Ignored
-        }
-    }
-
-    /**
-     * Returns the deadline value normalised to canonical input format for storage
-     * (e.g. {@code 2019 11 09} or {@code 2019 11 09 1800}), or the raw {@link #by}
-     * string when no structured date was parsed.
-     */
-    private String getStorageDeadline() {
-        if (dueDateTime != null) {
-            return dueDateTime.format(INPUT_DATE_TIME_FORMAT);
-        }
-        if (dueDate != null) {
-            return dueDate.format(INPUT_DATE_FORMAT);
-        }
-        return by;
-    }
-
-    /**
-     * Returns the deadline formatted for display to the user
-     * (e.g. {@code Nov 09 2019} or {@code Nov 09 2019 18:00}), or the raw
-     * {@link #by} string when no structured date was parsed.
-     */
-    private String getDisplayDeadline() {
-        if (dueDateTime != null) {
-            return dueDateTime.format(DISPLAY_DATE_TIME_FORMAT);
-        }
-        if (dueDate != null) {
-            return dueDate.format(DISPLAY_DATE_FORMAT);
-        }
-        return by;
+        return super.toString() + " (by: " + deadline.formatForDisplay() + ")";
     }
 
     /** Returns the calendar date of this deadline, or null when it is plain text. */
     public LocalDate getDueDate() {
-        if (dueDateTime != null) {
-            return dueDateTime.toLocalDate();
-        }
-        return dueDate;
+        return deadline.toLocalDate();
+    }
+
+    @Override
+    public boolean isDueOn(LocalDate date) {
+        return date != null && date.equals(deadline.toLocalDate());
     }
 }
