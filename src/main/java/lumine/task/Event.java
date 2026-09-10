@@ -91,6 +91,11 @@ public class Event extends Task {
         } catch (DateTimeParseException ignored) {
             // Ignored
         }
+
+        assert fromDate == null || fromDateTime == null
+                : "Event start cannot have both date-only and date-time representations";
+        assert toDate == null || toDateTime == null
+                : "Event end cannot have both date-only and date-time representations";
     }
 
     /**

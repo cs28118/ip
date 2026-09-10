@@ -56,6 +56,11 @@ class ParserTest {
         assertEquals("", parser.normalize("  "));
     }
 
+    @Test
+    void normalize_nullCommand_throwsAssertionError() {
+        assertThrows(AssertionError.class, () -> parser.normalize(null));
+    }
+
     // -------------------------------------------------------------------------
     // isCommand parser
     // -------------------------------------------------------------------------
@@ -80,6 +85,16 @@ class ParserTest {
         assertFalse(parser.isCommand("todoX test", "todo"));
     }
 
+    @Test
+    void isCommand_nullCommand_throwsAssertionError() {
+        assertThrows(AssertionError.class, () -> parser.isCommand(null, "todo"));
+    }
+
+    @Test
+    void isCommand_blankCommandName_throwsAssertionError() {
+        assertThrows(AssertionError.class, () -> parser.isCommand("todo test", " "));
+    }
+
     // -------------------------------------------------------------------------
     // parseTaskNumber parser
     // -------------------------------------------------------------------------
@@ -97,6 +112,16 @@ class ParserTest {
     @Test
     void parseTaskNumber_emptyArgument_throwsLumineException() {
         assertThrows(LumineException.class, () -> parser.parseTaskNumber("mark", "mark"));
+    }
+
+    @Test
+    void parseTaskNumber_mismatchedCommand_throwsAssertionError() {
+        assertThrows(AssertionError.class, () -> parser.parseTaskNumber("delete 1", "mark"));
+    }
+
+    @Test
+    void parseTaskNumber_unsupportedCommandName_throwsAssertionError() {
+        assertThrows(AssertionError.class, () -> parser.parseTaskNumber("list 1", "list"));
     }
 
     // -------------------------------------------------------------------------
@@ -123,6 +148,11 @@ class ParserTest {
     @Test
     void parseTodoCommand_whitespaceOnlyDescription_throwsLumineException() {
         assertThrows(LumineException.class, () -> parser.parseTodoCommand("todo   "));
+    }
+
+    @Test
+    void parseTodoCommand_wrongCommand_throwsAssertionError() {
+        assertThrows(AssertionError.class, () -> parser.parseTodoCommand("find test"));
     }
 
     // -------------------------------------------------------------------------
@@ -154,6 +184,11 @@ class ParserTest {
     @Test
     void parseDeadlineCommand_emptyByValue_throwsLumineException() {
         assertThrows(LumineException.class, () -> parser.parseDeadlineCommand("deadline test /by"));
+    }
+
+    @Test
+    void parseDeadlineCommand_wrongCommand_throwsAssertionError() {
+        assertThrows(AssertionError.class, () -> parser.parseDeadlineCommand("todo test"));
     }
 
     // -------------------------------------------------------------------------
@@ -191,6 +226,11 @@ class ParserTest {
         assertThrows(LumineException.class, () -> parser.parseEventCommand("event test /from Mon 2pm /to"));
     }
 
+    @Test
+    void parseEventCommand_wrongCommand_throwsAssertionError() {
+        assertThrows(AssertionError.class, () -> parser.parseEventCommand("todo test"));
+    }
+
     // -------------------------------------------------------------------------
     // parseDateCommand parser
     // -------------------------------------------------------------------------
@@ -216,6 +256,11 @@ class ParserTest {
         assertThrows(LumineException.class, () -> parser.parseDateCommand("date"));
     }
 
+    @Test
+    void parseDateCommand_wrongCommand_throwsAssertionError() {
+        assertThrows(AssertionError.class, () -> parser.parseDateCommand("todo test"));
+    }
+
     // -------------------------------------------------------------------------
     // parseFindCommand parser
     // -------------------------------------------------------------------------
@@ -229,6 +274,11 @@ class ParserTest {
     void parseFindCommand_emptyKeyword_throwsLumineException() {
         assertThrows(LumineException.class, () -> parser.parseFindCommand("find"));
         assertThrows(LumineException.class, () -> parser.parseFindCommand("find   "));
+    }
+
+    @Test
+    void parseFindCommand_wrongCommand_throwsAssertionError() {
+        assertThrows(AssertionError.class, () -> parser.parseFindCommand("todo test"));
     }
 
     /* --------------------------------Commands-------------------------------- */

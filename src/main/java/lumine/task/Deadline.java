@@ -77,6 +77,8 @@ public class Deadline extends Task {
         } catch (DateTimeParseException ignored) {
             // Ignored
         }
+        assert dueDate == null || dueDateTime == null
+                : "Deadline cannot have both date-only and date-time representations";
     }
 
     /**

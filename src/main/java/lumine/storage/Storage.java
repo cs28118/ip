@@ -118,6 +118,7 @@ public class Storage {
      * @throws LumineException if the line is malformed or the type symbol is unknown
      */
     private Task parseTask(String line, int lineNumber) {
+        assert lineNumber > 0 : "Storage line number must be positive";
         List<String> parts = splitFields(line, lineNumber);
         if (parts.size() < 3 || (!parts.get(1).equals("0") && !parts.get(1).equals("1"))) {
             throw invalidLine(lineNumber);
@@ -145,6 +146,7 @@ public class Storage {
             }
             default -> throw invalidLine(lineNumber);
         };
+        assert task != null : "A valid storage line must produce a task";
 
         if (parts.get(1).equals("1")) {
             task.markDone();
@@ -166,6 +168,8 @@ public class Storage {
      * @throws LumineException if the line ends with an unmatched backslash
      */
     private List<String> splitFields(String line, int lineNumber) {
+        assert line != null : "Storage line must not be null";
+        assert lineNumber > 0 : "Storage line number must be positive";
         List<String> fields = new ArrayList<>();
         StringBuilder field = new StringBuilder();
         boolean escaped = false;
