@@ -1,12 +1,11 @@
 package lumine.command;
 
-import lumine.storage.Storage;
 import lumine.task.TaskList;
 import lumine.ui.Ui;
 
 /**
  * Represents a user command that can be executed against the application's
- * task list, UI, and storage components.
+ * task list and UI components.
  *
  * <p>Each concrete subclass encapsulates one type of user action
  * (e.g., adding a task, deleting a task, exiting). This lets the main
@@ -19,9 +18,8 @@ public abstract class Command {
      *
      * @param taskList the task list to operate on
      * @param ui       the UI to display output through
-     * @param storage  the storage (available for future use by subclasses)
      */
-    public abstract void execute(TaskList taskList, Ui ui, Storage storage);
+    public abstract void execute(TaskList taskList, Ui ui);
 
     /**
      * Returns whether the application should exit after this command.

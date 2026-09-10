@@ -1,7 +1,10 @@
 package lumine.task;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 
@@ -132,6 +135,13 @@ class TaskTest {
         todo.markDone();
         todo.markUndone();
         assertEquals(" ", todo.getStatusIcon());
+    }
+
+    @Test
+    void isDueOn_todo_returnsFalse() {
+        Todo todo = new Todo("read book");
+
+        assertFalse(todo.isDueOn(LocalDate.of(2026, 1, 1)));
     }
 
     // -------------------------------------------------------------------------

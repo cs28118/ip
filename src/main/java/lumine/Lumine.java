@@ -15,7 +15,6 @@ import lumine.ui.Ui;
  * until the user exits.</p>
  */
 public class Lumine {
-    private Storage storage;
     private TaskList taskList;
     private Ui ui;
     private Parser parser;
@@ -32,7 +31,7 @@ public class Lumine {
     public Lumine(String filePath) {
         ui = new Ui();
         parser = new Parser();
-        storage = new Storage(filePath);
+        Storage storage = new Storage(filePath);
         try {
             taskList = new TaskList(storage);
         } catch (LumineException e) {
@@ -61,7 +60,7 @@ public class Lumine {
             ui.showSeparator();
             try {
                 Command command = parser.parse(fullCommand);
-                command.execute(taskList, ui, storage);
+                command.execute(taskList, ui);
                 isExit = command.isExit();
             } catch (LumineException e) {
                 ui.showMessage(e.getMessage());
@@ -97,7 +96,7 @@ public class Lumine {
         GuiUi guiUi = new GuiUi();
         try {
             Command command = parser.parse(input);
-            command.execute(taskList, guiUi, storage);
+            command.execute(taskList, guiUi);
             isExitRequested = command.isExit();
         } catch (LumineException exception) {
             guiUi.showMessage(exception.getMessage());
