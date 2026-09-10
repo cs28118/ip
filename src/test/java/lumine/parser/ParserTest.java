@@ -19,6 +19,7 @@ import lumine.command.ExitCommand;
 import lumine.command.FindCommand;
 import lumine.command.ListCommand;
 import lumine.command.MarkCommand;
+import lumine.command.UndoCommand;
 import lumine.command.UnmarkCommand;
 import lumine.task.Deadline;
 import lumine.task.Event;
@@ -301,6 +302,16 @@ class ParserTest {
     void parse_listCommand_returnsListCommand() {
         assertInstanceOf(ListCommand.class, parser.parse("list"));
         assertInstanceOf(ListCommand.class, parser.parse(" list "));
+    }
+
+    // -------------------------------------------------------------------------
+    // undoCommand parser
+    // -------------------------------------------------------------------------
+
+    @Test
+    void parse_undoCommand_returnsUndoCommand() {
+        assertInstanceOf(UndoCommand.class, parser.parse("undo"));
+        assertInstanceOf(UndoCommand.class, parser.parse("  undo  "));
     }
 
     // -------------------------------------------------------------------------

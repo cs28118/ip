@@ -703,3 +703,57 @@ ____________________________________________________________
 Bye. Hope to see you again soon!
 ____________________________________________________________
 ```
+
+### Test Case: Undo the most recent task-list change
+Aim: Verify that `undo` reverses the most recent successful change, ignores intervening read-only commands, persists the reverted list, and reports when no further change can be undone.
+
+Command:
+```text
+del /q data\lumine.txt 2>NUL & java -cp build\classes\java\main lumine.Lumine
+```
+
+Input:
+```text
+todo temporary task
+list
+undo
+list
+undo
+bye
+```
+
+Expected output:
+```text
+____________________________________________________________
+ ___      __   __  __   __  ___   __    _  _______ 
+|   |    |  | |  ||  |_|  ||   | |  |  | ||       |
+|   |    |  | |  ||       ||   | |   |_| ||    ___|
+|   |    |  |_|  ||       ||   | |       ||   |___ 
+|   |___ |       ||       ||   | |  _    ||    ___|
+|       ||       || ||_|| ||   | | | |   ||   |___ 
+|_______||_______||_|   |_||___| |_|  |__||_______|
+Hello, I'm Lumine!
+What can I do for you today?
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] temporary task
+Now, you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] temporary task
+____________________________________________________________
+____________________________________________________________
+Done! I had undo the latest command. :D
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+____________________________________________________________
+____________________________________________________________
+Sorry, there is no command to undo. :C
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
