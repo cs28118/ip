@@ -3,7 +3,7 @@ package lumine.task;
 import java.time.LocalDate;
 
 /**
- * A task that must be completed by a specific deadline.
+ * Represents a task that must be completed by a specific deadline.
  *
  * <p>The deadline can be a free-text string, a calendar date ({@code yyyy MM dd}),
  * or a date-time ({@code yyyy MM dd HHmm}).  Structured values are parsed on

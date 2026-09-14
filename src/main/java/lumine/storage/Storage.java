@@ -18,9 +18,9 @@ import lumine.task.Todo;
 /**
  * Handles reading and writing the task list to a plain-text file on disk.
  *
- * <p>Each task is stored as a single pipe-delimited line.  Saves are crash-safe:
- * a temporary file is written first and then renamed into place, so a failure
- * mid-write leaves the original file intact rather than corrupting it.</p>
+ * <p>Each task is stored as a single pipe-delimited line. Saves are written to
+ * a temporary file before that file replaces the existing save file, so a
+ * failure while writing does not truncate the existing file.</p>
  */
 public class Storage {
     //Error: not loaded
@@ -40,8 +40,8 @@ public class Storage {
 
     /**
      * Persists the given task list to disk, replacing any previous save file.
-     * The save is crash-safe: a temporary file is written first and then renamed
-     * into place, so a failure mid-write leaves the original file intact.
+     * Writes to a temporary file before replacing the save file, so a write
+     * failure does not truncate the existing file.
      *
      * @param tasks the list of tasks to save (must not be {@code null} or contain {@code null}).
      * @throws LumineException if the list is invalid or an I/O error occurs.
@@ -53,7 +53,10 @@ public class Storage {
 
         Path temporaryFile = null;
         try {
-            Path parent = saveFile.getParent();
+            Path parent = saveFile.toAbsolutePath().getParent();
+            if (parent == null) {
+                throw new IOException("Save path has no parent directory");
+            }
             Files.createDirectories(parent);
             if (Files.exists(saveFile) && !Files.isRegularFile(saveFile)) {
                 throw new IOException("Save path is not a regular file");
@@ -109,7 +112,7 @@ public class Storage {
      * the second is the done flag ({@code 0} or {@code 1}), and the remaining
      * fields are task-type-specific.
      *
-     * @param line       the raw line text (already unescaped by {@link #splitFields}).
+     * @param line       the raw pipe-delimited line text to split and parse.
      * @param lineNumber 1-based line number, used in error messages.
      * @return the reconstructed {@link Task}.
      * @throws LumineException if the line is malformed or the type symbol is unknown.

@@ -3,7 +3,7 @@ package lumine.task;
 import java.time.LocalDate;
 
 /**
- * A task that spans a time range, with an explicit start ({@code /from}) and
+ * Represents a task that spans a time range, with an explicit start ({@code /from}) and
  * end ({@code /to}) time.
  *
  * <p>Each time field can be free text, a calendar date ({@code yyyy MM dd}),

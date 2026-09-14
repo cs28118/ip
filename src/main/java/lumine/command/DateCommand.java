@@ -5,7 +5,9 @@ import java.time.LocalDate;
 import lumine.task.TaskList;
 import lumine.ui.Ui;
 
-/** Command that lists pending tasks due on a given date. */
+/**
+ * Lists pending tasks due on a given date.
+ */
 public class DateCommand extends Command {
     private final LocalDate date;
 

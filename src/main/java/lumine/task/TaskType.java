@@ -1,7 +1,8 @@
 package lumine.task;
+
 /**
- * The type of a task, each identified by a single-character symbol used in
- * the display and storage formats.
+ * Identifies each task type with a single-character symbol used in the display
+ * and storage formats.
  */
 public enum TaskType {
     TODO("T"),

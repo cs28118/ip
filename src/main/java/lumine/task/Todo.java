@@ -1,6 +1,7 @@
 package lumine.task;
+
 /**
- * A basic task with only a description and no associated date or time.
+ * Represents a basic task with only a description and no associated date or time.
  */
 public class Todo extends Task {
 

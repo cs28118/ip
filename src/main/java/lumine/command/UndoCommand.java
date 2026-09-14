@@ -3,7 +3,9 @@ package lumine.command;
 import lumine.task.TaskList;
 import lumine.ui.Ui;
 
-/** Command that reverses the most recent successful task-list change. */
+/**
+ * Reverses the most recent successful task-list change.
+ */
 public class UndoCommand extends Command {
 
     /** Reverses the most recent change and prints a confirmation message. */

@@ -15,8 +15,7 @@ import lumine.storage.Storage;
  *
  * <p>All mutating operations ({@link #addTask}, {@link #markAsDone},
  * {@link #markAsUndone}, {@link #deleteTask}, {@link #undoLastChange}) save
- * the list to disk atomically and roll back the in-memory state if saving fails,
- * so the two sources of truth never diverge.</p>
+ * the list to disk and roll back the in-memory change if saving reports an error.</p>
  */
 public class TaskList {
     private static final DateTimeFormatter DATE_COMMAND_FORMAT =

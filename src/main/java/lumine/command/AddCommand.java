@@ -4,7 +4,9 @@ import lumine.task.Task;
 import lumine.task.TaskList;
 import lumine.ui.Ui;
 
-/** Command that adds a task (todo, deadline, or event) to the task list. */
+/**
+ * Adds a task (to-do, deadline, or event) to the task list.
+ */
 public class AddCommand extends Command {
     private final Task task;
 

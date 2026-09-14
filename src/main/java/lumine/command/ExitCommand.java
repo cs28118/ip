@@ -3,7 +3,9 @@ package lumine.command;
 import lumine.task.TaskList;
 import lumine.ui.Ui;
 
-/** Command that exits the application. */
+/**
+ * Exits the application.
+ */
 public class ExitCommand extends Command {
 
     /** Displays the farewell message before the application shuts down. */

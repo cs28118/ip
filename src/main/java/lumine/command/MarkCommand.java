@@ -4,7 +4,9 @@ import lumine.task.Task;
 import lumine.task.TaskList;
 import lumine.ui.Ui;
 
-/** Command that marks a task as done. */
+/**
+ * Marks a task as done.
+ */
 public class MarkCommand extends Command {
     private final int taskNumber;
 

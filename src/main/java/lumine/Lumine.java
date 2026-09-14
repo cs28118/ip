@@ -8,7 +8,7 @@ import lumine.ui.GuiUi;
 import lumine.ui.Ui;
 
 /**
- * Main application class for Lumine, a personal task-management chatbot.
+ * Coordinates the components of Lumine, a personal task-management chatbot.
  *
  * <p>Wires together the {@link Ui}, {@link Parser}, {@link Storage}, and
  * {@link TaskList} components, then drives the read-parse-execute loop
