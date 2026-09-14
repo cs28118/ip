@@ -32,7 +32,7 @@ public class Storage {
     /**
      * Creates a new Storage that reads from and writes to the given file path.
      *
-     * @param filePath path to the save file (parent directories are created on first save)
+     * @param filePath path to the save file (parent directories are created on first save).
      */
     public Storage(String filePath) {
         this.saveFile = Path.of(filePath);
@@ -43,8 +43,8 @@ public class Storage {
      * The save is crash-safe: a temporary file is written first and then renamed
      * into place, so a failure mid-write leaves the original file intact.
      *
-     * @param tasks the list of tasks to save (must not be {@code null} or contain {@code null})
-     * @throws LumineException if the list is invalid or an I/O error occurs
+     * @param tasks the list of tasks to save (must not be {@code null} or contain {@code null}).
+     * @throws LumineException if the list is invalid or an I/O error occurs.
      */
     public void save(List<Task> tasks) {
         if (tasks == null || tasks.stream().anyMatch(task -> task == null)) {
@@ -59,7 +59,7 @@ public class Storage {
                 throw new IOException("Save path is not a regular file");
             }
             String savedTasks = tasks.stream()
-                    .map(Task::toFileString)
+                    .map(Task::toStorageString)
                     .collect(Collectors.joining(System.lineSeparator()));
             temporaryFile = Files.createTempFile(parent, "lumine-", ".tmp");
             Files.writeString(temporaryFile, savedTasks);
@@ -81,8 +81,8 @@ public class Storage {
      * Reads and parses all tasks from the save file.
      * Returns an empty list when the file does not yet exist.
      *
-     * @return list of tasks loaded from storage
-     * @throws LumineException if the file is malformed or an I/O error occurs
+     * @return list of tasks loaded from storage.
+     * @throws LumineException if the file is malformed or an I/O error occurs.
      */
     public List<Task> load() {
         try {
@@ -109,10 +109,10 @@ public class Storage {
      * the second is the done flag ({@code 0} or {@code 1}), and the remaining
      * fields are task-type-specific.
      *
-     * @param line       the raw line text (already unescaped by {@link #splitFields})
-     * @param lineNumber 1-based line number, used in error messages
-     * @return the reconstructed {@link Task}
-     * @throws LumineException if the line is malformed or the type symbol is unknown
+     * @param line       the raw line text (already unescaped by {@link #splitFields}).
+     * @param lineNumber 1-based line number, used in error messages.
+     * @return the reconstructed {@link Task}.
+     * @throws LumineException if the line is malformed or the type symbol is unknown.
      */
     private Task parseTask(String line, int lineNumber) {
         assert lineNumber > 0 : "Storage line number must be positive";
@@ -159,20 +159,20 @@ public class Storage {
      * {@code \n} → newline, {@code \r} → carriage return.  A trailing backslash
      * (dangling escape) is treated as a malformed line.</p>
      *
-     * @param line       the raw line text to split
-     * @param lineNumber 1-based line number, used in error messages
-     * @return a list of unescaped field strings (trimmed of surrounding whitespace)
-     * @throws LumineException if the line ends with an unmatched backslash
+     * @param line       the raw line text to split.
+     * @param lineNumber 1-based line number, used in error messages.
+     * @return a list of unescaped field strings (trimmed of surrounding whitespace).
+     * @throws LumineException if the line ends with an unmatched backslash.
      */
     private List<String> splitFields(String line, int lineNumber) {
         assert line != null : "Storage line must not be null";
         assert lineNumber > 0 : "Storage line number must be positive";
         List<String> fields = new ArrayList<>();
         StringBuilder field = new StringBuilder();
-        boolean escaped = false;
+        boolean isEscapePending = false;
         for (int i = 0; i < line.length(); i++) {
             char character = line.charAt(i);
-            if (escaped) {
+            if (isEscapePending) {
                 switch (character) {
                     case 'n':
                         field.append('\n');
@@ -184,9 +184,9 @@ public class Storage {
                         field.append(character);
                         break;
                 }
-                escaped = false;
+                isEscapePending = false;
             } else if (character == '\\') {
-                escaped = true;
+                isEscapePending = true;
             } else if (character == '|') {
                 fields.add(field.toString().trim());
                 field.setLength(0);
@@ -194,7 +194,7 @@ public class Storage {
                 field.append(character);
             }
         }
-        if (escaped) {
+        if (isEscapePending) {
             throw invalidLine(lineNumber);
         }
         fields.add(field.toString().trim());
@@ -204,8 +204,8 @@ public class Storage {
     /**
      * Creates a {@link LumineException} describing a malformed line in the save file.
      *
-     * @param lineNumber 1-based number of the offending line
-     * @return the exception, ready to be thrown
+     * @param lineNumber 1-based number of the offending line.
+     * @return the exception, ready to be thrown.
      */
     private LumineException invalidLine(int lineNumber) {
         return new LumineException(LOAD_ERROR + "\nInvalid saved task on line " + lineNumber + ".");

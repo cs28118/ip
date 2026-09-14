@@ -16,8 +16,8 @@ public abstract class Command {
     /**
      * Executes this command.
      *
-     * @param taskList the task list to operate on
-     * @param ui       the UI to display output through
+     * @param taskList the task list to operate on.
+     * @param ui       the UI to display output through.
      */
     public abstract void execute(TaskList taskList, Ui ui);
 

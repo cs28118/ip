@@ -20,7 +20,7 @@ public class Task {
      * Constructs a new to-do task with the given description.
      * Delegates to {@link #Task(String, TaskType)} with {@link TaskType#TODO}.
      *
-     * @param description the task description (must not be blank)
+     * @param description the task description (must not be blank).
      */
     public Task(String description) {
         this(description, TaskType.TODO);
@@ -29,8 +29,8 @@ public class Task {
     /**
      * Constructs a task with the given description and type.
      *
-     * @param description the task description (must not be blank)
-     * @param taskType    the type of this task (must not be {@code null})
+     * @param description the task description (must not be blank).
+     * @param taskType    the type of this task (must not be {@code null}).
      */
     public Task(String description, TaskType taskType) {
         this.description = requireText(description, "description");
@@ -75,7 +75,7 @@ public class Task {
      * Special characters in fields are escaped so the format can be parsed
      * back unambiguously; see {@link #escapeStorageField}.
      */
-    public String toFileString() {
+    public String toStorageString() {
         return taskType.getSymbol() + " | " + (isDone ? "1" : "0") + " | "
                 + escapeStorageField(description);
     }
@@ -84,8 +84,8 @@ public class Task {
      * Escapes pipe ({@code |}), backslash ({@code \}), and newline characters in a
      * storage field so the pipe-delimited format can be parsed back unambiguously.
      *
-     * @param value the raw field value
-     * @return the escaped value safe for embedding in a storage line
+     * @param value the raw field value.
+     * @return the escaped value safe for embedding in a storage line.
      */
     protected static String escapeStorageField(String value) {
         return value.replace("\\", "\\\\")
@@ -98,10 +98,10 @@ public class Task {
      * Validates that a field value is non-null and non-blank, throwing a
      * {@link LumineException} with a user-friendly message if it is not.
      *
-     * @param value     the value to check
-     * @param fieldName the human-readable name of the field (used in the error message)
-     * @return {@code value} unchanged, if it passes validation
-     * @throws LumineException if {@code value} is {@code null} or blank
+     * @param value     the value to check.
+     * @param fieldName the human-readable name of the field (used in the error message).
+     * @return {@code value} unchanged, if it passes validation.
+     * @throws LumineException if {@code value} is {@code null} or blank.
      */
     protected static String requireText(String value, String fieldName) {
         if (value == null || value.isBlank()) {

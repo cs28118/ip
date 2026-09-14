@@ -22,7 +22,7 @@ import lumine.LumineException;
  *   <li>Date + time "yyyy MM dd HHmm" (displayed as "MMM dd yyyy HH:mm")</li>
  * </ol>
  * The integration between {@link Event} and {@link TaskDateTime} is verified
- * through {@code toString}, {@code toFileString}, {@code getToDate}, and {@code isDueOn}.
+ * through {@code toString}, {@code toStorageString}, {@code getToDate}, and {@code isDueOn}.
  */
 class EventTest {
 
@@ -71,41 +71,41 @@ class EventTest {
     }
 
     // -------------------------------------------------------------------------
-    // toFileString
+    // toStorageString
     // -------------------------------------------------------------------------
 
     @Test
-    void toFileString_plainTextTimes_storedAsIs() {
+    void toStorageString_plainTextTimes_storedAsIs() {
         Event e = new Event("test", "Mon 2pm", "4pm");
-        assertEquals("E | 0 | test | Mon 2pm | 4pm", e.toFileString());
+        assertEquals("E | 0 | test | Mon 2pm | 4pm", e.toStorageString());
     }
 
     @Test
-    void toFileString_dateOnlyTimes_storedInYyyyMmDdFormat() {
+    void toStorageString_dateOnlyTimes_storedInYyyyMmDdFormat() {
         Event e = new Event("test", "2025 12 31", "2026 01 01");
-        assertEquals("E | 0 | test | 2025 12 31 | 2026 01 01", e.toFileString());
+        assertEquals("E | 0 | test | 2025 12 31 | 2026 01 01", e.toStorageString());
     }
 
     @Test
-    void toFileString_dateTimeTimes_storedInYyyyMmDdHhmmFormat() {
+    void toStorageString_dateTimeTimes_storedInYyyyMmDdHhmmFormat() {
         Event e = new Event("test", "2025 12 31 1400", "2025 12 31 1600");
-        assertEquals("E | 0 | test | 2025 12 31 1400 | 2025 12 31 1600", e.toFileString());
+        assertEquals("E | 0 | test | 2025 12 31 1400 | 2025 12 31 1600", e.toStorageString());
     }
 
     @Test
-    void toFileString_doneEvent_containsOneFlag() {
+    void toStorageString_doneEvent_containsOneFlag() {
         Event e = new Event("test", "Mon 2pm", "4pm");
         e.markDone();
-        assertEquals("E | 1 | test | Mon 2pm | 4pm", e.toFileString());
+        assertEquals("E | 1 | test | Mon 2pm | 4pm", e.toStorageString());
     }
 
     @Test
-    void toFileString_undoneEvent_containsNoFlag() {
+    void toStorageString_undoneEvent_containsNoFlag() {
         Event e = new Event("test", "Mon 2pm", "4pm");
         e.markDone();
-        assertEquals("E | 1 | test | Mon 2pm | 4pm", e.toFileString());
+        assertEquals("E | 1 | test | Mon 2pm | 4pm", e.toStorageString());
         e.markUndone();
-        assertEquals("E | 0 | test | Mon 2pm | 4pm", e.toFileString());
+        assertEquals("E | 0 | test | Mon 2pm | 4pm", e.toStorageString());
     }
 
     // -------------------------------------------------------------------------

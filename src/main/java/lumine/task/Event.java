@@ -32,8 +32,8 @@ public class Event extends Task {
      * {@code from} and {@code to} fields.
      */
     @Override
-    public String toFileString() {
-        return super.toFileString() + " | " + escapeStorageField(startTime.formatForStorage())
+    public String toStorageString() {
+        return super.toStorageString() + " | " + escapeStorageField(startTime.formatForStorage())
                 + " | " + escapeStorageField(endTime.formatForStorage());
     }
 

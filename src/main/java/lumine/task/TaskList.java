@@ -32,7 +32,7 @@ public class TaskList {
     /**
      * Constructs a task list containing the tasks saved in the given storage.
      *
-     * @param storage the storage to load from and save to
+     * @param storage the storage to load from and save to.
      */
     public TaskList(Storage storage) {
         this(storage, true);
@@ -41,13 +41,13 @@ public class TaskList {
     /**
      * Constructs a task list, optionally attempting to load saved tasks.
      *
-     * @param storage the storage to load from and save to
-     * @param loadSavedTasks whether to load tasks from storage
+     * @param storage the storage to load from and save to.
+     * @param shouldLoadSavedTasks whether to load tasks from storage.
      */
-    public TaskList(Storage storage, boolean loadSavedTasks) {
+    public TaskList(Storage storage, boolean shouldLoadSavedTasks) {
         assert storage != null : "Task list storage must not be null";
         this.storage = storage;
-        if (loadSavedTasks) {
+        if (shouldLoadSavedTasks) {
             tasks.addAll(storage.load());
             assert tasks.stream().noneMatch(task -> task == null) : "Loaded task list must not contain null";
         }
@@ -57,8 +57,8 @@ public class TaskList {
      * Adds the given task to the list and persists the change to storage.
      * If saving fails the task is removed from the list and the exception is re-thrown.
      *
-     * @param task the task to add (must not be {@code null})
-     * @throws LumineException if {@code task} is null or storage cannot be written
+     * @param task the task to add (must not be {@code null}).
+     * @throws LumineException if {@code task} is null or storage cannot be written.
      */
     public void addTask(Task task) {
         if (task == null) {
@@ -125,9 +125,9 @@ public class TaskList {
     /**
      * Marks the task at the given 1-based position as done and saves the list.
      *
-     * @param taskNumber 1-based index of the task to mark
-     * @return the task that was marked
-     * @throws LumineException if the task number is out of range or saving fails
+     * @param taskNumber 1-based index of the task to mark.
+     * @return the task that was marked.
+     * @throws LumineException if the task number is out of range or saving fails.
      */
     public Task markAsDone(int taskNumber) {
         if (taskNumber < 1 || taskNumber > tasks.size()) {
@@ -160,9 +160,9 @@ public class TaskList {
     /**
      * Marks the task at the given 1-based position as not done and saves the list.
      *
-     * @param taskNumber 1-based index of the task to unmark
-     * @return the task that was unmarked
-     * @throws LumineException if the task number is out of range or saving fails
+     * @param taskNumber 1-based index of the task to unmark.
+     * @return the task that was unmarked.
+     * @throws LumineException if the task number is out of range or saving fails.
      */
     public Task markAsUndone(int taskNumber) {
         if (taskNumber < 1 || taskNumber > tasks.size()) {
@@ -195,9 +195,9 @@ public class TaskList {
     /**
      * Removes the task at the given 1-based position and saves the list.
      *
-     * @param taskNumber 1-based index of the task to delete
-     * @return the task that was removed
-     * @throws LumineException if the task number is out of range or saving fails
+     * @param taskNumber 1-based index of the task to delete.
+     * @return the task that was removed.
+     * @throws LumineException if the task number is out of range or saving fails.
      */
     public Task deleteTask(int taskNumber) {
         if (taskNumber < 1 || taskNumber > tasks.size()) {
@@ -225,7 +225,7 @@ public class TaskList {
      * Reverses and saves the most recent successful task-list change.
      * If saving fails, the undo is rolled back so memory and disk remain consistent.
      *
-     * @throws LumineException if there is no change to undo or storage cannot be written
+     * @throws LumineException if there is no change to undo or storage cannot be written.
      */
     public void undoLastChange() {
         if (lastUndoAction == null) {

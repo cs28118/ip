@@ -33,9 +33,9 @@ public class Parser {
     /**
      * Parses a raw user command string and returns the corresponding Command object.
      *
-     * @param command the raw input from the user
-     * @return a Command ready to be executed
-     * @throws LumineException if the command is not recognised
+     * @param command the raw input from the user.
+     * @return a Command ready to be executed.
+     * @throws LumineException if the command is not recognised.
      */
     public Command parse(String command) {
         String normalizedCommand = normalize(command);
@@ -155,7 +155,7 @@ public class Parser {
     /**
      * Creates a {@link LumineException} describing a bad {@code date} command argument.
      *
-     * @return the exception, ready to be thrown
+     * @return the exception, ready to be thrown.
      */
     private LumineException invalidDateCommand() {
         return new LumineException("Sorry, I can't understand what date is it. :C\n"

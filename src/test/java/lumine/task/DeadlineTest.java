@@ -22,7 +22,7 @@ import lumine.LumineException;
  *   <li>Date + time "yyyy MM dd HHmm" (displayed as "MMM dd yyyy HH:mm")</li>
  * </ol>
  * The integration between {@link Deadline} and {@link TaskDateTime} is verified
- * through {@code toString}, {@code toFileString}, {@code getDueDate}, and {@code isDueOn}.
+ * through {@code toString}, {@code toStorageString}, {@code getDueDate}, and {@code isDueOn}.
  */
 class DeadlineTest {
 
@@ -65,41 +65,41 @@ class DeadlineTest {
     }
 
     // -------------------------------------------------------------------------
-    // toFileString
+    // toStorageString
     // -------------------------------------------------------------------------
 
     @Test
-    void toFileString_plainTextBy_storedAsIs() {
+    void toStorageString_plainTextBy_storedAsIs() {
         Deadline d = new Deadline("test", "Monday 2pm");
-        assertEquals("D | 0 | test | Monday 2pm", d.toFileString());
+        assertEquals("D | 0 | test | Monday 2pm", d.toStorageString());
     }
 
     @Test
-    void toFileString_dateOnlyBy_storedInYyyyMmDdFormat() {
+    void toStorageString_dateOnlyBy_storedInYyyyMmDdFormat() {
         Deadline d = new Deadline("test", "2026 01 01");
-        assertEquals("D | 0 | test | 2026 01 01", d.toFileString());
+        assertEquals("D | 0 | test | 2026 01 01", d.toStorageString());
     }
 
     @Test
-    void toFileString_dateTimeBy_storedInYyyyMmDdHhmmFormat() {
+    void toStorageString_dateTimeBy_storedInYyyyMmDdHhmmFormat() {
         Deadline d = new Deadline("test", "2026 01 01 1200");
-        assertEquals("D | 0 | test | 2026 01 01 1200", d.toFileString());
+        assertEquals("D | 0 | test | 2026 01 01 1200", d.toStorageString());
     }
 
     @Test
-    void toFileString_doneDeadline_containsOneFlag() {
+    void toStorageString_doneDeadline_containsOneFlag() {
         Deadline d = new Deadline("test", "Monday");
         d.markDone();
-        assertEquals("D | 1 | test | Monday", d.toFileString());
+        assertEquals("D | 1 | test | Monday", d.toStorageString());
     }
 
     @Test
-    void toFileString_undoneDeadline_containsNoFlag() {
+    void toStorageString_undoneDeadline_containsNoFlag() {
         Deadline d = new Deadline("test", "Monday");
         d.markDone();
-        assertEquals("D | 1 | test | Monday", d.toFileString());
+        assertEquals("D | 1 | test | Monday", d.toStorageString());
         d.markUndone();
-        assertEquals("D | 0 | test | Monday", d.toFileString());
+        assertEquals("D | 0 | test | Monday", d.toStorageString());
     }
 
     // -------------------------------------------------------------------------

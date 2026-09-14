@@ -29,8 +29,8 @@ public class Deadline extends Task {
      * Structured dates are normalised back to the canonical input format before saving.
      */
     @Override
-    public String toFileString() {
-        return super.toFileString() + " | " + escapeStorageField(deadline.formatForStorage());
+    public String toStorageString() {
+        return super.toStorageString() + " | " + escapeStorageField(deadline.formatForStorage());
     }
 
     /** Returns the human-readable representation, appending {@code (by: <deadline>)}. */

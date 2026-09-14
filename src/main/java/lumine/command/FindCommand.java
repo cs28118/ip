@@ -12,7 +12,7 @@ public class FindCommand extends Command {
     /**
      * Creates a command that will find tasks containing the given keyword.
      *
-     * @param keyword the search keyword to filter tasks by
+     * @param keyword the search keyword to filter tasks by.
      */
     public FindCommand(String keyword) {
         this.keyword = keyword;

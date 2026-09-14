@@ -26,70 +26,70 @@ class TaskTest {
     // -------------------------------------------------------------------------
 
     // We use Todo (the simplest subclass) so we can construct a Task and
-    // call toFileString(), which in turn calls escapeStorageField internally.
+    // call toStorageString(), which in turn calls escapeStorageField internally.
     // For the static method itself we reach it via the package-visible
-    // inheritance; testing the output of toFileString() covers it end-to-end.
+    // inheritance; testing the output of toStorageString() covers it end-to-end.
 
     @Test
     void escapeStorageField_plainText_unchanged() {
         Todo todo = new Todo("buy groceries");
-        assertEquals("T | 0 | buy groceries", todo.toFileString());
+        assertEquals("T | 0 | buy groceries", todo.toStorageString());
     }
 
     @Test
     void escapeStorageField_pipeCharacter_escapedWithBackslash() {
         Todo todo = new Todo("a|b");
-        assertEquals("T | 0 | a\\|b", todo.toFileString());
+        assertEquals("T | 0 | a\\|b", todo.toStorageString());
     }
 
     @Test
     void escapeStorageField_backslash_doubledUp() {
         Todo todo = new Todo("a\\b");
-        assertEquals("T | 0 | a\\\\b", todo.toFileString());
+        assertEquals("T | 0 | a\\\\b", todo.toStorageString());
     }
 
     @Test
     void escapeStorageField_newline_escapedAsBackslashN() {
         Todo todo = new Todo("line1\nline2");
-        assertEquals("T | 0 | line1\\nline2", todo.toFileString());
+        assertEquals("T | 0 | line1\\nline2", todo.toStorageString());
     }
 
     @Test
     void escapeStorageField_carriageReturn_escapedAsBackslashR() {
         Todo todo = new Todo("line1\rline2");
-        assertEquals("T | 0 | line1\\rline2", todo.toFileString());
+        assertEquals("T | 0 | line1\\rline2", todo.toStorageString());
     }
 
     @Test
     void escapeStorageField_multipleSpecialChars_allEscaped() {
         Todo todo = new Todo("a|b\\c\nd");
-        assertEquals("T | 0 | a\\|b\\\\c\\nd", todo.toFileString());
+        assertEquals("T | 0 | a\\|b\\\\c\\nd", todo.toStorageString());
     }
 
     // -------------------------------------------------------------------------
-    // toFileString
+    // toStorageString
     // -------------------------------------------------------------------------
 
     @Test
-    void toFileString_undoneTodo_containsZeroFlag() {
+    void toStorageString_undoneTodo_containsZeroFlag() {
         Todo todo = new Todo("read book");
-        assertEquals("T | 0 | read book", todo.toFileString());
+        assertEquals("T | 0 | read book", todo.toStorageString());
     }
 
     @Test
-    void toFileString_doneTodo_containsOneFlag() {
+    void toStorageString_doneTodo_containsOneFlag() {
         Todo todo = new Todo("read book");
         todo.markDone();
-        assertEquals("T | 1 | read book", todo.toFileString());
+        assertEquals("T | 1 | read book", todo.toStorageString());
     }
 
     @Test
-    void toFileString_undoneTodo_containsNoFlag() {
+    void toStorageString_undoneTodo_containsNoFlag() {
         Todo todo = new Todo("read book");
         todo.markDone();
-        assertEquals("T | 1 | read book", todo.toFileString());
+        assertEquals("T | 1 | read book", todo.toStorageString());
         todo.markUndone();
-        assertEquals("T | 0 | read book", todo.toFileString());
+        assertEquals("T | 0 | read book", todo.toStorageString());
     }
 
     // -------------------------------------------------------------------------

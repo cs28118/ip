@@ -26,7 +26,7 @@ public class Lumine {
      * If the file cannot be loaded, the error message is stored and
      * shown to the user when the main loop starts.
      *
-     * @param filePath path to the task save file (created if absent)
+     * @param filePath path to the task save file (created if absent).
      */
     public Lumine(String filePath) {
         ui = new Ui();

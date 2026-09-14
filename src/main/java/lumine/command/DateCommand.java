@@ -12,7 +12,7 @@ public class DateCommand extends Command {
     /**
      * Creates a command that will filter tasks due on the given date.
      *
-     * @param date the calendar date to filter by
+     * @param date the calendar date to filter by.
      */
     public DateCommand(LocalDate date) {
         this.date = date;
