@@ -7,6 +7,8 @@ import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 import java.util.Locale;
 
+import lumine.LumineException;
+
 /**
  * Represents a task date or time that may remain as free-form text.
  * Structured date values are formatted consistently for storage and display.
@@ -31,7 +33,7 @@ final class TaskDateTime {
 
     /**
      * Creates a task date-time value, parsing recognized structured formats.
-     * Invalid or unrecognized values are retained as free-form text.
+     * Invalid structured values are rejected; unrecognized values remain free-form text.
      *
      * @param rawText Validated non-blank task date-time text.
      */
@@ -47,8 +49,8 @@ final class TaskDateTime {
             } else if (normalizedText.matches(DATE_TIME_REGEX)) {
                 parsedDateTime = LocalDateTime.parse(normalizedText, INPUT_DATE_TIME_FORMAT);
             }
-        } catch (DateTimeParseException ignored) {
-            // Invalid calendar values are valid free-form text, so preserve the original value.
+        } catch (DateTimeParseException exception) {
+            throw new LumineException("Date not found :<.\nPlease enter a valid calendar date or time.");
         }
         this.date = parsedDate;
         this.dateTime = parsedDateTime;

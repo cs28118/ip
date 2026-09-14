@@ -1,11 +1,13 @@
 package lumine.task;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
+
+import lumine.LumineException;
 
 /**
  * Tests the shared parsing and formatting behavior of {@link TaskDateTime}.
@@ -35,11 +37,21 @@ class TaskDateTimeTest {
     }
 
     @Test
-    void constructor_invalidCalendarDate_preservesFreeTextValue() {
-        TaskDateTime taskDateTime = new TaskDateTime("2026 02 30");
+    void constructor_invalidCalendarDate_throwsDateNotFound() {
+        LumineException exception = assertThrows(LumineException.class, () -> new TaskDateTime("2026 02 30"));
 
-        assertEquals("2026 02 30", taskDateTime.formatForStorage());
-        assertEquals("2026 02 30", taskDateTime.formatForDisplay());
-        assertNull(taskDateTime.toLocalDate());
+        assertEquals("Date not found :<.\nPlease enter a valid calendar date or time.", exception.getMessage());
+    }
+
+    @Test
+    void constructor_invalidCalendarTime_throwsDateNotFound() {
+        assertThrows(LumineException.class, () -> new TaskDateTime("2026 02 28 2460"));
+    }
+
+    @Test
+    void formatForStorage_validLeapDay_returnsCanonicalDate() {
+        TaskDateTime taskDateTime = new TaskDateTime("2024 02 29");
+
+        assertEquals("2024 02 29", taskDateTime.formatForStorage());
     }
 }
