@@ -1,27 +1,31 @@
 package lumine.ui;
 
 import java.io.IOException;
-import java.util.Collections;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 
 /**
  * Represents one chat message with the speaker's text and avatar.
  */
-public class DialogBox extends HBox {
+public class DialogBox extends VBox {
     @FXML
     private Label dialog;
     @FXML
     private ImageView displayPicture;
+    @FXML
+    private HBox messageRow;
+    @FXML
+    private Region topDivider;
+    @FXML
+    private Region bottomDivider;
 
     private DialogBox(String text, Image image) {
         FXMLLoader fxmlLoader = new FXMLLoader(DialogBox.class.getResource("/view/DialogBox.fxml"));
@@ -58,18 +62,21 @@ public class DialogBox extends HBox {
      */
     public static DialogBox getLumineDialog(String text, Image image) {
         DialogBox dialogBox = new DialogBox(text, image);
-        dialogBox.flip();
+        dialogBox.formatAsLumineReply();
         return dialogBox;
     }
 
     /**
-     * Reverses the message content so Lumine's avatar appears on the left.
+     * Places Lumine's avatar on the left and displays dividers around the reply.
      */
-    private void flip() {
-        ObservableList<Node> nodes = FXCollections.observableArrayList(getChildren());
-        Collections.reverse(nodes);
-        getChildren().setAll(nodes);
-        setAlignment(Pos.TOP_LEFT);
+    private void formatAsLumineReply() {
+        messageRow.getChildren().setAll(displayPicture, dialog);
+        messageRow.setAlignment(Pos.TOP_LEFT);
+        displayPicture.setClip(null);
+        topDivider.setVisible(true);
+        topDivider.setManaged(true);
+        bottomDivider.setVisible(true);
+        bottomDivider.setManaged(true);
         dialog.getStyleClass().add("reply-label");
     }
 }
