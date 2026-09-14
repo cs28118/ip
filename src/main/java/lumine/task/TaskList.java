@@ -101,7 +101,7 @@ public class TaskList {
             }
         }
         if (matchCount == 0) {
-            return "You have no task due on " + formattedDate + ".";
+            return "Your path is clear on " + formattedDate + " — no tasks due.";
         } else {
             return result.toString();
         }
@@ -115,7 +115,7 @@ public class TaskList {
                 .collect(Collectors.joining("\n"));
 
         if (matchingTasks.isEmpty()) {
-            return "No tasks match the keyword '" + keyword + "'.";
+            return "I couldn't find a task containing '" + keyword + "'.";
         } else {
             return "Here is the list of matching tasks:\n" + matchingTasks;
         }
