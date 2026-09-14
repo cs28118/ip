@@ -326,6 +326,9 @@ deadline prepare slides /by
 event meeting /from 2pm
 event meeting /to 4pm
 event /from 2pm /to 4pm
+deadline submit /by 2026 02 30
+event meeting /from 2026 02 30 /to 2026 03 01
+event meeting /from 2026 02 28 /to 2026 02 30
 list
 bye
 ```
@@ -377,6 +380,18 @@ ____________________________________________________________
 Sorry, I can't read your event task. :C
 It needs a description, /from time, and /to time.
 e.g. event test /from Mon 2pm /to 4pm
+____________________________________________________________
+____________________________________________________________
+Date not found :<.
+Please enter a valid calendar date or time.
+____________________________________________________________
+____________________________________________________________
+Date not found :<.
+Please enter a valid calendar date or time.
+____________________________________________________________
+____________________________________________________________
+Date not found :<.
+Please enter a valid calendar date or time.
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:

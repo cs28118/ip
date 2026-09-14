@@ -162,6 +162,16 @@ class EventTest {
     }
 
     @Test
+    void constructor_impossibleFromDate_throwsDateNotFound() {
+        assertThrows(LumineException.class, () -> new Event("test", "2026 02 30", "2026 03 01"));
+    }
+
+    @Test
+    void constructor_impossibleToDate_throwsDateNotFound() {
+        assertThrows(LumineException.class, () -> new Event("test", "2026 02 28", "2026 02 30"));
+    }
+
+    @Test
     void constructor_nullDescription_throwsLumineException() {
         assertThrows(LumineException.class, () -> new Event(null, "Mon 2pm", "4pm"));
     }

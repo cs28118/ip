@@ -150,6 +150,13 @@ class DeadlineTest {
     }
 
     @Test
+    void constructor_impossibleByDate_throwsDateNotFound() {
+        LumineException exception = assertThrows(LumineException.class, () -> new Deadline("test", "2026 02 30"));
+
+        assertEquals("Date not found :<.\nPlease enter a valid calendar date or time.", exception.getMessage());
+    }
+
+    @Test
     void constructor_nullDescription_throwsLumineException() {
         assertThrows(LumineException.class, () -> new Deadline(null, "Monday"));
     }
