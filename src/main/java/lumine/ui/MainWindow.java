@@ -2,8 +2,8 @@ package lumine.ui;
 
 import java.util.Objects;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -21,8 +21,6 @@ public class MainWindow extends AnchorPane {
     private VBox dialogContainer;
     @FXML
     private TextField userInput;
-    @FXML
-    private Button sendButton;
 
     private Lumine lumine;
 
@@ -48,6 +46,7 @@ public class MainWindow extends AnchorPane {
 
     /**
      * Adds the user's message and Lumine's command response to the conversation.
+     * Closes the application when the command requests an exit.
      */
     @FXML
     private void handleUserInput() {
@@ -66,8 +65,7 @@ public class MainWindow extends AnchorPane {
         userInput.clear();
 
         if (lumine.isExitRequested()) {
-            userInput.setDisable(true);
-            sendButton.setDisable(true);
+            Platform.exit();
         }
     }
 
