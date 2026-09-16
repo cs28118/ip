@@ -13,14 +13,9 @@ import org.junit.jupiter.api.Test;
 import lumine.LumineException;
 
 /**
- * Tests for {@link Event}.
+ * Tests {@link Event}.
  *
- * <p>Each event time supports three representations:
- * <ol>
- *   <li>Plain text  (stored and displayed as-is)</li>
- *   <li>Date only   "yyyy MM dd" (displayed as "MMM dd yyyy")</li>
- *   <li>Date + time "yyyy MM dd HHmm" (displayed as "MMM dd yyyy HH:mm")</li>
- * </ol>
+ * <p>Events accept paired free-text values or strictly increasing date-times.
  * The integration between {@link Event} and {@link TaskDateTime} is verified
  * through {@code toString}, {@code toStorageString}, {@code getToDate}, and {@code isDueOn}.
  */
@@ -37,9 +32,11 @@ class EventTest {
     }
 
     @Test
-    void toString_dateOnlyTimes_formatsToMmmDdYyyy() {
-        Event e = new Event("test", "2025 12 31", "2026 01 01");
-        assertEquals("[E][ ] test (from: Dec 31 2025 to: Jan 01 2026)", e.toString());
+    void constructor_dateOnlyTimes_throwsFormatError() {
+        LumineException exception = assertThrows(
+                LumineException.class, () -> new Event("test", "2025 12 31", "2026 01 01"));
+        assertEquals("Sorry, you need to enter date in format yyyy MM dd HHmm for both from and to date.",
+                exception.getMessage());
     }
 
     @Test
@@ -65,9 +62,11 @@ class EventTest {
     }
 
     @Test
-    void toString_mixedFromAndTo_eachFieldIndependentlyFormatted() {
-        Event e = new Event("test", "Mon 2pm", "2025 12 31");
-        assertEquals("[E][ ] test (from: Mon 2pm to: Dec 31 2025)", e.toString());
+    void constructor_freeTextStartAndDatedEnd_throwsFormatError() {
+        LumineException exception = assertThrows(
+                LumineException.class, () -> new Event("test", "Mon 2pm", "2025 12 31 1600"));
+        assertEquals("Sorry, you need to enter date in format yyyy MM dd HHmm for both from and to date.",
+                exception.getMessage());
     }
 
     // -------------------------------------------------------------------------
@@ -81,9 +80,9 @@ class EventTest {
     }
 
     @Test
-    void toStorageString_dateOnlyTimes_storedInYyyyMmDdFormat() {
-        Event e = new Event("test", "2025 12 31", "2026 01 01");
-        assertEquals("E | 0 | test | 2025 12 31 | 2026 01 01", e.toStorageString());
+    void toStorageString_crossMidnightDateTimes_storedInExistingFormat() {
+        Event e = new Event("test", "2025 12 31 2300", "2026 01 01 0100");
+        assertEquals("E | 0 | test | 2025 12 31 2300 | 2026 01 01 0100", e.toStorageString());
     }
 
     @Test
@@ -120,9 +119,11 @@ class EventTest {
     }
 
     @Test
-    void getToDate_dateOnlyTo_returnsCorrectLocalDate() {
-        Event e = new Event("test", "Mon 2pm", "2025 12 31");
-        assertEquals(LocalDate.of(2025, 12, 31), e.getToDate());
+    void constructor_datedStartAndFreeTextEnd_throwsFormatError() {
+        LumineException exception = assertThrows(
+                LumineException.class, () -> new Event("test", "2025 12 31 1400", "4pm"));
+        assertEquals("Sorry, you need to enter date in format yyyy MM dd HHmm for both from and to date.",
+                exception.getMessage());
     }
 
     @Test
@@ -133,15 +134,15 @@ class EventTest {
 
     @Test
     void isDueOn_matchingEndDate_returnsTrue() {
-        Event event = new Event("test", "2026 01 01", "2026 01 02 1600");
+        Event event = new Event("test", "2026 01 01 1400", "2026 01 02 1600");
 
         assertTrue(event.isDueOn(LocalDate.of(2026, 1, 2)));
     }
 
     @Test
     void isDueOn_startDateOrUnstructuredEndDate_returnsFalse() {
-        Event datedEvent = new Event("dated", "2026 01 01", "2026 01 02");
-        Event freeTextEvent = new Event("free text", "2026 01 01", "Friday");
+        Event datedEvent = new Event("dated", "2026 01 01 1400", "2026 01 02 1600");
+        Event freeTextEvent = new Event("free text", "Monday", "Friday");
 
         assertFalse(datedEvent.isDueOn(LocalDate.of(2026, 1, 1)));
         assertFalse(freeTextEvent.isDueOn(LocalDate.of(2026, 1, 1)));
@@ -163,12 +164,64 @@ class EventTest {
 
     @Test
     void constructor_impossibleFromDate_throwsDateNotFound() {
-        assertThrows(LumineException.class, () -> new Event("test", "2026 02 30", "2026 03 01"));
+        assertThrows(LumineException.class, () -> new Event("test", "2026 02 30 1400", "2026 03 01 1600"));
     }
 
     @Test
     void constructor_impossibleToDate_throwsDateNotFound() {
-        assertThrows(LumineException.class, () -> new Event("test", "2026 02 28", "2026 02 30"));
+        assertThrows(LumineException.class, () -> new Event("test", "2026 02 28 1400", "2026 02 30 1600"));
+    }
+
+    @Test
+    void constructor_endBeforeStart_throwsRangeError() {
+        LumineException exception = assertThrows(
+                LumineException.class, () -> new Event("test", "2026 01 02 1400", "2026 01 01 1600"));
+        assertEquals("Hmmmm, the event end date is early then start date, try again with a valid range instead",
+                exception.getMessage());
+    }
+
+    @Test
+    void constructor_equalTimes_throwsRangeError() {
+        LumineException exception = assertThrows(
+                LumineException.class, () -> new Event("test", "2026 01 01 1400", "2026 01 01 1400"));
+        assertEquals("Hmmmm, the event end date is early then start date, try again with a valid range instead",
+                exception.getMessage());
+    }
+
+    @Test
+    void constructor_endEarlierOnSameDay_throwsRangeError() {
+        assertThrows(LumineException.class, () -> new Event("test", "2026 01 01 1600", "2026 01 01 1400"));
+    }
+
+    @Test
+    void constructor_missingStartTime_throwsFormatError() {
+        LumineException exception = assertThrows(
+                LumineException.class, () -> new Event("test", "2026 01 01", "2026 01 02 1600"));
+        assertEquals("Sorry, you need to enter date in format yyyy MM dd HHmm for both from and to date.",
+                exception.getMessage());
+    }
+
+    @Test
+    void constructor_missingEndTime_throwsFormatError() {
+        LumineException exception = assertThrows(
+                LumineException.class, () -> new Event("test", "2026 01 01 1400", "2026 01 02"));
+        assertEquals("Sorry, you need to enter date in format yyyy MM dd HHmm for both from and to date.",
+                exception.getMessage());
+    }
+
+    @Test
+    void constructor_dateWithMalformedTime_throwsFormatError() {
+        LumineException exception = assertThrows(
+                LumineException.class, () -> new Event("test", "2026 01 01 14:00", "2026 01 01 1600"));
+        assertEquals("Sorry, you need to enter date in format yyyy MM dd HHmm for both from and to date.",
+                exception.getMessage());
+    }
+
+    @Test
+    void toStorageString_dateTimesWithExtraWhitespace_returnsCanonicalValues() {
+        Event event = new Event("test", " 2026  01 01\t1400 ", "2026 01 01  1600");
+
+        assertEquals("E | 0 | test | 2026 01 01 1400 | 2026 01 01 1600", event.toStorageString());
     }
 
     @Test

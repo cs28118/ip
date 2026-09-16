@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import lumine.LumineException;
 
 /**
- * Tests for {@link Deadline}.
+ * Tests {@link Deadline}.
  *
  * <p>The deadline value supports three representations:
  * <ol>

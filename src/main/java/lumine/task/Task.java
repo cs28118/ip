@@ -41,12 +41,16 @@ public class Task {
         this.taskType = taskType;
     }
 
-    /** Marks this task as completed. */
+    /**
+     * Marks this task as completed.
+     */
     public void markDone() {
         this.isDone = true;
     }
 
-    /** Marks this task as not yet completed. */
+    /**
+     * Marks this task as not yet completed.
+     */
     public void markUndone() {
         this.isDone = false;
     }
@@ -110,7 +114,10 @@ public class Task {
         return value;
     }
 
-    /** Returns the bracketed display string, e.g. {@code [T][ ] buy milk}. */
+    /**
+     * {@inheritDoc}
+     * Returns the bracketed display string, e.g. {@code [T][ ] buy milk}.
+     */
     @Override
     public String toString() {
         return "[" + taskType.getSymbol() + "][" + this.getStatusIcon() + "] " + description;

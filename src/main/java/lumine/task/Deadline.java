@@ -25,25 +25,35 @@ public class Deadline extends Task {
     }
 
     /**
+     * {@inheritDoc}
      * Returns the pipe-delimited storage representation, including the deadline field.
-     * Structured dates are normalised back to the canonical input format before saving.
+     * Structured dates are normalized back to the canonical input format before saving.
      */
     @Override
     public String toStorageString() {
         return super.toStorageString() + " | " + escapeStorageField(deadline.formatForStorage());
     }
 
-    /** Returns the human-readable representation, appending {@code (by: <deadline>)}. */
+    /**
+     * {@inheritDoc}
+     * Returns the human-readable representation, appending {@code (by: <deadline>)}.
+     */
     @Override
     public String toString() {
         return super.toString() + " (by: " + deadline.formatForDisplay() + ")";
     }
 
-    /** Returns the calendar date of this deadline, or null when it is plain text. */
+    /**
+     * Returns the calendar date of this deadline, or null when it is plain text.
+     */
     public LocalDate getDueDate() {
         return deadline.toLocalDate();
     }
 
+    /**
+     * {@inheritDoc}
+     * Uses the deadline date for the comparison.
+     */
     @Override
     public boolean isDueOn(LocalDate date) {
         return date != null && date.equals(deadline.toLocalDate());

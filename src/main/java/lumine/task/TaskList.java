@@ -24,7 +24,9 @@ public class TaskList {
     private final List<Task> tasks = new ArrayList<>();
     private UndoAction lastUndoAction;
 
-    /** Stores how to reverse and restore the most recent successful change. */
+    /**
+     * Stores how to reverse and restore the most recent successful change.
+     */
     private record UndoAction(Runnable undoChange, Runnable redoChange) {
     }
 
@@ -78,7 +80,9 @@ public class TaskList {
         lastUndoAction = new UndoAction(undoChange, redoChange);
     }
 
-    /** Returns a formatted listing of all tasks. */
+    /**
+     * Returns a formatted listing of all tasks.
+     */
     public String formatTasks() {
         StringBuilder result = new StringBuilder();
         result.append("Here are the tasks in your list:");
@@ -88,7 +92,9 @@ public class TaskList {
         return result.toString();
     }
 
-    /** Returns a formatted listing of pending deadlines and events due on the given date. */
+    /**
+     * Returns a formatted listing of pending deadlines and events due on the given date.
+     */
     public String formatTasksDueOn(LocalDate date) {
         assert date != null : "Date filter must not be null";
         String formattedDate = date.format(DATE_COMMAND_FORMAT);
@@ -107,7 +113,9 @@ public class TaskList {
         }
     }
 
-    /** Returns a formatted listing of tasks that contain the given keyword in their description. */
+    /**
+     * Returns a formatted listing of tasks that contain the given keyword in their description.
+     */
     public String formatMatchingTasks(String keyword) {
         String matchingTasks = IntStream.range(0, tasks.size())
                 .filter(i -> tasks.get(i).description.contains(keyword))
@@ -242,12 +250,16 @@ public class TaskList {
         lastUndoAction = null;
     }
 
-    /** Returns the number of tasks currently in the list. */
+    /**
+     * Returns the number of tasks currently in the list.
+     */
     public int size() {
         return tasks.size();
     }
 
-    /** Persists the current task list to storage; called after every mutating operation. */
+    /**
+     * Persists the current task list to storage; called after every mutating operation.
+     */
     private void saveTasks() {
         assert tasks.stream().noneMatch(task -> task == null) : "Task list must not contain null before saving";
         storage.save(tasks);

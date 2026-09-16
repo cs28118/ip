@@ -20,7 +20,10 @@ public class DateCommand extends Command {
         this.date = date;
     }
 
-    /** Displays pending deadlines and events whose end date matches the stored date. */
+    /**
+     * {@inheritDoc}
+     * Displays pending deadlines and events whose end date matches the stored date.
+     */
     @Override
     public void execute(TaskList taskList, Ui ui) {
         ui.showMessage(taskList.formatTasksDueOn(date));

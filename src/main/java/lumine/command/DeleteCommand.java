@@ -19,7 +19,10 @@ public class DeleteCommand extends Command {
         this.taskNumber = taskNumber;
     }
 
-    /** Removes the task and prints a confirmation with the updated list size. */
+    /**
+     * {@inheritDoc}
+     * Removes the task and prints a confirmation with the updated list size.
+     */
     @Override
     public void execute(TaskList taskList, Ui ui) {
         Task task = taskList.deleteTask(taskNumber);

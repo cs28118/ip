@@ -24,7 +24,9 @@ import lumine.task.Todo;
  * Converts raw user commands into validated values and task objects.
  */
 public class Parser {
-    /** Normalizes a command before it is checked or interpreted. */
+    /**
+     * Normalizes a command before it is checked or interpreted.
+     */
     public String normalize(String command) {
         assert command != null : "Command to normalize must not be null";
         return command.trim();
@@ -35,7 +37,7 @@ public class Parser {
      *
      * @param command the raw input from the user.
      * @return a Command ready to be executed.
-     * @throws LumineException if the command is not recognised.
+     * @throws LumineException if the command is not recognized.
      */
     public Command parse(String command) {
         String normalizedCommand = normalize(command);
@@ -67,14 +69,18 @@ public class Parser {
         }
     }
 
-    /** Checks whether a command is either an exact command or starts with its name. */
+    /**
+     * Checks whether a command is either an exact command or starts with its name.
+     */
     public boolean isCommand(String command, String commandName) {
         assert command != null : "Command being checked must not be null";
         assert commandName != null && !commandName.isBlank() : "Command name must be non-blank";
         return command.equals(commandName) || command.matches(commandName + "\\s+.*");
     }
 
-    /** Parses a date filter command without accepting invalid calendar dates. */
+    /**
+     * Parses a date filter command without accepting invalid calendar dates.
+     */
     public LocalDate parseDateCommand(String command) {
         assert isCommand(command, "date") : "Date parser must receive a date command";
         String dateText = command.substring("date".length()).trim().replaceAll("\\s+", " ");
@@ -89,7 +95,9 @@ public class Parser {
         }
     }
 
-    /** Parses a find command to extract the search keyword. */
+    /**
+     * Parses a find command to extract the search keyword.
+     */
     public String parseFindCommand(String command) {
         assert isCommand(command, "find") : "Find parser must receive a find command";
         String keyword = command.substring("find".length()).trim();
@@ -99,7 +107,9 @@ public class Parser {
         return keyword;
     }
 
-    /** Parses a task number used by mark, unmark, and delete commands. */
+    /**
+     * Parses a task number used by mark, unmark, and delete commands.
+     */
     public int parseTaskNumber(String command, String commandName) {
         assert commandName != null : "Task number parser requires a command name";
         assert commandName.equals("mark") || commandName.equals("unmark")
@@ -113,7 +123,9 @@ public class Parser {
         }
     }
 
-    /** Creates a todo task, rejecting an empty description. */
+    /**
+     * Creates a todo task, rejecting an empty description.
+     */
     public Todo parseTodoCommand(String command) {
         assert isCommand(command, "todo") : "Todo parser must receive a todo command";
         String description = command.substring("todo".length()).trim();
@@ -123,7 +135,9 @@ public class Parser {
         return new Todo(description);
     }
 
-    /** Creates a deadline task after validating its description and /by field. */
+    /**
+     * Creates a deadline task after validating its description and /by field.
+     */
     public Deadline parseDeadlineCommand(String command) {
         assert isCommand(command, "deadline") : "Deadline parser must receive a deadline command";
         String details = command.substring("deadline".length()).trim();
@@ -137,7 +151,9 @@ public class Parser {
         return new Deadline(parts[0].trim(), parts[1].trim());
     }
 
-    /** Creates an event task after validating its description, /from, and /to fields. */
+    /**
+     * Creates an event task after validating its description, /from, and /to fields.
+     */
     public Event parseEventCommand(String command) {
         assert isCommand(command, "event") : "Event parser must receive an event command";
         String details = command.substring("event".length()).trim();

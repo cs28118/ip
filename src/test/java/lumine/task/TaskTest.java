@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import lumine.LumineException;
 
 /**
- * Tests for {@link Task}.
+ * Tests {@link Task}.
  *
  * <p>Task is the base class for all task types. Its most critical logic is
  * {@code escapeStorageField}, which ensures that pipe (|), backslash (\),

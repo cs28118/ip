@@ -19,7 +19,10 @@ public class MarkCommand extends Command {
         this.taskNumber = taskNumber;
     }
 
-    /** Marks the task done and prints a confirmation message. */
+    /**
+     * {@inheritDoc}
+     * Marks the task done and prints a confirmation message.
+     */
     @Override
     public void execute(TaskList taskList, Ui ui) {
         Task task = taskList.markAsDone(taskNumber);

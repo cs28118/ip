@@ -18,7 +18,10 @@ public class FindCommand extends Command {
         this.keyword = keyword;
     }
 
-    /** Finds and displays all tasks that contain the search keyword. */
+    /**
+     * {@inheritDoc}
+     * Finds and displays all tasks that contain the search keyword.
+     */
     @Override
     public void execute(TaskList taskList, Ui ui) {
         ui.showMessage(taskList.formatMatchingTasks(keyword));

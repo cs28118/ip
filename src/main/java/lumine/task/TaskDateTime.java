@@ -15,7 +15,8 @@ import lumine.LumineException;
  */
 final class TaskDateTime {
     private static final String DATE_REGEX = "\\d{4} \\d{2} \\d{2}";
-    private static final String DATE_TIME_REGEX = "\\d{4} \\d{2} \\d{2} \\d{4}";
+    private static final String DATE_TIME_REGEX = DATE_REGEX + " \\d{4}";
+    private static final String DATE_PREFIX_REGEX = DATE_REGEX + "(?: .*)?";
     private static final DateTimeFormatter INPUT_DATE_FORMAT = DateTimeFormatter
             .ofPattern("uuuu MM dd")
             .withResolverStyle(ResolverStyle.STRICT);
@@ -46,7 +47,7 @@ final class TaskDateTime {
         try {
             if (normalizedText.matches(DATE_REGEX)) {
                 parsedDate = LocalDate.parse(normalizedText, INPUT_DATE_FORMAT);
-            } else if (normalizedText.matches(DATE_TIME_REGEX)) {
+            } else if (hasDateTimeFormat(normalizedText)) {
                 parsedDateTime = LocalDateTime.parse(normalizedText, INPUT_DATE_TIME_FORMAT);
             }
         } catch (DateTimeParseException exception) {
@@ -56,7 +57,25 @@ final class TaskDateTime {
         this.dateTime = parsedDateTime;
     }
 
-    /** Returns the canonical structured value or the original free-form text for storage. */
+    /**
+     * Returns whether normalized text starts with a structured date followed by a space or its end.
+     * This checks the text's shape, not whether the calendar date exists.
+     */
+    static boolean hasDatePrefix(String normalizedText) {
+        return normalizedText.matches(DATE_PREFIX_REGEX);
+    }
+
+    /**
+     * Returns whether normalized text has the structured date format and a four-digit time.
+     * Calendar validity is checked separately when the value is parsed.
+     */
+    static boolean hasDateTimeFormat(String normalizedText) {
+        return normalizedText.matches(DATE_TIME_REGEX);
+    }
+
+    /**
+     * Returns the canonical structured value or the original free-form text for storage.
+     */
     String formatForStorage() {
         if (dateTime != null) {
             return dateTime.format(INPUT_DATE_TIME_FORMAT);
@@ -67,7 +86,9 @@ final class TaskDateTime {
         return rawText;
     }
 
-    /** Returns a human-readable structured value or the original free-form text. */
+    /**
+     * Returns a human-readable structured value or the original free-form text.
+     */
     String formatForDisplay() {
         if (dateTime != null) {
             return dateTime.format(DISPLAY_DATE_TIME_FORMAT);
@@ -78,11 +99,20 @@ final class TaskDateTime {
         return rawText;
     }
 
-    /** Returns the represented calendar date, or null when the value is free-form text. */
+    /**
+     * Returns the represented calendar date, or null when the value is free-form text.
+     */
     LocalDate toLocalDate() {
         if (dateTime != null) {
             return dateTime.toLocalDate();
         }
         return date;
+    }
+
+    /**
+     * Returns the represented date-time, or null for date-only and free-form values.
+     */
+    LocalDateTime toLocalDateTime() {
+        return dateTime;
     }
 }

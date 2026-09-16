@@ -19,7 +19,10 @@ public class AddCommand extends Command {
         this.task = task;
     }
 
-    /** Adds the task, then prints a confirmation message with the updated list size. */
+    /**
+     * {@inheritDoc}
+     * Adds the task, then prints a confirmation message with the updated list size.
+     */
     @Override
     public void execute(TaskList taskList, Ui ui) {
         taskList.addTask(task);

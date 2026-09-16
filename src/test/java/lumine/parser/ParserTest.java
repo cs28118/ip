@@ -26,7 +26,7 @@ import lumine.task.Event;
 import lumine.task.Todo;
 
 /**
- * Tests for {@link Parser}. Each test targets one behaviour of one method so that
+ * Tests {@link Parser}. Each test targets one behavior of one method so that
  * a failure pinpoints exactly what broke.
  */
 class ParserTest {

@@ -310,7 +310,7 @@ ____________________________________________________________
 ```
 
 ### Test Case: Malformed deadline and event commands preserve existing tasks
-Aim: Verify that deadline and event commands with missing descriptions, dates, or times show errors and do not alter tasks that were already added.
+Aim: Verify that deadline and event commands with missing descriptions, invalid ranges, mixed date types, or missing times show errors and do not alter tasks that were already added.
 
 Command:
 ```text
@@ -327,8 +327,15 @@ event meeting /from 2pm
 event meeting /to 4pm
 event /from 2pm /to 4pm
 deadline submit /by 2026 02 30
-event meeting /from 2026 02 30 /to 2026 03 01
-event meeting /from 2026 02 28 /to 2026 02 30
+event meeting /from 2026 02 30 1400 /to 2026 03 01 1600
+event meeting /from 2026 02 28 1400 /to 2026 02 30 1600
+event meeting /from 2026 09 20 1600 /to 2026 09 20 1400
+event meeting /from 2026 09 20 1400 /to 2026 09 20 1400
+event meeting /from 2026 09 21 1400 /to 2026 09 20 1600
+event meeting /from 2026 09 20 1400 /to 4pm
+event meeting /from 2pm /to 2026 09 20 1600
+event meeting /from 2026 09 20 /to 2026 09 21 1600
+event meeting /from 2026 09 20 1400 /to 2026 09 21
 list
 bye
 ```
@@ -394,6 +401,27 @@ Date not found :<.
 Please enter a valid calendar date or time.
 ____________________________________________________________
 ____________________________________________________________
+Hmmmm, the event end date is early then start date, try again with a valid range instead
+____________________________________________________________
+____________________________________________________________
+Hmmmm, the event end date is early then start date, try again with a valid range instead
+____________________________________________________________
+____________________________________________________________
+Hmmmm, the event end date is early then start date, try again with a valid range instead
+____________________________________________________________
+____________________________________________________________
+Sorry, you need to enter date in format yyyy MM dd HHmm for both from and to date.
+____________________________________________________________
+____________________________________________________________
+Sorry, you need to enter date in format yyyy MM dd HHmm for both from and to date.
+____________________________________________________________
+____________________________________________________________
+Sorry, you need to enter date in format yyyy MM dd HHmm for both from and to date.
+____________________________________________________________
+____________________________________________________________
+Sorry, you need to enter date in format yyyy MM dd HHmm for both from and to date.
+____________________________________________________________
+____________________________________________________________
 Here are the tasks in your list:
 1.[T][ ] keep task
 ____________________________________________________________
@@ -414,7 +442,7 @@ Input:
 ```text
 todo borrow book
 deadline return book /by 2019 10 15
-event project meeting /from 2019 10 14 /to 2019 10 15
+event project meeting /from 2019 10 14 1400 /to 2019 10 15 1600
 list
 date 2019 10 15
 date 2019 10 16
@@ -450,19 +478,19 @@ Now, you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
-  [E][ ] project meeting (from: Oct 14 2019 to: Oct 15 2019)
+  [E][ ] project meeting (from: Oct 14 2019 14:00 to: Oct 15 2019 16:00)
 Now, you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][ ] borrow book
 2.[D][ ] return book (by: Oct 15 2019)
-3.[E][ ] project meeting (from: Oct 14 2019 to: Oct 15 2019)
+3.[E][ ] project meeting (from: Oct 14 2019 14:00 to: Oct 15 2019 16:00)
 ____________________________________________________________
 ____________________________________________________________
 Here is your list of pending task due on 2019 10 15:
 1.[D][ ] return book (by: Oct 15 2019)
-2.[E][ ] project meeting (from: Oct 14 2019 to: Oct 15 2019)
+2.[E][ ] project meeting (from: Oct 14 2019 14:00 to: Oct 15 2019 16:00)
 ____________________________________________________________
 ____________________________________________________________
 Your path is clear on 2019 10 16 — no tasks due.
@@ -475,7 +503,7 @@ ____________________________________________________________
 Here are the tasks in your list:
 1.[T][ ] borrow book
 2.[D][X] return book (by: Oct 15 2019)
-3.[E][ ] project meeting (from: Oct 14 2019 to: Oct 15 2019)
+3.[E][ ] project meeting (from: Oct 14 2019 14:00 to: Oct 15 2019 16:00)
 ____________________________________________________________
 ____________________________________________________________
 OK, I've marked this task as not done yet:
@@ -485,7 +513,7 @@ ____________________________________________________________
 Here are the tasks in your list:
 1.[T][ ] borrow book
 2.[D][ ] return book (by: Oct 15 2019)
-3.[E][ ] project meeting (from: Oct 14 2019 to: Oct 15 2019)
+3.[E][ ] project meeting (from: Oct 14 2019 14:00 to: Oct 15 2019 16:00)
 ____________________________________________________________
 ____________________________________________________________
 Bye. Hope to see you again soon!

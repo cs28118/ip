@@ -113,7 +113,9 @@ public class Lumine {
         return isExitRequested;
     }
 
-    /** Application entry point; starts a new Lumine session with the default save file. */
+    /**
+     * Starts a new Lumine session with the default save file.
+     */
     public static void main(String[] args) {
         new Lumine("data/lumine.txt").run();
     }

@@ -8,7 +8,10 @@ import lumine.ui.Ui;
  */
 public class UndoCommand extends Command {
 
-    /** Reverses the most recent change and prints a confirmation message. */
+    /**
+     * {@inheritDoc}
+     * Reverses the most recent change and prints a confirmation message.
+     */
     @Override
     public void execute(TaskList taskList, Ui ui) {
         taskList.undoLastChange();

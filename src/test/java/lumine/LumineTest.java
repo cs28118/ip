@@ -8,6 +8,9 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+/**
+ * Tests command responses, undo behavior, and greetings from {@link Lumine}.
+ */
 class LumineTest {
     @TempDir
     private Path temporaryDirectory;

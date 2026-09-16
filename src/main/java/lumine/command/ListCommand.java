@@ -8,7 +8,10 @@ import lumine.ui.Ui;
  */
 public class ListCommand extends Command {
 
-    /** Displays all tasks in the task list. */
+    /**
+     * {@inheritDoc}
+     * Displays all tasks in the task list.
+     */
     @Override
     public void execute(TaskList taskList, Ui ui) {
         ui.showMessage(taskList.formatTasks());

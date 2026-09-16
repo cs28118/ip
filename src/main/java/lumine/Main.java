@@ -15,6 +15,13 @@ import lumine.ui.MainWindow;
  */
 public class Main extends Application {
 
+    /**
+     * {@inheritDoc}
+     * Loads and displays Lumine's main conversation window.
+     *
+     * @param stage the primary window supplied by JavaFX.
+     * @throws IOException if the main window layout cannot be loaded.
+     */
     @Override
     public void start(Stage stage) throws IOException {
         Lumine lumine = new Lumine("data/lumine.txt");

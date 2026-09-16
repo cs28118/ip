@@ -34,7 +34,9 @@ public class Ui {
         scanner = isConsoleInputEnabled ? new Scanner(System.in) : null;
     }
 
-    /** Prints the ASCII-art banner and welcome message at application start. */
+    /**
+     * Prints the ASCII-art banner and welcome message at application start.
+     */
     public void showGreetings() {
         System.out.println(LINE + "\n" + BANNER
                 + "Hello, I'm Lumine!\n"
@@ -42,12 +44,16 @@ public class Ui {
                 + LINE);
     }
 
-    /** Shows the separator used around each command interaction. */
+    /**
+     * Shows the separator used around each command interaction.
+     */
     public void showSeparator() {
         System.out.println(LINE);
     }
 
-    /** Shows a message to the user. */
+    /**
+     * Shows a message to the user.
+     */
     public void showMessage(String message) {
         System.out.println(message);
     }
@@ -63,17 +69,23 @@ public class Ui {
         }
     }
 
-    /** Returns whether another command is available on standard input. */
+    /**
+     * Returns whether another command is available on standard input.
+     */
     public boolean hasNextCommand() {
         return scanner.hasNextLine();
     }
 
-    /** Reads the next command from standard input. */
+    /**
+     * Reads the next command from standard input.
+     */
     public String readCommand() {
         return scanner.nextLine();
     }
 
-    /** Shows the application's farewell message. */
+    /**
+     * Shows the application's farewell message.
+     */
     public void showExit() {
         showMessage("Bye. Hope to see you again soon!");
     }

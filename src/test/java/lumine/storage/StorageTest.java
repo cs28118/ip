@@ -19,6 +19,9 @@ import lumine.task.Event;
 import lumine.task.Task;
 import lumine.task.Todo;
 
+/**
+ * Tests task persistence, malformed save files, and storage failures.
+ */
 class StorageTest {
     private static final String LOAD_ERROR = "Sorry, I couldn't load your tasks. :C";
     private static final String SAVE_ERROR = "Sorry, I couldn't save your tasks. :C";
@@ -50,7 +53,7 @@ class StorageTest {
         Path saveFile = temporaryDirectory.resolve("nested").resolve("lumine.txt");
         Todo todo = new Todo("pipe | slash \\\nline");
         Deadline deadline = new Deadline("submit report", "2026 01 02 1530");
-        Event event = new Event("team meeting", "2026 01 02", "2026 01 03 1600");
+        Event event = new Event("team meeting", "2026 01 02 1400", "2026 01 03 1600");
         deadline.markDone();
 
         Storage storage = new Storage(saveFile.toString());
@@ -60,7 +63,7 @@ class StorageTest {
         assertEquals(3, loadedTasks.size());
         assertEquals("[T][ ] pipe | slash \\\nline", loadedTasks.get(0).toString());
         assertEquals("[D][X] submit report (by: Jan 02 2026 15:30)", loadedTasks.get(1).toString());
-        assertEquals("[E][ ] team meeting (from: Jan 02 2026 to: Jan 03 2026 16:00)",
+        assertEquals("[E][ ] team meeting (from: Jan 02 2026 14:00 to: Jan 03 2026 16:00)",
                 loadedTasks.get(2).toString());
     }
 

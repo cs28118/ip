@@ -70,6 +70,8 @@ event project meeting /from 2026 09 20 1400 /to 2026 09 20 1530
 ```
 
 The `/from` and `/to` markers are required, and all three fields must be non-empty.
+If either time is a calendar date, both must use `yyyy MM dd HHmm`, and the end must be strictly later
+than the start. Two free-text time values are also accepted.
 
 ### Listing all tasks: `list`
 

@@ -9,7 +9,7 @@ import lumine.ui.Ui;
  *
  * <p>Each concrete subclass encapsulates one type of user action
  * (e.g., adding a task, deleting a task, exiting). This lets the main
- * loop delegate behaviour to the command object without a long if-else chain.</p>
+ * loop delegate behavior to the command object without a long if-else chain.</p>
  */
 public abstract class Command {
 

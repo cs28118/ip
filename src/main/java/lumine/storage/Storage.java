@@ -158,7 +158,7 @@ public class Storage {
      * Splits a storage line into its unescaped field values, using {@code |} as the
      * delimiter and {@code \} as the escape character.
      *
-     * <p>Recognised escape sequences: {@code \|} → {@code |}, {@code \\} → {@code \},
+     * <p>Recognized escape sequences: {@code \|} → {@code |}, {@code \\} → {@code \},
      * {@code \n} → newline, {@code \r} → carriage return.  A trailing backslash
      * (dangling escape) is treated as a malformed line.</p>
      *

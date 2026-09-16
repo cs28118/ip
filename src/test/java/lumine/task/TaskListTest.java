@@ -12,6 +12,9 @@ import org.junit.jupiter.api.io.TempDir;
 import lumine.LumineException;
 import lumine.storage.Storage;
 
+/**
+ * Tests undo behavior and persistence for task-list changes.
+ */
 class TaskListTest {
     @TempDir
     private Path temporaryDirectory;

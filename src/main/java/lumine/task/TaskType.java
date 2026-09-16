@@ -15,7 +15,9 @@ public enum TaskType {
         this.symbol = symbol;
     }
 
-    /** Returns the single-character symbol representing this task type (e.g. {@code "T"}). */
+    /**
+     * Returns the single-character symbol representing this task type (e.g. {@code "T"}).
+     */
     public String getSymbol() {
         return symbol;
     }
