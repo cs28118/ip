@@ -15,7 +15,7 @@ import lumine.LumineException;
 public class Event extends Task {
     private static final String DATE_FORMAT_ERROR = "Sorry, you need to enter date in format yyyy MM dd HHmm "
             + "for both from and to date.";
-    private static final String DATE_RANGE_ERROR = "Hmmmm, the event end date is early then start date, "
+    private static final String DATE_RANGE_ERROR = "Hmmmm, the event end date and start date isn't valid, "
             + "try again with a valid range instead";
     private final TaskDateTime startTime;
     private final TaskDateTime endTime;

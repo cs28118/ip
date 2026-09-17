@@ -22,12 +22,23 @@ public class TaskList {
             DateTimeFormatter.ofPattern("uuuu MM dd");
     private final Storage storage;
     private final List<Task> tasks = new ArrayList<>();
+    private String currentCommand = "";
     private UndoAction lastUndoAction;
 
     /**
-     * Stores how to reverse and restore the most recent successful change.
+     * Stores the command text and how to reverse and restore its successful change.
      */
-    private record UndoAction(Runnable undoChange, Runnable redoChange) {
+    private record UndoAction(Runnable undoChange, Runnable redoChange, String commandText) {
+    }
+
+    /**
+     * Sets the input text to associate with the next successful task-list change.
+     * Setting this context does not replace the previously recorded undo action.
+     *
+     * @param commandText the command currently being executed.
+     */
+    public void setCurrentCommand(String commandText) {
+        currentCommand = commandText.trim();
     }
 
     /**
@@ -77,13 +88,17 @@ public class TaskList {
         }
         Runnable undoChange = () -> tasks.remove(taskIndex);
         Runnable redoChange = () -> tasks.add(taskIndex, task);
-        lastUndoAction = new UndoAction(undoChange, redoChange);
+        lastUndoAction = new UndoAction(undoChange, redoChange, currentCommand);
     }
 
     /**
-     * Returns a formatted listing of all tasks.
+     * Returns a formatted listing of all tasks or a message when the list is empty.
      */
     public String formatTasks() {
+        if (tasks.isEmpty()) {
+            return "Nice, there are no task on your list!";
+        }
+
         StringBuilder result = new StringBuilder();
         result.append("Here are the tasks in your list:");
         for (int i = 0; i < tasks.size(); i++) {
@@ -160,7 +175,7 @@ public class TaskList {
                 task.markUndone();
             }
         };
-        lastUndoAction = new UndoAction(undoChange, task::markDone);
+        lastUndoAction = new UndoAction(undoChange, task::markDone, currentCommand);
         return task;
     }
 
@@ -195,7 +210,7 @@ public class TaskList {
                 task.markUndone();
             }
         };
-        lastUndoAction = new UndoAction(undoChange, task::markUndone);
+        lastUndoAction = new UndoAction(undoChange, task::markUndone, currentCommand);
         return task;
     }
 
@@ -224,7 +239,7 @@ public class TaskList {
         }
         Runnable undoChange = () -> tasks.add(taskIndex, removedTask);
         Runnable redoChange = () -> tasks.remove(taskIndex);
-        lastUndoAction = new UndoAction(undoChange, redoChange);
+        lastUndoAction = new UndoAction(undoChange, redoChange, currentCommand);
         return removedTask;
     }
 
@@ -232,9 +247,10 @@ public class TaskList {
      * Reverses and saves the most recent successful task-list change.
      * If saving fails, the undo is rolled back so memory and disk remain consistent.
      *
+     * @return the input text of the command whose change was reversed.
      * @throws LumineException if there is no change to undo or storage cannot be written.
      */
-    public void undoLastChange() {
+    public String undoLastChange() {
         if (lastUndoAction == null) {
             throw new LumineException("Sorry, there is no command to undo. :C");
         }
@@ -248,6 +264,7 @@ public class TaskList {
             throw e;
         }
         lastUndoAction = null;
+        return undoAction.commandText();
     }
 
     /**

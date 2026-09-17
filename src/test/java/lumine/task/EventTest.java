@@ -176,7 +176,8 @@ class EventTest {
     void constructor_endBeforeStart_throwsRangeError() {
         LumineException exception = assertThrows(
                 LumineException.class, () -> new Event("test", "2026 01 02 1400", "2026 01 01 1600"));
-        assertEquals("Hmmmm, the event end date is early then start date, try again with a valid range instead",
+        assertEquals("Hmmmm, the event end date and start date isn't valid, "
+                        + "try again with a valid range instead",
                 exception.getMessage());
     }
 
@@ -184,7 +185,8 @@ class EventTest {
     void constructor_equalTimes_throwsRangeError() {
         LumineException exception = assertThrows(
                 LumineException.class, () -> new Event("test", "2026 01 01 1400", "2026 01 01 1400"));
-        assertEquals("Hmmmm, the event end date is early then start date, try again with a valid range instead",
+        assertEquals("Hmmmm, the event end date and start date isn't valid, "
+                        + "try again with a valid range instead",
                 exception.getMessage());
     }
 

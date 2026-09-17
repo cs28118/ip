@@ -2,6 +2,28 @@
 
 This plan defines console tests for the Lumine application. Commands are run from the repository root with Java 25.
 
+## Manual GUI regression cases
+
+These cases require the JavaFX window and are not run by the console test runner.
+
+### Manual GUI case: Display farewell before closing
+Aim: Verify that `bye` displays the farewell, disables both input controls, and closes after a short delay.
+
+Setup: Launch the GUI with Java 25 using `gradlew.bat run`.
+
+Inputs:
+1. Enter `bye` and submit it with the SEND button.
+2. During the delay, attempt to type another command or click SEND.
+3. Relaunch and repeat using Enter to submit `bye`.
+
+Expected output and behavior:
+- The conversation displays `bye` and `Bye. Hope to see you again soon!`, scrolling to the farewell.
+- The input field and SEND button are disabled immediately after submission; further commands cannot be submitted.
+- The window stays responsive with the farewell visible, then closes automatically after approximately one second.
+- Both SEND and Enter produce the same exit behavior.
+
+## Console regression cases
+
 ### Test Case: Compile application with Java 25
 Aim: Verify that all current Java sources compile successfully using the required Java 25 compiler.
 
@@ -20,8 +42,8 @@ Expected output:
 BUILD_OK
 ```
 
-### Test Case: Application greeting and exit
-Aim: Verify that the application prints its greeting and exits with the expected farewell when the user enters `bye`.
+### Test Case: Application greeting, empty list, and exit
+Aim: Verify the greeting, the empty-list message from `list`, and the farewell when the user enters `bye`.
 
 Command:
 ```text
@@ -30,6 +52,7 @@ del /q data\lumine.txt 2>NUL & java -cp build\classes\java\main lumine.Lumine
 
 Input:
 ```text
+list
 bye
 ```
 
@@ -45,6 +68,9 @@ ____________________________________________________________
 |_______||_______||_|   |_||___| |_|  |__||_______|
 Hello, I'm Lumine!
 What can I do for you today?
+____________________________________________________________
+____________________________________________________________
+Nice, there are no task on your list!
 ____________________________________________________________
 ____________________________________________________________
 Bye. Hope to see you again soon!
@@ -273,7 +299,7 @@ Hello, I'm Lumine!
 What can I do for you today?
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Nice, there are no task on your list!
 ____________________________________________________________
 ____________________________________________________________
 Hmmmm, I can't understand what that means. ;-;
@@ -401,13 +427,13 @@ Date not found :<.
 Please enter a valid calendar date or time.
 ____________________________________________________________
 ____________________________________________________________
-Hmmmm, the event end date is early then start date, try again with a valid range instead
+Hmmmm, the event end date and start date isn't valid, try again with a valid range instead
 ____________________________________________________________
 ____________________________________________________________
-Hmmmm, the event end date is early then start date, try again with a valid range instead
+Hmmmm, the event end date and start date isn't valid, try again with a valid range instead
 ____________________________________________________________
 ____________________________________________________________
-Hmmmm, the event end date is early then start date, try again with a valid range instead
+Hmmmm, the event end date and start date isn't valid, try again with a valid range instead
 ____________________________________________________________
 ____________________________________________________________
 Sorry, you need to enter date in format yyyy MM dd HHmm for both from and to date.
@@ -615,7 +641,7 @@ Sorry, I couldn't load your tasks. :C
 Invalid saved task on line 1.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Nice, there are no task on your list!
 ____________________________________________________________
 ____________________________________________________________
 Bye. Hope to see you again soon!
@@ -676,7 +702,7 @@ ____________________________________________________________
 Sorry, I couldn't save your tasks. :C
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Nice, there are no task on your list!
 ____________________________________________________________
 ____________________________________________________________
 Bye. Hope to see you again soon!
@@ -752,7 +778,7 @@ ____________________________________________________________
 ```
 
 ### Test Case: Undo the most recent task-list change
-Aim: Verify that `undo` reverses the most recent successful change, ignores intervening read-only commands, persists the reverted list, and reports when no further change can be undone.
+Aim: Verify that `undo` names and reverses the most recent successful editing command, ignores read-only commands and failed edits, persists the reverted list, and reports when no further change can be undone.
 
 Command:
 ```text
@@ -763,6 +789,7 @@ Input:
 ```text
 todo temporary task
 list
+delete 99
 undo
 list
 undo
@@ -792,10 +819,14 @@ Here are the tasks in your list:
 1.[T][ ] temporary task
 ____________________________________________________________
 ____________________________________________________________
-Done! I had undo the latest command. :D
+Task not found :<.
+Please enter a valid task number.
 ____________________________________________________________
 ____________________________________________________________
-Here are the tasks in your list:
+Done! I had undo the latest command. :D (todo temporary task)
+____________________________________________________________
+____________________________________________________________
+Nice, there are no task on your list!
 ____________________________________________________________
 ____________________________________________________________
 Sorry, there is no command to undo. :C

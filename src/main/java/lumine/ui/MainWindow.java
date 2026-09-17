@@ -2,25 +2,32 @@ package lumine.ui;
 
 import java.util.Objects;
 
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import lumine.Lumine;
 
 /**
  * Controls Lumine's main conversation window.
  */
 public class MainWindow extends AnchorPane {
+    private static final Duration EXIT_DELAY = Duration.seconds(1);
+
     @FXML
     private ScrollPane scrollPane;
     @FXML
     private VBox dialogContainer;
     @FXML
     private TextField userInput;
+    @FXML
+    private Button sendButton;
 
     private Lumine lumine;
 
@@ -31,7 +38,9 @@ public class MainWindow extends AnchorPane {
 
     @FXML
     private void initialize() {
-        scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
+        dialogContainer.heightProperty().addListener((observable, oldValue, newValue) -> {
+            Platform.runLater(() -> scrollPane.setVvalue(1.0));
+        });
     }
 
     /**
@@ -46,7 +55,7 @@ public class MainWindow extends AnchorPane {
 
     /**
      * Adds the user's message and Lumine's command response to the conversation.
-     * Closes the application when the command requests an exit.
+     * Disables input and briefly displays the farewell before closing when an exit is requested.
      */
     @FXML
     private void handleUserInput() {
@@ -65,7 +74,13 @@ public class MainWindow extends AnchorPane {
         userInput.clear();
 
         if (lumine.isExitRequested()) {
-            Platform.exit();
+            userInput.setDisable(true);
+            sendButton.setDisable(true);
+
+            // Keep the JavaFX thread free to render the farewell during the delay.
+            PauseTransition exitDelay = new PauseTransition(EXIT_DELAY);
+            exitDelay.setOnFinished(event -> Platform.exit());
+            exitDelay.play();
         }
     }
 

@@ -23,6 +23,22 @@ class LumineTest {
     }
 
     @Test
+    void getResponse_emptyList_returnsEmptyListMessage() {
+        Lumine lumine = createLumine();
+
+        assertEquals("Nice, there are no task on your list!", lumine.getResponse("list"));
+    }
+
+    @Test
+    void getResponse_deleteOnlyTask_returnsEmptyListMessage() {
+        Lumine lumine = createLumine();
+        lumine.getResponse("todo temporary task");
+        lumine.getResponse("delete 1");
+
+        assertEquals("Nice, there are no task on your list!", lumine.getResponse("list"));
+    }
+
+    @Test
     void getResponse_addTodoCommand_returnsCommandOutput() {
         Lumine lumine = createLumine();
 
@@ -36,13 +52,15 @@ class LumineTest {
         Lumine lumine = createLumine();
         lumine.getResponse("todo read textbook");
         lumine.getResponse("list");
+        lumine.getResponse("find textbook");
+        lumine.getResponse("todo");
         lumine.getResponse("delete 99");
 
-        assertEquals("Done! I had undo the latest command. :D", lumine.getResponse("undo"));
-        assertEquals("Here are the tasks in your list:", lumine.getResponse("list"));
+        assertEquals("Done! I had undo the latest command. :D (todo read textbook)", lumine.getResponse("undo"));
+        assertEquals("Nice, there are no task on your list!", lumine.getResponse("list"));
 
         Lumine reloadedLumine = createLumine();
-        assertEquals("Here are the tasks in your list:", reloadedLumine.getResponse("list"));
+        assertEquals("Nice, there are no task on your list!", reloadedLumine.getResponse("list"));
     }
 
     @Test
@@ -52,7 +70,7 @@ class LumineTest {
         lumine.getResponse("todo second task");
         lumine.getResponse("delete 1");
 
-        lumine.getResponse("undo");
+        assertEquals("Done! I had undo the latest command. :D (delete 1)", lumine.getResponse("undo"));
 
         assertEquals("Here are the tasks in your list:\n"
                         + "1.[T][ ] first task\n"
@@ -66,15 +84,41 @@ class LumineTest {
         lumine.getResponse("todo test task");
         lumine.getResponse("mark 1");
 
-        lumine.getResponse("undo");
+        assertEquals("Done! I had undo the latest command. :D (mark 1)", lumine.getResponse("undo"));
         assertEquals("Here are the tasks in your list:\n1.[T][ ] test task",
                 lumine.getResponse("list"));
 
         lumine.getResponse("mark 1");
         lumine.getResponse("unmark 1");
-        lumine.getResponse("undo");
+        assertEquals("Done! I had undo the latest command. :D (unmark 1)", lumine.getResponse("undo"));
         assertEquals("Here are the tasks in your list:\n1.[T][X] test task",
                 lumine.getResponse("list"));
+    }
+
+    @Test
+    void getResponse_undoDeadlineAndEventCommands_reportsFullEditingCommand() {
+        Lumine lumine = createLumine();
+        String deadlineCommand = "deadline return book /by 2019 10 15";
+        lumine.getResponse(deadlineCommand);
+
+        assertEquals("Done! I had undo the latest command. :D (" + deadlineCommand + ")",
+                lumine.getResponse("undo"));
+        assertEquals("Nice, there are no task on your list!", lumine.getResponse("list"));
+
+        String eventCommand = "event meeting /from 2pm /to 3pm";
+        lumine.getResponse(eventCommand);
+
+        assertEquals("Done! I had undo the latest command. :D (" + eventCommand + ")",
+                lumine.getResponse("undo"));
+        assertEquals("Nice, there are no task on your list!", lumine.getResponse("list"));
+    }
+
+    @Test
+    void getResponse_undoCommandWithSurroundingWhitespace_reportsTrimmedCommand() {
+        Lumine lumine = createLumine();
+        lumine.getResponse("  todo test task  ");
+
+        assertEquals("Done! I had undo the latest command. :D (todo test task)", lumine.getResponse("undo"));
     }
 
     @Test

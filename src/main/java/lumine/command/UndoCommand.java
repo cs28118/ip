@@ -10,11 +10,11 @@ public class UndoCommand extends Command {
 
     /**
      * {@inheritDoc}
-     * Reverses the most recent change and prints a confirmation message.
+     * Reverses the most recent change and prints a confirmation naming the reverted command.
      */
     @Override
     public void execute(TaskList taskList, Ui ui) {
-        taskList.undoLastChange();
-        ui.showMessage("Done! I had undo the latest command. :D");
+        String undoneCommand = taskList.undoLastChange();
+        ui.showMessage("Done! I had undo the latest command. :D (" + undoneCommand + ")");
     }
 }

@@ -23,12 +23,13 @@ class TaskListTest {
     void undoLastChange_afterAdd_removesTaskAndPersistsResult() {
         Path saveFile = temporaryDirectory.resolve("lumine.txt");
         TaskList taskList = createTaskList(saveFile);
+        taskList.setCurrentCommand("todo temporary task");
         taskList.addTask(new Todo("temporary task"));
 
-        taskList.undoLastChange();
+        assertEquals("todo temporary task", taskList.undoLastChange());
 
         assertEquals(0, taskList.size());
-        assertEquals("Here are the tasks in your list:", taskList.formatTasks());
+        assertEquals("Nice, there are no task on your list!", taskList.formatTasks());
         assertEquals("", readFile(saveFile));
     }
 

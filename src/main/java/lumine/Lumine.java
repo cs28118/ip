@@ -60,6 +60,7 @@ public class Lumine {
             ui.showSeparator();
             try {
                 Command command = parser.parse(fullCommand);
+                taskList.setCurrentCommand(fullCommand);
                 command.execute(taskList, ui);
                 isExit = command.isExit();
             } catch (LumineException e) {
@@ -96,6 +97,7 @@ public class Lumine {
         GuiUi guiUi = new GuiUi();
         try {
             Command command = parser.parse(input);
+            taskList.setCurrentCommand(input);
             command.execute(taskList, guiUi);
             isExitRequested = command.isExit();
         } catch (LumineException exception) {
