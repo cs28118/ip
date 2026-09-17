@@ -32,16 +32,6 @@ public class TaskList {
     }
 
     /**
-     * Sets the input text to associate with the next successful task-list change.
-     * Setting this context does not replace the previously recorded undo action.
-     *
-     * @param commandText the command currently being executed.
-     */
-    public void setCurrentCommand(String commandText) {
-        currentCommand = commandText.trim();
-    }
-
-    /**
      * Constructs a task list containing the tasks saved in the given storage.
      *
      * @param storage the storage to load from and save to.
@@ -63,6 +53,16 @@ public class TaskList {
             tasks.addAll(storage.load());
             assert tasks.stream().noneMatch(task -> task == null) : "Loaded task list must not contain null";
         }
+    }
+
+    /**
+     * Sets the input text to associate with the next successful task-list change.
+     * Setting this context does not replace the previously recorded undo action.
+     *
+     * @param commandText the command currently being executed.
+     */
+    public void setCurrentCommand(String commandText) {
+        currentCommand = commandText.trim();
     }
 
     /**

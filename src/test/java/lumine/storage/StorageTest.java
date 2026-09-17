@@ -114,12 +114,45 @@ class StorageTest {
     @Test
     void load_invalidStructuredDate_reportsCorruptLine() throws IOException {
         Path saveFile = temporaryDirectory.resolve("lumine.txt");
-        Files.writeString(saveFile, "D | 0 | deadline | 2026 02 30\n");
+        Files.writeString(saveFile, "T | 0 | valid\n\nD | 0 | deadline | 2026 02 30\n");
 
         LumineException exception = assertThrows(
                 LumineException.class, () -> new Storage(saveFile.toString()).load());
 
-        assertEquals("Date not found :<.\nPlease enter a valid calendar date or time.", exception.getMessage());
+        assertEquals(LOAD_ERROR + "\nInvalid saved task on line 3.", exception.getMessage());
+    }
+
+    @Test
+    void load_invalidEventDate_reportsCorruptLine() throws IOException {
+        Path saveFile = temporaryDirectory.resolve("lumine.txt");
+        Files.writeString(saveFile, "T | 0 | valid\nE | 0 | meeting | 2026 02 30 1400 | 2026 03 01 1600\n");
+
+        LumineException exception = assertThrows(
+                LumineException.class, () -> new Storage(saveFile.toString()).load());
+
+        assertEquals(LOAD_ERROR + "\nInvalid saved task on line 2.", exception.getMessage());
+    }
+
+    @Test
+    void load_invalidEventRange_reportsCorruptLine() throws IOException {
+        Path saveFile = temporaryDirectory.resolve("lumine.txt");
+        Files.writeString(saveFile, "T | 0 | valid\nE | 0 | meeting | 2026 01 02 1400 | 2026 01 01 1600\n");
+
+        LumineException exception = assertThrows(
+                LumineException.class, () -> new Storage(saveFile.toString()).load());
+
+        assertEquals(LOAD_ERROR + "\nInvalid saved task on line 2.", exception.getMessage());
+    }
+
+    @Test
+    void load_eventWithoutRequiredTime_reportsCorruptLine() throws IOException {
+        Path saveFile = temporaryDirectory.resolve("lumine.txt");
+        Files.writeString(saveFile, "E | 0 | meeting | 2026 01 01 | 2026 01 02\n");
+
+        LumineException exception = assertThrows(
+                LumineException.class, () -> new Storage(saveFile.toString()).load());
+
+        assertEquals(LOAD_ERROR + "\nInvalid saved task on line 1.", exception.getMessage());
     }
 
     @Test

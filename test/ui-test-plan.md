@@ -648,6 +648,45 @@ Bye. Hope to see you again soon!
 ____________________________________________________________
 ```
 
+### Test Case: Report the saved record line for an invalid date
+Aim: Verify that an impossible saved deadline date reports its physical line number, including blank lines, and starts with an empty list.
+
+Command:
+```text
+powershell -NoProfile -Command "[System.IO.Directory]::CreateDirectory('data') | Out-Null; [System.IO.File]::WriteAllLines('data\lumine.txt', @('T | 0 | valid', '', 'D | 0 | deadline | 2026 02 30'))" & java -cp build\classes\java\main lumine.Lumine & del /q data\lumine.txt
+```
+
+Input:
+```text
+list
+bye
+```
+
+Expected output:
+```text
+____________________________________________________________
+ ___      __   __  __   __  ___   __    _  _______ 
+|   |    |  | |  ||  |_|  ||   | |  |  | ||       |
+|   |    |  | |  ||       ||   | |   |_| ||    ___|
+|   |    |  |_|  ||       ||   | |       ||   |___ 
+|   |___ |       ||       ||   | |  _    ||    ___|
+|       ||       || ||_|| ||   | | | |   ||   |___ 
+|_______||_______||_|   |_||___| |_|  |__||_______|
+Hello, I'm Lumine!
+What can I do for you today?
+____________________________________________________________
+____________________________________________________________
+Sorry, I couldn't load your tasks. :C
+Invalid saved task on line 3.
+____________________________________________________________
+____________________________________________________________
+Nice, there are no task on your list!
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
 ### Test Case: Preserve special characters in saved tasks
 Aim: Verify that pipes and backslashes in task descriptions are escaped when saved instead of corrupting the task format.
 

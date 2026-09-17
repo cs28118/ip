@@ -115,7 +115,7 @@ public class Storage {
      * @param line       the raw pipe-delimited line text to split and parse.
      * @param lineNumber 1-based line number, used in error messages.
      * @return the reconstructed {@link Task}.
-     * @throws LumineException if the line is malformed or the type symbol is unknown.
+     * @throws LumineException identifying the line if its structure or task values are invalid.
      */
     private Task parseTask(String line, int lineNumber) {
         assert lineNumber > 0 : "Storage line number must be positive";
@@ -124,28 +124,34 @@ public class Storage {
             throw invalidLine(lineNumber);
         }
 
-        Task task = switch (parts.get(0)) {
-            case "T" -> {
-                if (parts.size() != 3 || parts.get(2).isBlank()) {
-                    throw invalidLine(lineNumber);
+        Task task;
+        try {
+            task = switch (parts.get(0)) {
+                case "T" -> {
+                    if (parts.size() != 3 || parts.get(2).isBlank()) {
+                        throw invalidLine(lineNumber);
+                    }
+                    yield new Todo(parts.get(2));
                 }
-                yield new Todo(parts.get(2));
-            }
-            case "D" -> {
-                if (parts.size() != 4 || parts.get(2).isBlank() || parts.get(3).isBlank()) {
-                    throw invalidLine(lineNumber);
+                case "D" -> {
+                    if (parts.size() != 4 || parts.get(2).isBlank() || parts.get(3).isBlank()) {
+                        throw invalidLine(lineNumber);
+                    }
+                    yield new Deadline(parts.get(2), parts.get(3));
                 }
-                yield new Deadline(parts.get(2), parts.get(3));
-            }
-            case "E" -> {
-                if (parts.size() != 5 || parts.get(2).isBlank()
-                        || parts.get(3).isBlank() || parts.get(4).isBlank()) {
-                    throw invalidLine(lineNumber);
+                case "E" -> {
+                    if (parts.size() != 5 || parts.get(2).isBlank()
+                            || parts.get(3).isBlank() || parts.get(4).isBlank()) {
+                        throw invalidLine(lineNumber);
+                    }
+                    yield new Event(parts.get(2), parts.get(3), parts.get(4));
                 }
-                yield new Event(parts.get(2), parts.get(3), parts.get(4));
-            }
-            default -> throw invalidLine(lineNumber);
-        };
+                default -> throw invalidLine(lineNumber);
+            };
+        } catch (LumineException exception) {
+            // Report validation failures from task constructors as malformed saved records.
+            throw invalidLine(lineNumber);
+        }
         assert task != null : "A valid storage line must produce a task";
 
         if (parts.get(1).equals("1")) {
